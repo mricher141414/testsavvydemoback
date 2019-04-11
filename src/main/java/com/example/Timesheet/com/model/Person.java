@@ -23,9 +23,17 @@ public class Person {
 	private Integer departementId;
 	@Column(name = "manager_id")
 	private Integer managerId;
-	
-
+	@Column(name = "date_of_birth")
+	private int dateOfBirth;
 	private String address;
+	
+	public int getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public void setDateOfBirth(int dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
 
 	public int getId() {
 		return id;
