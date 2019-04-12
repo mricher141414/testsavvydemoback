@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class LoginController {
 	String url = "jdbc:sqlserver://localhost:1433;databaseName=timesheetdb;user=admin;password=Cgi12345*"; //local
-//TODO refaire les couches pour le login
+	//TODO refaire les couches pour le login
 	@GetMapping("/login")
 	@CrossOrigin(origins = "http://localhost:4200")
 	public boolean login(@RequestParam(value="username") String username, @RequestParam(value="password") String password) throws SQLException {

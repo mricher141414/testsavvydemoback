@@ -5,7 +5,7 @@ import com.example.Timesheet.com.model.Person;
 
 public class PersonMapper implements IPersonMapper {
 	
-	  @Override
+	 @Override
 	    public Person DTOtoPerson(PersonDTO source) {
 	        if ( source == null ) {
 	            return null;
@@ -13,6 +13,7 @@ public class PersonMapper implements IPersonMapper {
 
 	        Person person = new Person();
 
+	        person.setDateOfBirth( source.getDateOfBirth() );
 	        person.setId( source.getId() );
 	        person.setEmail( source.getEmail() );
 	        person.setLastName( source.getLastName() );
@@ -34,6 +35,7 @@ public class PersonMapper implements IPersonMapper {
 
 	        PersonDTO personDTO = new PersonDTO();
 
+	        personDTO.setDateOfBirth( destination.getDateOfBirth() );
 	        personDTO.setId( destination.getId() );
 	        personDTO.setEmail( destination.getEmail() );
 	        personDTO.setLastName( destination.getLastName() );

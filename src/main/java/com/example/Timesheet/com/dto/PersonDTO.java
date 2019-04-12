@@ -1,5 +1,7 @@
 package com.example.Timesheet.com.dto;
 
+import java.sql.Date;
+
 public class PersonDTO {
 
 	private int id;
@@ -11,6 +13,14 @@ public class PersonDTO {
 	private Integer departementId;
 	private Integer managerId;
 	private String address;
+	private Date dateOfBirth;
+	
+	public Date getDateOfBirth() {
+		return dateOfBirth;
+	}
+	public void setDateOfBirth(Date dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
 	public int getId() {
 		return id;
 	}

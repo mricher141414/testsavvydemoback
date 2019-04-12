@@ -1,5 +1,7 @@
 package com.example.Timesheet.com.model;
 
+import java.sql.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,17 +25,18 @@ public class Person {
 	private Integer departementId;
 	@Column(name = "manager_id")
 	private Integer managerId;
-	@Column(name = "date_of_birth")
-	private int dateOfBirth;
-	private String address;
-	
-	public int getDateOfBirth() {
+	public Date getDateOfBirth() {
 		return dateOfBirth;
 	}
 
-	public void setDateOfBirth(int dateOfBirth) {
+	public void setDateOfBirth(Date dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
+
+	@Column(name = "date_of_birth")
+	private Date dateOfBirth;
+	private String address;
+
 
 	public int getId() {
 		return id;

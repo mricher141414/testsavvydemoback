@@ -28,9 +28,7 @@ public class PersonController {
 	 PersonMapper personMapper = new PersonMapper();
 	 
 	  @GetMapping("/person")
-	  public List<Person> getPerson() throws SQLException {
-		  
-		
+	  public List<Person> getPerson() throws SQLException {		
 		return personService.getPerson();
 		  
 	  }
