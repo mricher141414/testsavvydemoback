@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.Timesheet.com.dto.DepartementDTO;
 import com.example.Timesheet.com.mapper.DepartementMapper;
 import com.example.Timesheet.com.model.Departement;
-import com.example.Timesheet.com.model.Role;
 import com.example.Timesheet.com.service.DepartementService;
 
 @RestController
@@ -48,7 +47,6 @@ public class DepartementController {
 		
 		Departement departement = departementMapper.DTOtoDepartement(departementDTO);
 		departementService.deleteDepartement(departement);
-		
 		
 	}
 

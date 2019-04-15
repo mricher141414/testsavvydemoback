@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.Timesheet.com.dao.ITimesheetDAO;
-import com.example.Timesheet.com.model.Role;
 import com.example.Timesheet.com.model.Timesheet;
 
 @Service
