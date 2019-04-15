@@ -6,11 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Timesheet.com.dto.TimesheetDTO;
 import com.example.Timesheet.com.mapper.TimesheetMapper;
-import com.example.Timesheet.com.model.Role;
 import com.example.Timesheet.com.model.Timesheet;
 import com.example.Timesheet.com.service.TimesheetService;
 
@@ -30,7 +31,17 @@ public class TimesheetController {
 	}
 	
 	@PostMapping("/timesheet")
-	public void post(TimesheetDTO timesheetDto) {
+	public void post(@RequestBody TimesheetDTO timesheetDto) {
+		
+		Timesheet timesheet = this.timesheetMapper.DTOtoTimesheet(timesheetDto);
+		
+		this.timesheetService.postTimesheet(timesheet);
+		
+	}
+	
+	@PutMapping("/timesheet")
+	public void put(@RequestBody TimesheetDTO timesheetDto) {
+		
 		Timesheet timesheet = this.timesheetMapper.DTOtoTimesheet(timesheetDto);
 		
 		this.timesheetService.postTimesheet(timesheet);

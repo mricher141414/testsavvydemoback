@@ -33,7 +33,7 @@ public class DepartementController {
 	@PutMapping("/departement")
 	public void saveRole(@RequestBody DepartementDTO departementDTO){
 		
-		if(!departementDTO.getName().equals("")) {
+		if(!departementDTO.getName().equals("")) { //Validation
 			Departement departement = departementMapper.DTOtoDepartement(departementDTO);
 			departementService.saveDepartement(departement);
 			
