@@ -22,5 +22,11 @@ public class TimesheetStatusService {
 	public List<TimesheetStatus> getAll(){
 		return (List<TimesheetStatus>) this.timesheetStatusDAO.findAll();
 	}
+	
+	public TimesheetStatus getById(int id) {
+		 
+		return this.timesheetStatusDAO.findById(id);
+	}
+	
 
 }

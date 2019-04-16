@@ -1,6 +1,7 @@
 package com.example.Timesheet.com.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,12 +16,26 @@ public class TimesheetService {
 	private ITimesheetDAO timesheetDAO;
 
 	public void postTimesheet(Timesheet timesheet) {
-		
+
 		timesheetDAO.save(timesheet);
 
 	}
-	
+
 	public List<Timesheet> getTimesheets() {
 		return (List<Timesheet>) this.timesheetDAO.findAll();
 	}
+
+	public Timesheet getTimesheetById(int id) {
+
+		return this.timesheetDAO.findById(id);
+
+	}
+
+	public Timesheet getTimesheetByEmployeeId(int id) {
+
+		return this.timesheetDAO.findByEmployeeId(id);
+
+	}
+
+
 }
