@@ -22,42 +22,42 @@ import com.example.Timesheet.com.service.RoleService;
 public class RoleController {
 	@Autowired
 	RoleService roleService = new RoleService();
-	
+
 	RoleMapper roleMapper = new RoleMapper();
-	
+
 	@GetMapping("/roles")
 	public List<Role> findAllRoles(){
-		
+
 		return roleService.getRoles();
-		
+
 	}
-	
+
 	@PutMapping("/roles")
 	public void saveRole(@RequestBody RoleDTO roleDto){
-		
+
 		if(!roleDto.getName().equals("")) {
 			Role role = roleMapper.DTOtoRole(roleDto);
 			roleService.saveRole(role);
 		}else {
 			throw new NullPointerException("name is null"); 
 		}
-		
-		
-		
+
+
+
 	}
-	
+
 	@DeleteMapping("/roles")
 	public void deleteRole(@RequestBody RoleDTO roleDto){
-		
+
 		if(!roleDto.getName().equals("")) {
 			Role role = roleMapper.DTOtoRole(roleDto);
 			roleService.deleteRole(role);
-			
+
 		}else {
 			throw new NullPointerException("name is null"); 
 		}
-		
-		
+
+
 	}
 
 }

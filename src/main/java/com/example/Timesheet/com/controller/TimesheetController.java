@@ -36,24 +36,24 @@ public class TimesheetController {
 
 	@Autowired
 	private PersonService personService = new PersonService();
-	
+
 	@Autowired
 	private RoleService roleService = new RoleService();
 
 	@Autowired
 	private TimesheetStatusService timesheetStatusService = new TimesheetStatusService();
-	
+
 	@Autowired
 	private DepartementService departementService = new DepartementService();
 
-	@GetMapping("/timesheet")
+	@GetMapping("/timesheet/all")
 	public List<Timesheet> findAllTimesheets(){
 
 		return timesheetService.getTimesheets();
 
 	}
-	
-	@GetMapping("/timesheet/all")
+
+	@GetMapping("/timesheet")
 	public List<Timesheet> findAllTimesheets(@RequestParam(value="id") int id){
 
 		return timesheetService.getTimesheetByEmployeeId(id);
@@ -84,7 +84,7 @@ public class TimesheetController {
 	@GetMapping("/timesheet/employee")
 	public TimesheetComplex findbyId(@RequestParam(value="id") int id){
 
-	
+
 		Person person = this.personService.getPersonById(this.timesheetService.getTimesheetById(id).getEmployeeId());
 		PersonComplex personComplex = new PersonComplex();
 		personComplex = this.fromPersonToComplex(person);
@@ -100,39 +100,31 @@ public class TimesheetController {
 		PersonComplex personComplex = new PersonComplex();
 		List<PersonComplex> listOfPeople = new ArrayList<PersonComplex>();
 		List<TimesheetComplex> tempList = new ArrayList<TimesheetComplex>();
-		
+
 		for(Person person : employeesOfManager) {
-						
+
 			personComplex = this.fromPersonToComplex(person);
-			
-				
-			
+
 			for(Timesheet timesheet: this.timesheetService.getTimesheetByEmployeeId(personComplex.getId()) ) {
-		
-					
-			
+
 				TimesheetComplex timesheetComplex = this.mapToTimesheetComplex(timesheet,personComplex);
 				tempList.add(timesheetComplex);
 			}
-			
+
 			personComplex.setTimesheets(tempList);
-	
-			
+
 			listOfPeople.add(personComplex);
 			tempList.clear();
 
-			
 		}
-
 		return listOfPeople;
-
 	}
-	
+
 	private TimesheetComplex mapToTimesheetComplex(Timesheet timesheet,PersonComplex person) {
 
 		TimesheetComplex timesheetComplex = new TimesheetComplex();
 
-		
+
 		timesheetComplex.setId(timesheet.getId());
 		timesheetComplex.setTotal(timesheet.getTotal());
 		timesheetComplex.setEndDate(timesheet.getEndDate());
@@ -148,7 +140,7 @@ public class TimesheetController {
 		return timesheetComplex;
 
 	}
-	
+
 	private PersonComplex fromPersonToComplex(Person person) {
 		PersonComplex personComplex = new PersonComplex();
 		personComplex.setId(person.getId());
@@ -159,16 +151,16 @@ public class TimesheetController {
 		personComplex.setPassword(person.getPassword());
 		personComplex.setDateOfBirth(person.getDateOfBirth());
 		personComplex.setManager(this.personService.getPersonById(person.getManagerId()));
-		
+
 		if(person.getRoleId()!= null) {
 			personComplex.setRole(this.roleService.getById(person.getRoleId()));
 		}
-		
+
 		if(person.getDepartementId() != null) {
 			personComplex.setDepartement(this.departementService.getById(person.getDepartementId()));
 		}
-				
+
 		return personComplex;
-		
+
 	}
 }
