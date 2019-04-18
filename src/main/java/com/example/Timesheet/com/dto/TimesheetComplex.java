@@ -12,8 +12,9 @@ public class TimesheetComplex {
 	private String notes;
 	private Date startDate;
 	private Date endDate;
-	private Person employee;
+	private PersonComplex employee;
 	private TimesheetStatus timesheetStatus;
+	
 	public int getId() {
 		return id;
 	}
@@ -44,10 +45,10 @@ public class TimesheetComplex {
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
-	public Person getEmployee() {
+	public PersonComplex getEmployee() {
 		return employee;
 	}
-	public void setEmployee(Person employee) {
+	public void setEmployee(PersonComplex employee) {
 		this.employee = employee;
 	}
 	public TimesheetStatus getTimesheetStatus() {

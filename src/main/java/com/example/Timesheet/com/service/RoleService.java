@@ -29,4 +29,8 @@ public class RoleService {
 		this.role.delete(role);
 	}
 	
+	
+	public Role getById(int id) {
+		return this.role.findById(id);
+	}
 }

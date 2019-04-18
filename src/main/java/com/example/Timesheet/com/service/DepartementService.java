@@ -27,5 +27,9 @@ public class DepartementService {
 	public void deleteDepartement(Departement departement) {
 		this.departement.delete(departement);	
 	}
+	
+	public Departement getById(int id) {
+		return this.departement.findById(id);
+	}
 
 }

@@ -1,3 +1,19 @@
+Drop table timesheet_row;
+
+Drop table Project;
+
+Drop table Client;
+
+Drop table Timesheet;
+
+Drop table Timesheet_Status;
+
+Drop table Employee;
+
+Drop table Role;
+Drop table Departement;
+
+
 CREATE TABLE Role(
 Id INT IDENTITY(1,1),
 Name VARCHAR(50) NOT NULL,

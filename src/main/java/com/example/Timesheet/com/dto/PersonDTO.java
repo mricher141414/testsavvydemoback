@@ -1,6 +1,9 @@
 package com.example.Timesheet.com.dto;
 
 import java.sql.Date;
+import java.util.List;
+
+import com.example.Timesheet.com.model.Timesheet;
 
 public class PersonDTO {
 
@@ -14,6 +17,7 @@ public class PersonDTO {
 	private Integer managerId;
 	private String address;
 	private Date dateOfBirth;
+	
 	
 	public Date getDateOfBirth() {
 		return dateOfBirth;

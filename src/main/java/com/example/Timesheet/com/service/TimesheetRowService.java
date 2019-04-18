@@ -30,5 +30,11 @@ public class TimesheetRowService {
 		this.timesheetRowDAO.delete(timesheetRow);
 		
 	}
+	
+	public TimesheetRow getById(int id) {
+		
+		return this.timesheetRowDAO.findById(id);
+		
+	}
 
 }

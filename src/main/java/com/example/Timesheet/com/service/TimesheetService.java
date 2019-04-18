@@ -31,7 +31,7 @@ public class TimesheetService {
 
 	}
 
-	public Timesheet getTimesheetByEmployeeId(int id) {
+	public List<Timesheet> getTimesheetByEmployeeId(int id) {
 
 		return this.timesheetDAO.findByEmployeeId(id);
 

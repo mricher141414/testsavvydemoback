@@ -30,7 +30,7 @@ public class DepartementController {
 	}
 	
 	@PutMapping("/departement")
-	public void saveRole(@RequestBody DepartementDTO departementDTO){
+	public int saveRole(@RequestBody DepartementDTO departementDTO){
 		
 		if(!departementDTO.getName().equals("")) { //Validation
 			Departement departement = departementMapper.DTOtoDepartement(departementDTO);
@@ -39,6 +39,8 @@ public class DepartementController {
 		}else {
 			throw new NullPointerException("name is null"); 
 		}
+		
+		return 0;
 		
 	}
 	

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Timesheet.com.dto.TimesheetRowDTO;
@@ -27,6 +28,13 @@ public class TimesheetRowController {
 	public List<TimesheetRow> findAllTimesheetRows(){
 		
 		return timesheetRowService.getTimesheetRows();
+		
+	}
+	
+	@GetMapping("/timesheetRow/one")
+	public TimesheetRow findAllTimesheetRows(@RequestParam(value="id") int id){
+		
+		return timesheetRowService.getById(id);
 		
 	}
 	
