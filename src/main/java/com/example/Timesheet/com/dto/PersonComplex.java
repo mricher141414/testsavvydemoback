@@ -20,20 +20,6 @@ public class PersonComplex {
 	private Person manager;
 	private String address;
 	private Date dateOfBirth;
-	private List<TimesheetComplex> timesheets = new ArrayList<TimesheetComplex>();
-
-
-	public List<TimesheetComplex> getTimesheets() {
-		return timesheets;
-	}
-	public void setTimesheets(List<TimesheetComplex> timesheets) {
-		this.timesheets = timesheets;
-	}
-	
-	public void addToTimesheets(TimesheetComplex timesheetComplex) {		
-		timesheets.add(timesheetComplex);
-		
-	}
 
 	public int getId() {
 		return id;

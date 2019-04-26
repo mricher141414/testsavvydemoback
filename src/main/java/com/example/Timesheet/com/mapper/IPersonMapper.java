@@ -7,7 +7,7 @@ import com.example.Timesheet.com.model.Person;
 
 @Mapper
 public interface IPersonMapper {
-	Person DTOtoPerson(PersonDTO source);
+	Person DTOtoPerson(PersonDTO source, int id);
 	PersonDTO personToDTO(Person destination);
 
 }

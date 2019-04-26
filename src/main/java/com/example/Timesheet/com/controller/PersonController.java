@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Timesheet.com.dto.PersonDTO;
@@ -25,6 +26,7 @@ public class PersonController {
 	 @Autowired
 	 PersonService personService = new PersonService();
 	 
+	 @Autowired
 	 PersonMapper personMapper = new PersonMapper();
 	 
 	  @GetMapping("/person")
@@ -34,9 +36,9 @@ public class PersonController {
 	  }
 	 
 	  @PutMapping("/person")
-	  public void putPerson(@RequestBody PersonDTO persondto) throws SQLException {
+	  public void putPerson(@RequestBody PersonDTO persondto, @RequestParam(value="id") int id) throws SQLException {
 		  
-		Person person = personMapper.DTOtoPerson(persondto);
+		Person person = personMapper.DTOtoPerson(persondto, id);
 		personService.savePerson(person);
 		  
 	  }

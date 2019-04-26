@@ -1,8 +1,10 @@
 package com.example.Timesheet.com.dto;
 
 import java.sql.Date;
+import java.util.List;
 
 import com.example.Timesheet.com.model.Person;
+import com.example.Timesheet.com.model.TimesheetRow;
 import com.example.Timesheet.com.model.TimesheetStatus;
 
 public class TimesheetComplex {
@@ -12,7 +14,7 @@ public class TimesheetComplex {
 	private String notes;
 	private Date startDate;
 	private Date endDate;
-	private PersonComplex employee;
+	private List<TimesheetRow> timesheetRows;
 	private TimesheetStatus timesheetStatus;
 	
 	public int getId() {
@@ -45,11 +47,11 @@ public class TimesheetComplex {
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
-	public PersonComplex getEmployee() {
-		return employee;
+	public List<TimesheetRow> getTimesheetRows() {
+		return timesheetRows;
 	}
-	public void setEmployee(PersonComplex employee) {
-		this.employee = employee;
+	public void setTimesheetRows(List<TimesheetRow> timesheetRows) {
+		this.timesheetRows = timesheetRows;
 	}
 	public TimesheetStatus getTimesheetStatus() {
 		return timesheetStatus;

@@ -1,6 +1,7 @@
 package com.example.Timesheet.com.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,7 @@ public class DepartementService {
 		this.departement.delete(departement);	
 	}
 	
-	public Departement getById(int id) {
+	public Optional<Departement> getById(int id) {
 		return this.departement.findById(id);
 	}
 

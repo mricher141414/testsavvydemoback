@@ -7,6 +7,6 @@ import com.example.Timesheet.com.model.Role;
 
 @Mapper
 public interface IRoleMapper {
-	 Role DTOtoRole(RoleDTO source);
+	 Role DTOtoRole(RoleDTO source, int id);
 	 RoleDTO roleToDTO(Role destination);
 }

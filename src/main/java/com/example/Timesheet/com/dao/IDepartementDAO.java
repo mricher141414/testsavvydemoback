@@ -6,5 +6,5 @@ import com.example.Timesheet.com.model.Departement;
 
 public interface IDepartementDAO extends CrudRepository<Departement, Integer>{
 	
-	Departement findById(int id);
+	
 }

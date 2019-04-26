@@ -8,7 +8,7 @@ import com.example.Timesheet.com.model.Departement;
 @Mapper
 public interface IDepartementMapper {
 	
-	Departement DTOtoDepartement(DepartementDTO source);
+	Departement DTOtoDepartement(DepartementDTO source, int id);
 	DepartementDTO DepartementToDTO(Departement destination);
 
 }

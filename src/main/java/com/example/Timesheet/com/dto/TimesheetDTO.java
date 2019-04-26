@@ -58,7 +58,5 @@ public class TimesheetDTO {
 	public void setTimesheetStatusId(int timesheetStatusId) {
 		this.timesheetStatusId = timesheetStatusId;
 	}
-	
-	
 
 }

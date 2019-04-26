@@ -1,5 +1,6 @@
 package com.example.Timesheet.com.dao;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
@@ -9,7 +10,6 @@ import com.example.Timesheet.com.model.Timesheet;
 @Repository
 public interface ITimesheetDAO extends CrudRepository<Timesheet, Integer>{
 
-	Timesheet findById(int id);
 	List<Timesheet> findByEmployeeId(int id);
-
+	List<Timesheet> findByEmployeeIdAndStartDate(int id, Date startDate);
 }

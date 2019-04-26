@@ -1,6 +1,7 @@
 package com.example.Timesheet.com.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,6 @@ public class TimesheetRowService {
 
 	public void postTimesheetRow(TimesheetRow timesheet) {
 		
-		
 		timesheetRowDAO.save(timesheet);
 
 	}
@@ -31,10 +31,14 @@ public class TimesheetRowService {
 		
 	}
 	
-	public TimesheetRow getById(int id) {
+	public Optional<TimesheetRow> getById(int id) {
 		
 		return this.timesheetRowDAO.findById(id);
 		
+	}
+	
+	public List<TimesheetRow> getByTimesheetId(int id) {
+		return this.timesheetRowDAO.findByTimesheetId(id);
 	}
 
 }

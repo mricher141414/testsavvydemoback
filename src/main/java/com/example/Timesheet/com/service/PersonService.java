@@ -26,7 +26,7 @@ public class PersonService {
 		
 	}
 	
-	public Person getPersonById(int id ) {
+	public Optional<Person> findById(int id ) {
 		
 		return this.person.findById(id);
 		
@@ -38,4 +38,11 @@ public class PersonService {
 		
 	}
 	
+	public List<Person> findAllByRoleId(int id) {
+		return this.person.findAllByRoleId(id);
+	}
+	
+	public List<Person> findAllByDepartementId(int id) {
+		return this.person.findAllByDepartementId(id);
+	}
 }

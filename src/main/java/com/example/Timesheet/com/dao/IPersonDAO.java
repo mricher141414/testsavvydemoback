@@ -8,9 +8,9 @@ import com.example.Timesheet.com.model.Person;
 
 public interface IPersonDAO extends CrudRepository<Person, Integer>{
 	
-	Person findById(int id);
-	
 	List<Person> findAllByManagerId(int id);
 
-
+	List<Person> findAllByRoleId(int id);
+	
+	List<Person> findAllByDepartementId(int id);
 }

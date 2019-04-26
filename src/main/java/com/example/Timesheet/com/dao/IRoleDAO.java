@@ -6,6 +6,6 @@ import com.example.Timesheet.com.model.Role;
 
 public interface IRoleDAO extends CrudRepository<Role, Integer>{
 	
-	Role findById(int id);
+	
 
 }
