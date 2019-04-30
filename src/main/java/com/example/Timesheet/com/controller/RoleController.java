@@ -4,9 +4,13 @@ package com.example.Timesheet.com.controller;
 
 import java.util.List;
 import java.util.Optional;
+
+import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalVars;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,37 +43,43 @@ public class RoleController {
 	}
 
 	@PutMapping("/roles")
-	public void saveRole(@RequestBody RoleDTO roleDto, int id){
+	public ResponseEntity<String> saveRole(@RequestBody RoleDTO roleDto, int id){
 
-		if(!roleDto.getName().equals("")) {
-			Role role = roleMapper.DTOtoRole(roleDto, id);
-			roleService.saveRole(role);
-		}else {
-			throw new NullPointerException("name is null"); 
+		if(this.roleService.getById(id).isPresent()) {
+		
+			if(!roleDto.getName().equals("")) {
+				Role role = roleMapper.DTOtoRole(roleDto, id);
+				roleService.saveRole(role);
+				
+				return new ResponseEntity<String>(GlobalVars.RolePutSuccessful, HttpStatus.OK);
+			}else {
+				return GlobalFunctions.createBadRequest(GlobalVars.NameIsEmpty, "/roles");
+			}
 		}
-
-
-
+		else {
+			return GlobalFunctions.createNotFoundResponse(GlobalVars.RoleIdNotFound, "/roles");
+		}
 	}
 
 	@DeleteMapping("/roles")
-	public String deleteRole(@RequestParam(value="id") int id) {
+	public ResponseEntity<String> deleteRole(@RequestParam(value="id") int id) {
 		
 		Optional<Role> optionalRole = this.roleService.getById(id);
 		
-		if(optionalRole.isPresent() == false) {
-			return GlobalVars.RoleIdNotFound;
+		if(optionalRole.isPresent()) {
+			Role role = optionalRole.get();
+			
+			if(this.personService.findAllByRoleId(id).size() > 0) {
+				return GlobalFunctions.createBadRequest(GlobalVars.EmployeeUsesRoleCannotDelete, "/roles");
+			}
+			
+			this.roleService.deleteRole(role);
+	
+			return new ResponseEntity<String>(GlobalVars.RoleDeleteSuccessful, HttpStatus.OK);
 		}
-		
-		Role role = optionalRole.get();
-		
-		if(this.personService.findAllByRoleId(id).size() > 0) {
-			return GlobalVars.EmployeeUsesRoleCannotDelete;
+		else {
+			return GlobalFunctions.createNotFoundResponse(GlobalVars.RoleIdNotFound, "/roles");
 		}
-		
-		this.roleService.deleteRole(role);
-
-		return GlobalVars.RoleDeleteSuccessful;
 	}
 
 }

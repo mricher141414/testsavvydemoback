@@ -84,3 +84,7 @@ timesheet_id INT FOREIGN KEY REFERENCES Timesheet(Id),
 project_id INT FOREIGN KEY REFERENCES Project(Id),
 
 );
+
+INSERT INTO Departement (Name) VALUES 
+("Assurance qualité"),
+("Departement de test");

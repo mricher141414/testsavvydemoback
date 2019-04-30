@@ -30,12 +30,13 @@ public class TimesheetStatusController {
 	}
 	
 	@PostMapping("/timesheetStatus")
-	public void post(@RequestBody TimesheetStatusDTO timesheetStatusDto) {
+	public String post(@RequestBody TimesheetStatusDTO timesheetStatusDto) {
 		
 		TimesheetStatus timesheetRow = this.timesheetStatusMapper.DTOtoTimesheetStatus(timesheetStatusDto);
 		
 		this.timesheetStatusService.post(timesheetRow);
 		
+		return "{\"id\": "+timesheetRow.getId()+"}";
 	}
 	
 	

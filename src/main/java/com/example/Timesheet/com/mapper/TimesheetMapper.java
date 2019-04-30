@@ -62,6 +62,8 @@ public class TimesheetMapper implements ITimesheetMapper {
         	}
         }
         
+        timesheet.compensateTimezoneOnDates();
+        
         return timesheet;
     }
 

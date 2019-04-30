@@ -3,8 +3,11 @@ package com.example.Timesheet.com.controller;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Timesheet.com.dto.PersonComplexWithTimesheets;
 import com.example.Timesheet.com.dto.TimesheetComplex;
+import com.example.Timesheet.com.GlobalFunctions;
+import com.example.Timesheet.com.GlobalVars;
 import com.example.Timesheet.com.dto.PersonComplex;
 import com.example.Timesheet.com.dto.TimesheetComplexWithEmployee;
 import com.example.Timesheet.com.dto.TimesheetDTO;
@@ -57,15 +62,24 @@ public class TimesheetController {
 	@GetMapping("/timesheet/all")
 	public List<Timesheet> findAllTimesheets(){
 
-		return timesheetService.getTimesheets();
+		List<Timesheet> timesheets = timesheetService.getTimesheets();
+		
+		return timesheets;
 
 	}
 
 	@GetMapping("/timesheet")
-	public List<Timesheet> findAllTimesheets(@RequestParam(value="id") int id){
+	@ResponseBody
+	public ResponseEntity<?> findTimesheet(@RequestParam(value="id") int id) throws Exception{
 
-		return timesheetService.getTimesheetByEmployeeId(id);
-
+		Optional<Timesheet> optionalTimesheet = timesheetService.getTimesheetById(id);
+		
+		if(optionalTimesheet.isPresent()) {
+			return new ResponseEntity<>(optionalTimesheet.get(),HttpStatus.OK);
+		}
+		else {
+			return GlobalFunctions.createNotFoundResponse(GlobalVars.TimesheetIdNotFound, "/timesheet");
+		}
 	}
 
 	@PostMapping("/timesheet")
@@ -81,38 +95,60 @@ public class TimesheetController {
 	}
 
 	@PutMapping("/timesheet")
-	public void put(@RequestBody TimesheetDTO timesheetDto, @RequestParam(value="id") int id) {
+	public ResponseEntity<String> put(@RequestBody TimesheetDTO timesheetDto, @RequestParam(value="id") int id) {
 
-		Timesheet timesheet = this.timesheetMapper.DTOtoTimesheet(timesheetDto, id);
-
-		this.timesheetService.postTimesheet(timesheet);
-
+		if(this.timesheetService.getTimesheetById(id).isPresent()) {
+			
+			Timesheet timesheet = this.timesheetMapper.DTOtoTimesheet(timesheetDto, id);
+	
+			this.timesheetService.postTimesheet(timesheet);
+	
+			return new ResponseEntity<String>(GlobalVars.TimesheetPutSuccessful, HttpStatus.OK);
+		}
+		else {
+			return GlobalFunctions.createNotFoundResponse(GlobalVars.TimesheetIdNotFound, "/timesheet");
+		}
 	}
-
 	@GetMapping("/timesheet/employee")
-	public TimesheetComplexWithEmployee findbyId(@RequestParam(value="id") int id){
-		TimesheetComplexWithEmployee timesheetEmployee = (TimesheetComplexWithEmployee) this.fromTimesheetToComplexWithEmployee(this.timesheetService.getTimesheetById(id).get());
-		timesheetEmployee = this.addEmployeeToTimesheetComplexWithEmployee(timesheetEmployee);
-		return timesheetEmployee;
+	public ResponseEntity<?> findbyId(@RequestParam(value="id") int id, @RequestParam(value="startDate") Date startDate){
+		
+		Optional<Person> optionalEmployee = this.personService.findById(id);
+		
+		if(optionalEmployee.isPresent()) {
+		
+			PersonComplexWithTimesheets personWithTimesheets = this.fromPersonToComplexWithTimesheets(optionalEmployee.get());
+			personWithTimesheets = this.addTimesheetsToPersonComplexByStartDate(personWithTimesheets, startDate);
+			
+			return new ResponseEntity<PersonComplexWithTimesheets>(personWithTimesheets, HttpStatus.OK);
+		}
+		
+		else {
+			return GlobalFunctions.createNotFoundResponse(GlobalVars.PersonIdNotFound, "/timesheet/employee");
+		}
 	}
 
 	@GetMapping("/timesheet/manager")
-	public List<PersonComplexWithTimesheets> findbyManagerId(@RequestParam(value="id") int id, @RequestParam(value="startDate") Date startDate){
+	public ResponseEntity<?> findbyManagerId(@RequestParam(value="id") int id, @RequestParam(value="startDate") Date startDate){
 
-		List<Person> employeesOfManager = this.personService.findAllByManagerId(id);
-		PersonComplexWithTimesheets personWithTimesheets;
-		List<PersonComplexWithTimesheets> listOfPeople = new ArrayList<PersonComplexWithTimesheets>();
-
-		for(Person person : employeesOfManager) {
-
-			personWithTimesheets = this.fromPersonToComplexWithTimesheets(person);
-			
-			personWithTimesheets = this.addTimesheetsToPersonComplexByStartDate(personWithTimesheets, startDate);
-
-			listOfPeople.add(personWithTimesheets);
-
+		if(this.personService.findById(id).isPresent()) {
+			List<Person> employeesOfManager = this.personService.findAllByManagerId(id);
+			PersonComplexWithTimesheets personWithTimesheets;
+			List<PersonComplexWithTimesheets> listOfPeople = new ArrayList<PersonComplexWithTimesheets>();
+	
+			for(Person person : employeesOfManager) {
+	
+				personWithTimesheets = this.fromPersonToComplexWithTimesheets(person);
+				
+				personWithTimesheets = this.addTimesheetsToPersonComplexByStartDate(personWithTimesheets, startDate);
+	
+				listOfPeople.add(personWithTimesheets);
+	
+			}
+			return new ResponseEntity<List<PersonComplexWithTimesheets>>(listOfPeople, HttpStatus.OK);
 		}
-		return listOfPeople;
+		else {
+			return GlobalFunctions.createNotFoundResponse(GlobalVars.PersonIdNotFound, "/timesheet/manager");
+		}
 	}
 
 	private TimesheetComplex fromTimesheetToComplex(Timesheet timesheet) {

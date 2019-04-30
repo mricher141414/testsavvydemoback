@@ -79,17 +79,7 @@ public class PersonMapper implements IPersonMapper {
         	}
         }
         
-        //section of code to compensate for the timezone
-        Date dateOfBirth = person.getDateOfBirth();
-        
-        TimeZone timeZone = TimeZone.getTimeZone(GlobalVars.Timezone);
-        int offset = timeZone.getOffset(dateOfBirth.getTime());
-        
-        Date testDate = new Date(55, 0, 1);
-        
-        dateOfBirth.setTime(dateOfBirth.getTime() - offset);
-        
-        person.setDateOfBirth(dateOfBirth);
+        person.compensateTimezoneOnDates();
 
         return person;
     }

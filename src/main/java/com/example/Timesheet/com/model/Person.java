@@ -1,6 +1,7 @@
 package com.example.Timesheet.com.model;
 
 import java.sql.Date;
+import java.util.TimeZone;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.example.Timesheet.com.GlobalVars;
 
 @Entity
 @Table(name = "Employee")
@@ -25,17 +28,29 @@ public class Person {
 	private Integer departementId;
 	@Column(name = "manager_id")
 	private Integer managerId;
-	public Date getDateOfBirth() {
-		return dateOfBirth;
-	}
-
-	public void setDateOfBirth(Date dateOfBirth) {
-		this.dateOfBirth = dateOfBirth;
-	}
-
 	@Column(name = "date_of_birth")
 	private Date dateOfBirth;
 	private String address;
+	
+	public void compensateTimezoneOnDates() {
+		Date dateOfBirth = this.getDateOfBirth();
+        
+        TimeZone timeZone = TimeZone.getTimeZone(GlobalVars.Timezone);
+        int offset = timeZone.getOffset(dateOfBirth.getTime());
+        
+        dateOfBirth.setTime(dateOfBirth.getTime() - offset);
+        
+        this.setDateOfBirth(dateOfBirth);
+	}
+	
+	//getters and setters
+	
+	public Date getDateOfBirth() {
+		return dateOfBirth;
+	}
+	public void setDateOfBirth(Date dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
 
 
 	public int getId() {
