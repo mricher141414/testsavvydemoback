@@ -17,17 +17,17 @@ public class TimesheetRow {
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	private Date date;
-	private Integer value;
+	private float value;
 	@Column(name = "timesheet_id")
 	private Integer timesheetId;
 	@Column(name = "project_id")
 	private Integer projectId;
 	
-	public Integer getValue() {
+	public float getValue() {
 		return this.value;
 	}
 	
-	public void setValue(Integer value) {
+	public void setValue(Float value) {
 		this.value = value;
 	}
 	

@@ -8,13 +8,13 @@ public class TimesheetRowDTO {
 	private Date date;
 	private Integer timesheetId;
 	private Integer projectId;
-	private Integer value;
+	private float value;
 	
-	public Integer getValue() {
+	public float getValue() {
 		return this.value;
 	}
 	
-	public void setValue(Integer value) {
+	public void setValue(float value) {
 		this.value = value;
 	}
 	

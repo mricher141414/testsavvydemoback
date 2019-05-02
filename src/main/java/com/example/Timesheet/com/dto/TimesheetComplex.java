@@ -10,7 +10,7 @@ import com.example.Timesheet.com.model.TimesheetStatus;
 public class TimesheetComplex {
 	
 	private int id;
-	private int total;
+	private float total;
 	private String notes;
 	private Date startDate;
 	private Date endDate;
@@ -23,10 +23,10 @@ public class TimesheetComplex {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public int getTotal() {
+	public float getTotal() {
 		return total;
 	}
-	public void setTotal(int total) {
+	public void setTotal(float total) {
 		this.total = total;
 	}
 	public String getNotes() {

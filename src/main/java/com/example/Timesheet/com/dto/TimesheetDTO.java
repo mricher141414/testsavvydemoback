@@ -5,7 +5,7 @@ import java.sql.Date;
 public class TimesheetDTO {
 
 	private int id;
-	private Integer total;
+	private float total;
 	private String notes;
 	private Date startDate;
 	private Date endDate;
@@ -18,10 +18,10 @@ public class TimesheetDTO {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public Integer getTotal() {
+	public float getTotal() {
 		return total;
 	}
-	public void setTotal(Integer total) {
+	public void setTotal(float total) {
 		this.total = total;
 	}
 	public String getNotes() {

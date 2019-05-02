@@ -16,7 +16,7 @@ public class Timesheet {
 	
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
-	private Integer total;
+	private Float total;
 	private String notes;
 	@Column(name = "start_date")
 	private Date startDate;
@@ -64,10 +64,10 @@ public class Timesheet {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public Integer getTotal() {
+	public Float getTotal() {
 		return total;
 	}
-	public void setTotal(Integer total) {
+	public void setTotal(Float total) {
 		this.total = total;
 	}
 	public String getNotes() {
