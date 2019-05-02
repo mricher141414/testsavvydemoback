@@ -18,6 +18,8 @@ public class TimesheetRowMapper implements ITimesheetRowMapper {
         timesheetRow.setDate( source.getDate() );
         timesheetRow.setTimesheetId( source.getTimesheetId() );
         timesheetRow.setProjectId( source.getProjectId() );
+        
+        timesheetRow.compensateTimezoneOnDates();
 
         return timesheetRow;
     }
