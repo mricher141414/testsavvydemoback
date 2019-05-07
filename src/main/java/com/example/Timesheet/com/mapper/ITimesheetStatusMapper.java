@@ -9,7 +9,7 @@ import com.example.Timesheet.com.model.TimesheetStatus;
 
 @Mapper
 public interface ITimesheetStatusMapper {
-	TimesheetStatus DTOtoTimesheetStatus(TimesheetStatusDTO source);
+	TimesheetStatus DTOtoTimesheetStatus(TimesheetStatusDTO source, int id);
 	TimesheetStatusDTO TimesheetStatusToDTO(TimesheetStatus destination);
 
 }

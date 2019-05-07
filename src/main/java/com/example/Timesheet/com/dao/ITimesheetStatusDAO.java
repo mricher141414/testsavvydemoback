@@ -6,5 +6,4 @@ import com.example.Timesheet.com.model.TimesheetStatus;
 
 public interface ITimesheetStatusDAO extends CrudRepository<TimesheetStatus, Integer>{
 
-	TimesheetStatus findById(int id);
 }

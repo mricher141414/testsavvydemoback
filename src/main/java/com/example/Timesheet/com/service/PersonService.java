@@ -20,7 +20,7 @@ public class PersonService {
 		
 	}
 	
-	public List<Person> getPerson(){
+	public List<Person> findAll(){
 		
 		return (List<Person>) this.person.findAll();
 		

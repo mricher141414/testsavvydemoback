@@ -5,13 +5,19 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 
 @Entity
+@ApiModel(description = "Class representing a role tracked by the application.")
 public class Role {
 
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
+	@ApiModelProperty(notes = "Unique identifier of the role. No two roles can have the same id", example = "1", position = 0)
 	private int id;
 	
+	@ApiModelProperty(notes = "Name of the role.", example = "Manager", position = 1)
 	private String name;
 
 	public Role() {

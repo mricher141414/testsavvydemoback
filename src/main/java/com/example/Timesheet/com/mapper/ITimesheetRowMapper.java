@@ -7,7 +7,7 @@ import com.example.Timesheet.com.model.TimesheetRow;
 
 @Mapper
 public interface ITimesheetRowMapper {
-	 TimesheetRow DTOtoTimesheetRow(TimesheetRowDTO source);
+	 TimesheetRow DTOtoTimesheetRow(TimesheetRowDTO source, int id);
 	 TimesheetRowDTO TimesheetRowToDTO(TimesheetRow destination);
 
 }

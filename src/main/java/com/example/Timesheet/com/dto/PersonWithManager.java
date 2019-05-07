@@ -5,13 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.Timesheet.com.model.Departement;
+import com.example.Timesheet.com.model.Person;
 import com.example.Timesheet.com.model.Role;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(description = "Class received by the user by the endpoint timesheet/employee. Is a more detailed version of the Person model.")
-public class PersonComplex {
+public class PersonWithManager  {
 	
 	@ApiModelProperty(notes = "Unique identifier of the person. No two persons can have the same id.", example = "1", position = 0)
 	protected int id;
@@ -44,74 +45,98 @@ public class PersonComplex {
 	
 	@ApiModelProperty(notes = "List of TimesheetComplex objects to represent all the timesheets that the person has that matches the condition.", position = 9)
 	protected List<TimesheetComplex> timesheets = new ArrayList<TimesheetComplex>();
+	
+	@ApiModelProperty(notes = "Full object of the person that manages this person. \n"
+			+ "Check the person model for more information.", position = 10)
+	private Person manager;
 
 	//getters and setters
 	
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
-	public String getFirstName() {
-		return firstName;
-	}
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-	public String getLastName() {
-		return lastName;
-	}
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+
 	public String getEmailAddress() {
 		return emailAddress;
 	}
+
 	public void setEmailAddress(String emailAddress) {
 		this.emailAddress = emailAddress;
 	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
 	public String getPassword() {
 		return password;
 	}
+
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
 	public Role getRole() {
 		return role;
 	}
+
 	public void setRole(Role role) {
 		this.role = role;
 	}
+
 	public Departement getDepartement() {
 		return departement;
 	}
+
 	public void setDepartement(Departement departement) {
 		this.departement = departement;
 	}
+
 	public String getAddress() {
 		return address;
 	}
+
 	public void setAddress(String address) {
 		this.address = address;
 	}
+
 	public Date getDateOfBirth() {
 		return dateOfBirth;
 	}
+
 	public void setDateOfBirth(Date dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
-	
+
 	public List<TimesheetComplex> getTimesheets() {
 		return timesheets;
 	}
+
 	public void setTimesheets(List<TimesheetComplex> timesheets) {
 		this.timesheets = timesheets;
 	}
-	
-	public void addToTimesheets(TimesheetComplex timesheetComplex) {		
-		timesheets.add(timesheetComplex);
-		
+
+	public Person getManager() {
+		return manager;
 	}
 
+	public void setManager(Person manager) {
+		this.manager = manager;
+	}
 }

@@ -25,17 +25,26 @@ import com.example.Timesheet.com.model.Role;
 import com.example.Timesheet.com.service.PersonService;
 import com.example.Timesheet.com.service.RoleService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
+@Api(tags = "RoleController")
 public class RoleController {
+	
 	@Autowired
 	RoleService roleService = new RoleService();
+	
+	@Autowired
 	RoleMapper roleMapper = new RoleMapper();
 
 	@Autowired
 	PersonService personService = new PersonService();
 	
 	@GetMapping("/roles")
+	@ApiOperation("Returns a list of all roles in the system")
 	public List<Role> findAllRoles(){
 
 		return roleService.getRoles();
@@ -43,11 +52,14 @@ public class RoleController {
 	}
 
 	@PutMapping("/roles")
-	public ResponseEntity<String> saveRole(@RequestBody RoleDTO roleDto, int id){
+	@ApiOperation(value = "Updates a role in the system by their identifier.", notes = "404 if the role's identifier cannot be found. \n"
+																						+ "400 if name is null or empty")
+	public ResponseEntity<String> saveRole(@ApiParam("Role information to be modified.")@RequestBody RoleDTO roleDto,
+											@ApiParam(value = "Id of the role to be modified. Cannot be null.", required = true)@RequestParam int id){
 
 		if(this.roleService.getById(id).isPresent()) {
 		
-			if(!roleDto.getName().equals("")) {
+			if(roleDto.getName() != null || !roleDto.getName().equals("")) {
 				Role role = roleMapper.DTOtoRole(roleDto, id);
 				roleService.saveRole(role);
 				
@@ -62,7 +74,8 @@ public class RoleController {
 	}
 
 	@DeleteMapping("/roles")
-	public ResponseEntity<String> deleteRole(@RequestParam(value="id") int id) {
+	@ApiOperation(value = "Deletes a role in the system by their identifier.", notes = "404 if the role's identifier cannot be found.")
+	public ResponseEntity<String> deleteRole(@ApiParam("Id of the role to be deleted.")@RequestParam(value="id") int id) {
 		
 		Optional<Role> optionalRole = this.roleService.getById(id);
 		

@@ -19,17 +19,32 @@ import com.example.Timesheet.com.GlobalVars;
 import com.example.Timesheet.com.dto.TimesheetRowDTO;
 import com.example.Timesheet.com.mapper.TimesheetRowMapper;
 import com.example.Timesheet.com.model.TimesheetRow;
+import com.example.Timesheet.com.service.ProjectService;
 import com.example.Timesheet.com.service.TimesheetRowService;
+import com.example.Timesheet.com.service.TimesheetService;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
+@Api(tags = "TimesheetRowController")
 public class TimesheetRowController {
 	
 	@Autowired
 	private TimesheetRowService timesheetRowService = new TimesheetRowService();
+	
+	@Autowired
+	private TimesheetService timesheetService = new TimesheetService();
+	
+	@Autowired
+	private ProjectService projectService = new ProjectService();
+	
 	private TimesheetRowMapper timesheetRowMapper = new TimesheetRowMapper();
 	
 	@GetMapping("/timesheetRow")
+	@ApiOperation("Returns a list of all timesheet rows in the system.")
 	public List<TimesheetRow> findAllTimesheetRows(){
 		
 		return timesheetRowService.getTimesheetRows();
@@ -37,7 +52,8 @@ public class TimesheetRowController {
 	}
 	
 	@GetMapping("/timesheetRow/one")
-	public ResponseEntity<?> findAllTimesheetRows(@RequestParam(value="id") int id){
+	@ApiOperation(value = "Returns the timesheet row with the specified identifier.", notes = "404 if the row's identifier cannot be found.")
+	public ResponseEntity<?> findTimesheetRowById(@ApiParam("Id of the timesheet row to be found.")@RequestParam(value="id") int id){
 		
 		Optional<TimesheetRow> optionalRow = timesheetRowService.getById(id);
 		
@@ -50,17 +66,32 @@ public class TimesheetRowController {
 	}
 	
 	@PostMapping("/timesheetRow")
-	public String post(@RequestBody TimesheetRowDTO timesheetRowDto) {
-		TimesheetRow timesheetRow = this.timesheetRowMapper.DTOtoTimesheetRow(timesheetRowDto);
+	@ApiOperation(value = "Creates a new timesheet row in the system", notes = "404 if the project id or timesheet id in the body cannot be found.")
+	public ResponseEntity<String> createTimesheetRow(@ApiParam("Timesheet row information for the new row to be created.")@RequestBody TimesheetRowDTO timesheetRowDto) {
+		
+		if(timesheetRowDto.getProjectId() != null) {
+			if(this.projectService.findById(timesheetRowDto.getProjectId()).isPresent() == false) {
+				return GlobalFunctions.createNotFoundResponse(GlobalVars.ProjectIdNotFound, "/timesheetRow");
+			}
+		}
+		
+		if(timesheetRowDto.getTimesheetId() != null) {
+			if(this.timesheetService.getTimesheetById(timesheetRowDto.getTimesheetId()).isPresent() == false) {
+				return GlobalFunctions.createNotFoundResponse(GlobalVars.TimesheetIdNotFound, "/timesheetRow");
+			}
+		}
+		
+		TimesheetRow timesheetRow = this.timesheetRowMapper.DTOtoTimesheetRow(timesheetRowDto, 0);
 		
 		this.timesheetRowService.postTimesheetRow(timesheetRow);
 		
-		return "{\"id\": "+timesheetRow.getId()+"}";
+		return new ResponseEntity<String>("{\"id\": "+timesheetRow.getId()+"}", HttpStatus.OK);
 		
 	}
 	
 	@DeleteMapping("/timesheetRow")
-	public ResponseEntity<String> delete(@RequestParam(value="id") int id) {
+	@ApiOperation(value = "Delete a timesheet row in the system by their identifier.", notes = "404 if the row's identifier cannot be found.")
+	public ResponseEntity<String> delete(@ApiParam("Id of the timesheet row to be deleted")@RequestParam(value="id") int id) {
 		
 		Optional<TimesheetRow> optionalRow = this.timesheetRowService.getById(id);
 		

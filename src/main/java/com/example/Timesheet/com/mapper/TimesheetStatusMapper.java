@@ -6,14 +6,14 @@ import com.example.Timesheet.com.model.TimesheetStatus;
 public class TimesheetStatusMapper implements ITimesheetStatusMapper {
 	
 	 @Override
-	    public TimesheetStatus DTOtoTimesheetStatus(TimesheetStatusDTO source) {
+	    public TimesheetStatus DTOtoTimesheetStatus(TimesheetStatusDTO source, int id) {
 	        if ( source == null ) {
 	            return null;
 	        }
 
 	        TimesheetStatus timesheetStatus = new TimesheetStatus();
 
-	        timesheetStatus.setId( source.getId() );
+	        timesheetStatus.setId( id );
 	        timesheetStatus.setName( source.getName() );
 
 	        return timesheetStatus;

@@ -6,7 +6,7 @@ import com.example.Timesheet.com.model.TimesheetRow;
 public class TimesheetRowMapper implements ITimesheetRowMapper {
 
     @Override
-    public TimesheetRow DTOtoTimesheetRow(TimesheetRowDTO source) {
+    public TimesheetRow DTOtoTimesheetRow(TimesheetRowDTO source, int id) {
         if ( source == null ) {
             return null;
         }
@@ -14,7 +14,7 @@ public class TimesheetRowMapper implements ITimesheetRowMapper {
         TimesheetRow timesheetRow = new TimesheetRow();
 
         timesheetRow.setValue( source.getValue() );
-        timesheetRow.setId( source.getId() );
+        timesheetRow.setId( id );
         timesheetRow.setDate( source.getDate() );
         timesheetRow.setTimesheetId( source.getTimesheetId() );
         timesheetRow.setProjectId( source.getProjectId() );

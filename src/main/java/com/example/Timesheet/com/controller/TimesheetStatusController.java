@@ -14,8 +14,13 @@ import com.example.Timesheet.com.mapper.TimesheetStatusMapper;
 import com.example.Timesheet.com.model.TimesheetStatus;
 import com.example.Timesheet.com.service.TimesheetStatusService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
+@Api(tags = "TimesheetStatusController")
 public class TimesheetStatusController {
 	
 	@Autowired
@@ -23,16 +28,18 @@ public class TimesheetStatusController {
 	private TimesheetStatusMapper timesheetStatusMapper = new TimesheetStatusMapper();
 	
 	@GetMapping("/timesheetStatus")
-	public List<TimesheetStatus> findAllTimesheetRows(){
+	@ApiOperation("Returns a list of all timesheet statuses in the system.")
+	public List<TimesheetStatus> findAllTimesheetStatuses(){
 		
 		return timesheetStatusService.getAll();
 		
 	}
 	
 	@PostMapping("/timesheetStatus")
-	public String post(@RequestBody TimesheetStatusDTO timesheetStatusDto) {
+	@ApiOperation("Creates a new timesheet status in the system")
+	public String createTimesheetStatus(@ApiParam("Timesheet status information for the new status to be created")@RequestBody TimesheetStatusDTO timesheetStatusDto) {
 		
-		TimesheetStatus timesheetRow = this.timesheetStatusMapper.DTOtoTimesheetStatus(timesheetStatusDto);
+		TimesheetStatus timesheetRow = this.timesheetStatusMapper.DTOtoTimesheetStatus(timesheetStatusDto, 0);
 		
 		this.timesheetStatusService.post(timesheetRow);
 		

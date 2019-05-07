@@ -45,7 +45,7 @@ public class TimesheetMapper implements ITimesheetMapper {
         		timesheet.setEmployeeId(dbTimesheet.getEmployeeId());
         	}
         	
-        	if(timesheet.getTotal() == null) {
+        	if(timesheet.getTotal() == 0) {
         		timesheet.setTotal(dbTimesheet.getTotal());
         	}
         	

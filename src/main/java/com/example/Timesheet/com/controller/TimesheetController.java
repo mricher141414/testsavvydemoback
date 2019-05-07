@@ -14,15 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.Timesheet.com.dto.PersonComplexWithTimesheets;
+import com.example.Timesheet.com.dto.PersonComplex;
+import com.example.Timesheet.com.dto.PersonWithManager;
 import com.example.Timesheet.com.dto.TimesheetComplex;
 import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalVars;
-import com.example.Timesheet.com.dto.PersonComplex;
-import com.example.Timesheet.com.dto.TimesheetComplexWithEmployee;
 import com.example.Timesheet.com.dto.TimesheetDTO;
 import com.example.Timesheet.com.mapper.TimesheetMapper;
 import com.example.Timesheet.com.model.Person;
@@ -34,8 +32,13 @@ import com.example.Timesheet.com.service.TimesheetRowService;
 import com.example.Timesheet.com.service.TimesheetService;
 import com.example.Timesheet.com.service.TimesheetStatusService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
+@Api(tags = "TimesheetController")
 public class TimesheetController {
 
 	@Autowired
@@ -60,6 +63,7 @@ public class TimesheetController {
 	private TimesheetRowService timesheetRowService = new TimesheetRowService();
 
 	@GetMapping("/timesheet/all")
+	@ApiOperation("Returns a list of all timesheets in the system.")
 	public List<Timesheet> findAllTimesheets(){
 
 		List<Timesheet> timesheets = timesheetService.getTimesheets();
@@ -69,8 +73,9 @@ public class TimesheetController {
 	}
 
 	@GetMapping("/timesheet")
-	@ResponseBody
-	public ResponseEntity<?> findTimesheet(@RequestParam(value="id") int id) throws Exception{
+	@ApiOperation(value = "Returns the timesheet with the specified identifier.", 
+					notes = "404 if the timesheet's identifier cannot be found.")
+	public ResponseEntity<?> findTimesheetById(@ApiParam("Id of the timesheet to retrieve")@RequestParam(value="id") int id) throws Exception{
 
 		Optional<Timesheet> optionalTimesheet = timesheetService.getTimesheetById(id);
 		
@@ -83,21 +88,49 @@ public class TimesheetController {
 	}
 
 	@PostMapping("/timesheet")
-	@ResponseBody
-	public String post(@RequestBody TimesheetDTO timesheetDto) {
-
-		Timesheet timesheet = this.timesheetMapper.DTOtoTimesheet(timesheetDto, timesheetDto.getId());
+	@ApiOperation(value = "Creates a new timesheet in the system.", 
+					notes = "404 if the manager id or timesheet status id in the body cannot be found.")
+	public ResponseEntity<String> post(@ApiParam("Timesheet information for the new timesheet to be created.")@RequestBody TimesheetDTO timesheetDto) {
+		
+		if(timesheetDto.getEmployeeId() != null) {
+			if(personService.findById(timesheetDto.getEmployeeId()).isPresent() == false) {
+				return GlobalFunctions.createNotFoundResponse(GlobalVars.EmployeeIdNotFound, "/timesheet");
+			}
+		}
+		
+		if(timesheetDto.getTimesheetStatusId() != null) {
+			if(timesheetStatusService.getById(timesheetDto.getTimesheetStatusId()).isPresent() == false) {
+				return GlobalFunctions.createNotFoundResponse(GlobalVars.TimesheetStatusIdNotFound, "/timesheet");
+			}
+		}
+		
+		Timesheet timesheet = this.timesheetMapper.DTOtoTimesheet(timesheetDto, 0);
 
 		this.timesheetService.postTimesheet(timesheet);
 
-		return "{\"id\": "+timesheet.getId()+"}";
+		return new ResponseEntity<String>("{\"id\": "+timesheet.getId()+"}", HttpStatus.OK);
 
 	}
 
 	@PutMapping("/timesheet")
-	public ResponseEntity<String> put(@RequestBody TimesheetDTO timesheetDto, @RequestParam(value="id") int id) {
-
+	@ApiOperation(value = "Updates a timesheet in the system by their identifier.", 
+					notes = "404 if the timesheet's identifier or any of the manager id and timesheet status id in the body cannot be found.")
+	public ResponseEntity<String> put(@ApiParam("Timesheet information to be modified. There is no need to keep values that will not be modified.")@RequestBody TimesheetDTO timesheetDto,
+										@ApiParam("Id of the timesheet to be modified.")@RequestParam(value="id") int id) {
+		
 		if(this.timesheetService.getTimesheetById(id).isPresent()) {
+			
+			if(timesheetDto.getEmployeeId() != null) {
+				if (personService.findById(timesheetDto.getEmployeeId()).isPresent() == false) {
+					return GlobalFunctions.createNotFoundResponse(GlobalVars.EmployeeIdNotFound, "/timesheet");
+				}
+			}
+			
+			if(timesheetDto.getTimesheetStatusId() != null) {
+				if (timesheetStatusService.getById(timesheetDto.getTimesheetStatusId()).isPresent() == false) {
+					return GlobalFunctions.createNotFoundResponse(GlobalVars.TimesheetStatusIdNotFound, "/timesheet");
+				}
+			}
 			
 			Timesheet timesheet = this.timesheetMapper.DTOtoTimesheet(timesheetDto, id);
 	
@@ -109,17 +142,27 @@ public class TimesheetController {
 			return GlobalFunctions.createNotFoundResponse(GlobalVars.TimesheetIdNotFound, "/timesheet");
 		}
 	}
+	
 	@GetMapping("/timesheet/employee")
-	public ResponseEntity<?> findbyId(@RequestParam(value="id") int id, @RequestParam(value="startDate") Date startDate){
+	@ApiOperation(value = "Returns a detailed list of all the person's information with all information of all timesheets with the specified startDate.", 
+					response = PersonComplex.class, 
+					notes = "404 if the timesheet's identifier cannot be found")
+	public ResponseEntity<?> findbyEmployeeId(@ApiParam("Id of the employee to get the information from")@RequestParam(value="id") int id, 
+												@ApiParam("Start date of the timesheets to get along with the person.")@RequestParam(value="startDate") Date startDate){
 		
 		Optional<Person> optionalEmployee = this.personService.findById(id);
 		
 		if(optionalEmployee.isPresent()) {
 		
-			PersonComplexWithTimesheets personWithTimesheets = this.fromPersonToComplexWithTimesheets(optionalEmployee.get());
-			personWithTimesheets = this.addTimesheetsToPersonComplexByStartDate(personWithTimesheets, startDate);
+			/*PersonComplex personWithManager = new PersonComplexWithManager(); 
+		    this.fromPersonToComplex(optionalEmployee.get(), personWithManager);
+			this.addTimesheetsToPersonComplexByStartDate(personWithManager, startDate);
+			PersonComplexWithManager personCompWithManager = (PersonComplexWithManager) personWithManager;
+			personCompWithManager = this.addManagerToPersonComplexWithManager(personCompWithManager, optionalEmployee.get());
 			
-			return new ResponseEntity<PersonComplexWithTimesheets>(personWithTimesheets, HttpStatus.OK);
+			return new ResponseEntity<PersonComplex>(personWithManager, HttpStatus.OK);*/
+			return GlobalFunctions.createNotFoundResponse(GlobalVars.PersonIdNotFound, "/timesheet/employee");
+
 		}
 		
 		else {
@@ -128,23 +171,27 @@ public class TimesheetController {
 	}
 
 	@GetMapping("/timesheet/manager")
-	public ResponseEntity<?> findbyManagerId(@RequestParam(value="id") int id, @RequestParam(value="startDate") Date startDate){
+	@ApiOperation(value = "Returns a detailed list of all the persons managed by the person along with all the information of all timesheets with the specified startDate.", 
+					response = PersonComplex.class, 
+					notes = "404")
+	public ResponseEntity<?> findbyManagerId(@ApiParam("Id of the employee to get the information from.")@RequestParam(value="id") int id, 
+												@ApiParam("Start date of the timesheets to get along with the person's managed persons.")@RequestParam(value="startDate") Date startDate){
 
 		if(this.personService.findById(id).isPresent()) {
 			List<Person> employeesOfManager = this.personService.findAllByManagerId(id);
-			PersonComplexWithTimesheets personWithTimesheets;
-			List<PersonComplexWithTimesheets> listOfPeople = new ArrayList<PersonComplexWithTimesheets>();
+			PersonComplex personWithTimesheets = new PersonComplex();
+			List<PersonComplex> listOfPeople = new ArrayList<PersonComplex>();
 	
 			for(Person person : employeesOfManager) {
 	
-				personWithTimesheets = this.fromPersonToComplexWithTimesheets(person);
+				this.fromPersonToComplex(person, personWithTimesheets);
 				
-				personWithTimesheets = this.addTimesheetsToPersonComplexByStartDate(personWithTimesheets, startDate);
+				this.addTimesheetsToPersonComplexByStartDate(personWithTimesheets, startDate);
 	
 				listOfPeople.add(personWithTimesheets);
 	
 			}
-			return new ResponseEntity<List<PersonComplexWithTimesheets>>(listOfPeople, HttpStatus.OK);
+			return new ResponseEntity<List<PersonComplex>>(listOfPeople, HttpStatus.OK);
 		}
 		else {
 			return GlobalFunctions.createNotFoundResponse(GlobalVars.PersonIdNotFound, "/timesheet/manager");
@@ -164,43 +211,13 @@ public class TimesheetController {
 		timesheetComplex.setTimesheetRows(this.timesheetRowService.getByTimesheetId(timesheet.getId()));
 
 		if(timesheet.getTimesheetStatusId()!= null) {
-			timesheetComplex.setTimesheetStatus(timesheetStatusService.getById(timesheet.getTimesheetStatusId()));
+			timesheetComplex.setTimesheetStatus(timesheetStatusService.getById(timesheet.getTimesheetStatusId()).get());
 
 		}
 		return timesheetComplex;
 	}
 	
-	private TimesheetComplexWithEmployee fromTimesheetToComplexWithEmployee(Timesheet timesheet) {
-
-		TimesheetComplexWithEmployee timesheetComplex = new TimesheetComplexWithEmployee();
-
-
-		timesheetComplex.setId(timesheet.getId());
-		timesheetComplex.setTotal(timesheet.getTotal());
-		timesheetComplex.setEndDate(timesheet.getEndDate());
-		timesheetComplex.setNotes(timesheet.getNotes());
-		timesheetComplex.setStartDate(timesheet.getStartDate());
-		timesheetComplex.setTimesheetRows(this.timesheetRowService.getByTimesheetId(timesheet.getId()));
-
-		if(timesheet.getTimesheetStatusId()!= null) {
-			timesheetComplex.setTimesheetStatus(timesheetStatusService.getById(timesheet.getTimesheetStatusId()));
-
-		}
-		return timesheetComplex;
-	}
-	
-	private TimesheetComplexWithEmployee addEmployeeToTimesheetComplexWithEmployee(TimesheetComplexWithEmployee timesheetEmployee) {
-		Person person = this.personService.findById(this.timesheetService.getTimesheetById(timesheetEmployee.getId()).get().getEmployeeId()).get();
-		PersonComplex personComplex = new PersonComplex();
-		personComplex = this.fromPersonToComplex(person);
-		
-		timesheetEmployee.setEmployee(personComplex);
-		
-		return timesheetEmployee;
-	}
-
-	private PersonComplex fromPersonToComplex(Person person) {
-		PersonComplex personComplex = new PersonComplex();
+	private void fromPersonToComplex(Person person, PersonComplex personComplex) {
 		personComplex.setId(person.getId());
 		personComplex.setLastName(person.getLastName());
 		personComplex.setFirstName(person.getFirstName());
@@ -208,7 +225,6 @@ public class TimesheetController {
 		personComplex.setEmailAddress(person.getEmail());
 		personComplex.setPassword(person.getPassword());
 		personComplex.setDateOfBirth(person.getDateOfBirth());
-		personComplex.setManager(this.personService.findById(person.getManagerId()).get());
 
 		if(person.getRoleId()!= null) {
 			personComplex.setRole(this.roleService.getById(person.getRoleId()).get());
@@ -218,40 +234,23 @@ public class TimesheetController {
 			personComplex.setDepartement(this.departementService.getById(person.getDepartementId()).get());
 		}
 
-		return personComplex;
+		//return personComplex;
 
 	}
 	
-	private PersonComplexWithTimesheets fromPersonToComplexWithTimesheets(Person person) {
-		PersonComplexWithTimesheets personComplex = new PersonComplexWithTimesheets();
-		personComplex.setId(person.getId());
-		personComplex.setLastName(person.getLastName());
-		personComplex.setFirstName(person.getFirstName());
-		personComplex.setAddress(person.getAddress());
-		personComplex.setEmailAddress(person.getEmail());
-		personComplex.setPassword(person.getPassword());
-		personComplex.setDateOfBirth(person.getDateOfBirth());
-		personComplex.setManager(this.personService.findById(person.getManagerId()).get());
-
-		if(person.getRoleId()!= null) {
-			personComplex.setRole(this.roleService.getById(person.getRoleId()).get());
-		}
-
-		if(person.getDepartementId() != null) {
-			personComplex.setDepartement(this.departementService.getById(person.getDepartementId()).get());
-		}
-
-		return personComplex;
-
-	}
-	
-	private PersonComplexWithTimesheets addTimesheetsToPersonComplexByStartDate(PersonComplexWithTimesheets person, Date startDate) {
+	private void addTimesheetsToPersonComplexByStartDate(PersonComplex person, Date startDate) {
 		List<Timesheet> timesheetsPerson = timesheetService.getTimesheetByEmployeeIdAndStartDate(person.getId(), startDate);
 		
 		for (Timesheet timesheet : timesheetsPerson) {
 			TimesheetComplex timesheetComplex = this.fromTimesheetToComplex(timesheet);
 			person.addToTimesheets(timesheetComplex);
 		}
-		return person;
+		//return person;
+	}
+	
+	private PersonWithManager addManagerToPersonComplexWithManager(PersonWithManager personComplex, Person person) {
+		personComplex.setManager(this.personService.findById(person.getManagerId()).get());
+		return personComplex;
+
 	}
 }
