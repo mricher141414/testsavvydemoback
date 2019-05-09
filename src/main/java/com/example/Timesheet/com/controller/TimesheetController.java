@@ -153,7 +153,6 @@ public class TimesheetController {
 		Optional<Person> optionalEmployee = this.personService.findById(id);
 		
 		if(optionalEmployee.isPresent()) {
-		/*
 			PersonComplex personWithManager = new PersonComplexWithManager(); 
 		    this.fromPersonToComplex(optionalEmployee.get(), personWithManager);
 			this.addTimesheetsToPersonComplexByStartDate(personWithManager, startDate);
@@ -161,10 +160,6 @@ public class TimesheetController {
 			personCompWithManager = this.addManagerToPersonComplexWithManager(personCompWithManager, optionalEmployee.get());
 			
 			return new ResponseEntity<PersonComplex>(personWithManager, HttpStatus.OK);
-			*/
-			return GlobalFunctions.createNotFoundResponse(GlobalVars.PersonIdNotFound, "/timesheet/employee");
-
-
 		}
 		
 		else {
