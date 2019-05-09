@@ -45,32 +45,32 @@ public class EmployeeController {
 	 @Autowired
 	 EmployeeMapper employeeMapper = new EmployeeMapper();
 	 
-	 @GetMapping("/person")
+	 @GetMapping("/employee")
 	 @ApiOperation("Returns a list of all employees in the system.")
 	 public List<Employee> getAll() throws SQLException {		
 		 return employeeService.getAll();
 	 }
 	 
-	  @PutMapping("/person")
+	  @PutMapping("/employee")
 	  @ApiOperation(value = "Updates an employee in the system by their identifier.", notes = "404 if any of the employee's identifier specified in the address, department id, role id or manager id specified in the body is not found")
 	  public ResponseEntity<String> edit(@ApiParam("Employee information to be modified. There is no need to keep values that will not be modified.")@RequestBody EmployeeDto employeeDto,
 		  											@ApiParam(value = "Id of the employee to be modified. Cannot be null.", required = true)@RequestParam(value="id") int id) throws SQLException {
 	
 	  if (employeeDto.getDepartementId() != null) {
 		  if(departementService.getById(employeeDto.getDepartementId()).isPresent() == false) {
-			  return GlobalFunctions.createNotFoundResponse(GlobalVars.DepartementIdNotFound, "/person");
+			  return GlobalFunctions.createNotFoundResponse(GlobalVars.DepartementIdNotFound, "/employee");
 		  }
 	  }
 	  
 	  if (employeeDto.getManagerId() != null) {
 		  if(employeeService.getById(employeeDto.getManagerId()).isPresent() == false) {
-			  return GlobalFunctions.createNotFoundResponse(GlobalVars.ManagerIdNotFound, "/person");
+			  return GlobalFunctions.createNotFoundResponse(GlobalVars.ManagerIdNotFound, "/employee");
 		  }
 	  }
 	  
 	  if (employeeDto.getRoleId() != null) {
 		  if(roleService.getById(employeeDto.getRoleId()).isPresent() == false) {
-			  return GlobalFunctions.createNotFoundResponse(GlobalVars.RoleIdNotFound, "/person");
+			  return GlobalFunctions.createNotFoundResponse(GlobalVars.RoleIdNotFound, "/employee");
 			  }
 		  }
 		  

@@ -43,7 +43,7 @@ public class RoleController {
 	@Autowired
 	EmployeeService personService = new EmployeeService();
 	
-	@GetMapping("/roles")
+	@GetMapping("/role")
 	@ApiOperation("Returns a list of all roles in the system")
 	public List<Role> getAll(){
 
@@ -51,7 +51,7 @@ public class RoleController {
 
 	}
 
-	@PutMapping("/roles")
+	@PutMapping("/role")
 	@ApiOperation(value = "Updates a role in the system by their identifier.", notes = "404 if the role's identifier cannot be found. \n"
 																						+ "400 if name is null or empty")
 	public ResponseEntity<String> edit(@ApiParam("Role information to be modified.")@RequestBody RoleDTO roleDto,
@@ -65,15 +65,15 @@ public class RoleController {
 				
 				return new ResponseEntity<String>(GlobalVars.RolePutSuccessful, HttpStatus.OK);
 			}else {
-				return GlobalFunctions.createBadRequest(GlobalVars.NameIsEmpty, "/roles");
+				return GlobalFunctions.createBadRequest(GlobalVars.NameIsEmpty, "/role");
 			}
 		}
 		else {
-			return GlobalFunctions.createNotFoundResponse(GlobalVars.RoleIdNotFound, "/roles");
+			return GlobalFunctions.createNotFoundResponse(GlobalVars.RoleIdNotFound, "/role");
 		}
 	}
 
-	@DeleteMapping("/roles")
+	@DeleteMapping("/role")
 	@ApiOperation(value = "Deletes a role in the system by their identifier.", notes = "404 if the role's identifier cannot be found.")
 	public ResponseEntity<String> delete(@ApiParam(value = "Id of the role to be deleted.", required = true) @RequestParam(value="id") int id) {
 		
@@ -83,7 +83,7 @@ public class RoleController {
 			Role role = optionalRole.get();
 			
 			if(this.personService.getAllByRoleId(id).size() > 0) {
-				return GlobalFunctions.createBadRequest(GlobalVars.EmployeeUsesRoleCannotDelete, "/roles");
+				return GlobalFunctions.createBadRequest(GlobalVars.EmployeeUsesRoleCannotDelete, "/role");
 			}
 			
 			this.roleService.delete(role);
@@ -91,7 +91,7 @@ public class RoleController {
 			return new ResponseEntity<String>(GlobalVars.RoleDeleteSuccessful, HttpStatus.OK);
 		}
 		else {
-			return GlobalFunctions.createNotFoundResponse(GlobalVars.RoleIdNotFound, "/roles");
+			return GlobalFunctions.createNotFoundResponse(GlobalVars.RoleIdNotFound, "/role");
 		}
 	}
 
