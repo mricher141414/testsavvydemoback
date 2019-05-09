@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.Timesheet.com.dto.PersonComplexWithManager;
 import com.example.Timesheet.com.dto.PersonComplex;
-import com.example.Timesheet.com.dto.PersonWithManager;
 import com.example.Timesheet.com.dto.TimesheetComplex;
 import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalVars;
@@ -75,7 +75,7 @@ public class TimesheetController {
 	@GetMapping("/timesheet")
 	@ApiOperation(value = "Returns the timesheet with the specified identifier.", 
 					notes = "404 if the timesheet's identifier cannot be found.")
-	public ResponseEntity<?> findTimesheetById(@ApiParam("Id of the timesheet to retrieve")@RequestParam(value="id") int id) throws Exception{
+	public ResponseEntity<?> findTimesheetById(@ApiParam(value = "Id of the timesheet to retrieve", required = true) @RequestParam(value="id") int id) throws Exception{
 
 		Optional<Timesheet> optionalTimesheet = timesheetService.getTimesheetById(id);
 		
@@ -90,7 +90,7 @@ public class TimesheetController {
 	@PostMapping("/timesheet")
 	@ApiOperation(value = "Creates a new timesheet in the system.", 
 					notes = "404 if the manager id or timesheet status id in the body cannot be found.")
-	public ResponseEntity<String> post(@ApiParam("Timesheet information for the new timesheet to be created.")@RequestBody TimesheetDTO timesheetDto) {
+	public ResponseEntity<String> post(@ApiParam(value = "Timesheet information for the new timesheet to be created.", required = true) @RequestBody TimesheetDTO timesheetDto) {
 		
 		if(timesheetDto.getEmployeeId() != null) {
 			if(personService.findById(timesheetDto.getEmployeeId()).isPresent() == false) {
@@ -116,7 +116,7 @@ public class TimesheetController {
 	@ApiOperation(value = "Updates a timesheet in the system by their identifier.", 
 					notes = "404 if the timesheet's identifier or any of the manager id and timesheet status id in the body cannot be found.")
 	public ResponseEntity<String> put(@ApiParam("Timesheet information to be modified. There is no need to keep values that will not be modified.")@RequestBody TimesheetDTO timesheetDto,
-										@ApiParam("Id of the timesheet to be modified.")@RequestParam(value="id") int id) {
+										@ApiParam(value = "Id of the timesheet to be modified.", required = true) @RequestParam(value="id") int id) {
 		
 		if(this.timesheetService.getTimesheetById(id).isPresent()) {
 			
@@ -145,23 +145,25 @@ public class TimesheetController {
 	
 	@GetMapping("/timesheet/employee")
 	@ApiOperation(value = "Returns a detailed list of all the person's information with all information of all timesheets with the specified startDate.", 
-					response = PersonComplex.class, 
-					notes = "404 if the timesheet's identifier cannot be found")
-	public ResponseEntity<?> findbyEmployeeId(@ApiParam("Id of the employee to get the information from")@RequestParam(value="id") int id, 
-												@ApiParam("Start date of the timesheets to get along with the person.")@RequestParam(value="startDate") Date startDate){
+					response = PersonComplexWithManager.class, 
+					notes = "404 if the person's identifier cannot be found")
+	public ResponseEntity<?> findbyEmployeeId(@ApiParam(value = "Id of the employee to get the information from", required = true) @RequestParam(value="id") int id, 
+												@ApiParam(value =  "Start date of the timesheets to get along with the person.", required = true) @RequestParam(value="startDate") Date startDate){
 		
 		Optional<Person> optionalEmployee = this.personService.findById(id);
 		
 		if(optionalEmployee.isPresent()) {
-		
-			/*PersonComplex personWithManager = new PersonComplexWithManager(); 
+		/*
+			PersonComplex personWithManager = new PersonComplexWithManager(); 
 		    this.fromPersonToComplex(optionalEmployee.get(), personWithManager);
 			this.addTimesheetsToPersonComplexByStartDate(personWithManager, startDate);
 			PersonComplexWithManager personCompWithManager = (PersonComplexWithManager) personWithManager;
 			personCompWithManager = this.addManagerToPersonComplexWithManager(personCompWithManager, optionalEmployee.get());
 			
-			return new ResponseEntity<PersonComplex>(personWithManager, HttpStatus.OK);*/
+			return new ResponseEntity<PersonComplex>(personWithManager, HttpStatus.OK);
+			*/
 			return GlobalFunctions.createNotFoundResponse(GlobalVars.PersonIdNotFound, "/timesheet/employee");
+
 
 		}
 		
@@ -173,9 +175,9 @@ public class TimesheetController {
 	@GetMapping("/timesheet/manager")
 	@ApiOperation(value = "Returns a detailed list of all the persons managed by the person along with all the information of all timesheets with the specified startDate.", 
 					response = PersonComplex.class, 
-					notes = "404")
-	public ResponseEntity<?> findbyManagerId(@ApiParam("Id of the employee to get the information from.")@RequestParam(value="id") int id, 
-												@ApiParam("Start date of the timesheets to get along with the person's managed persons.")@RequestParam(value="startDate") Date startDate){
+					notes = "404 if the manager's identifier cannot be found among the persons")
+	public ResponseEntity<?> findbyManagerId(@ApiParam(value = "Id of the employee to get the information from.", required = true) @RequestParam(value="id") int id, 
+												@ApiParam(value = "Start date of the timesheets to get along with the person's managed persons.", required = true) @RequestParam(value="startDate") Date startDate) {
 
 		if(this.personService.findById(id).isPresent()) {
 			List<Person> employeesOfManager = this.personService.findAllByManagerId(id);
@@ -248,8 +250,8 @@ public class TimesheetController {
 		//return person;
 	}
 	
-	private PersonWithManager addManagerToPersonComplexWithManager(PersonWithManager personComplex, Person person) {
-		personComplex.setManager(this.personService.findById(person.getManagerId()).get());
+	public PersonComplexWithManager addManagerToPersonComplexWithManager(PersonComplexWithManager personComplex, Person person) {
+		//personComplex.setManager(this.personService.findById(person.getManagerId()).get());
 		return personComplex;
 
 	}

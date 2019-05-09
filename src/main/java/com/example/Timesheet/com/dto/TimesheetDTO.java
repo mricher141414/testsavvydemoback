@@ -5,34 +5,34 @@ import java.sql.Date;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-@ApiModel(description = "Class sent by the user to modify an existing timesheet or create a new one. \n"
-		+ "No property is required when modifying a timesheet. \n"
-		+ "All properties except id are recommanded when creating a new timesheet")
+@ApiModel(description = "<p>Class sent by the user to modify an existing timesheet or create a new one. <br>"
+		+ "No property is required when modifying a timesheet. <br>"
+		+ "All properties except id are recommanded when creating a new timesheet.</p>")
 public class TimesheetDTO {
 
-	@ApiModelProperty(notes = "Unique identifier of the timesheet. No two timesheets can have the same id. \n"
-			+ "The id is not required, but it is part of the object to facilitate a copy and paste from an existing object", example = "1", position = 0)
+	@ApiModelProperty(notes = "<p>Unique identifier of the timesheet. No two timesheets can have the same id. <br>"
+			+ "The id is not required, but it is part of the object to facilitate a copy and paste from an existing object.</p>", example = "1", position = 0)
 	private int id;
 	
-	@ApiModelProperty(notes = "Total amount of hours of the timesheet. Use a dot (.) for decimals. \n"
-			+ "Defaults to 0 if no value was given at creation", example = "40.5", position = 1)
+	@ApiModelProperty(notes = "<p>Total amount of hours of the timesheet. Use a dot (.) for decimals. <br>"
+			+ "Defaults to 0 if no value was given at creation.</p>", example = "40.5", position = 1)
 	private float total;
 	
-	@ApiModelProperty(notes = "Notes of the timesheet.", example = "Première timesheet", position = 2)
+	@ApiModelProperty(notes = "<p>Notes of the timesheet.</p>", example = "Première timesheet", position = 2)
 	private String notes;
 	
-	@ApiModelProperty(notes = "Date (year-month-date) at which the timesheet started.", example = "2019-06-30", position = 3)
+	@ApiModelProperty(notes = "<p>Date (year-month-date) at which the timesheet started.</p>", example = "2019-06-30", position = 3)
 	private Date startDate;
 	
-	@ApiModelProperty(notes = "Date (year-month-date) at which the timesheet started.", example = "2019-07-06", position = 4)
+	@ApiModelProperty(notes = "<p>Date (year-month-date) at which the timesheet started.</p>", example = "2019-07-06", position = 4)
 	private Date endDate;
 	
-	@ApiModelProperty(notes = "Unique identifier of the person the timesheet is referencing. \n"
-			+ "Will cause an error if the person id specified does not belong to an existing person", example = "1", position = 5)
+	@ApiModelProperty(notes = "<p>Unique identifier of the person the timesheet is referencing. <br>"
+			+ "Will cause an error if the person id specified does not belong to an existing person.</p>", example = "1", position = 5)
 	private Integer employeeId;
 	
-	@ApiModelProperty(notes = "Unique identifier of the timesheet status. \n"
-			+ "Will cause an error if the timesheet status id specified does not belong to an existing timesheet status", example = "1", position = 6)
+	@ApiModelProperty(notes = "<p>Unique identifier of the timesheet status. <br>"
+			+ "Will cause an error if the timesheet status id specified does not belong to an existing timesheet status.</p>", example = "1", position = 6)
 	private Integer timesheetStatusId;
 	
 	//getters and setters

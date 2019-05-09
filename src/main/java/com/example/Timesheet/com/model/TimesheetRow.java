@@ -15,25 +15,25 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
-@ApiModel(description = "Class representing a row of a timesheet tracked by the application.")
+@ApiModel(description = "<p>Class representing a row of a timesheet tracked by the application.</p>")
 public class TimesheetRow {
 	
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
-	@ApiModelProperty(notes = "Unique identifier of the row. No two rows can have the same id.", example = "1", position = 0)
+	@ApiModelProperty(notes = "<p>Unique identifier of the row. No two rows can have the same id.</p>", example = "1", position = 0)
 	private int id;
 	
-	@ApiModelProperty(notes = "Date (year-month-date) of the row.", example = "2019-07-01", position = 1)
+	@ApiModelProperty(notes = "<p>Date (year-month-date) of the row.</p>", example = "2019-07-01", position = 1)
 	private Date date;
 	
-	@ApiModelProperty(notes = "Amount of hours logged in for the row. Use a dot (.) for decimals.", example = "8.5", position = 2)
+	@ApiModelProperty(notes = "<p>Amount of hours logged in for the row. Use a dot (.) for decimals.</p>", example = "8.5", position = 2)
 	private float value;
 	
 	@Column(name = "timesheet_id")
-	@ApiModelProperty(notes = "Unique identifier of the timesheet that the row is currently in. No two timesheets can have the same id.", example = "1", position = 3)
+	@ApiModelProperty(notes = "<p>Unique identifier of the timesheet that the row is currently in. No two timesheets can have the same id.</p>", example = "1", position = 3)
 	private Integer timesheetId;
 	
 	@Column(name = "project_id")
-	@ApiModelProperty(notes = "Unique identifier of the project the person has worked on for that row. No two projects can have the same id.", example = "4", position = 4)
+	@ApiModelProperty(notes = "<p>Unique identifier of the project the person has worked on for that row. No two projects can have the same id.</p>", example = "4", position = 4)
 	private Integer projectId;
 	
 	public void compensateTimezoneOnDates() {

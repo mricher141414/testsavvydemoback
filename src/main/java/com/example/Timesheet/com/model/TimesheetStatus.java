@@ -9,14 +9,14 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
-@ApiModel(description = "Class representing the status of a timesheet tracked by the application.")
+@ApiModel(description = "<p>Class representing the status of a timesheet tracked by the application.</p>")
 public class TimesheetStatus {
 	
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
-	@ApiModelProperty(notes = "Unique identifier of the status. No two statuses can have the same id.", example = "1", position = 0)
+	@ApiModelProperty(notes = "<p>Unique identifier of the status. No two statuses can have the same id.</p>", example = "1", position = 0)
 	private int id;
 
-	@ApiModelProperty(notes = "Name of the status.", example = "Brouillon", position = 1)
+	@ApiModelProperty(notes = "<p>Name of the status.</p>", example = "Brouillon", position = 1)
 	private String name;
 
 	public int getId() {

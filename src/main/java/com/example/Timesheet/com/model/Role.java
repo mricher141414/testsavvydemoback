@@ -10,14 +10,14 @@ import io.swagger.annotations.ApiModelProperty;
 
 
 @Entity
-@ApiModel(description = "Class representing a role tracked by the application.")
+@ApiModel(description = "<p>Class representing a role tracked by the application.</p>")
 public class Role {
 
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
-	@ApiModelProperty(notes = "Unique identifier of the role. No two roles can have the same id", example = "1", position = 0)
+	@ApiModelProperty(notes = "<p>Unique identifier of the role. No two roles can have the same id</p>", example = "1", position = 0)
 	private int id;
 	
-	@ApiModelProperty(notes = "Name of the role.", example = "Manager", position = 1)
+	@ApiModelProperty(notes = "<p>Name of the role.</p>", example = "Manager", position = 1)
 	private String name;
 
 	public Role() {

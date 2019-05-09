@@ -53,7 +53,7 @@ public class TimesheetRowController {
 	
 	@GetMapping("/timesheetRow/one")
 	@ApiOperation(value = "Returns the timesheet row with the specified identifier.", notes = "404 if the row's identifier cannot be found.")
-	public ResponseEntity<?> findTimesheetRowById(@ApiParam("Id of the timesheet row to be found.")@RequestParam(value="id") int id){
+	public ResponseEntity<?> findTimesheetRowById(@ApiParam(value = "Id of the timesheet row to be found.", required = true, defaultValue = "1") @RequestParam(value="id") int id){
 		
 		Optional<TimesheetRow> optionalRow = timesheetRowService.getById(id);
 		
@@ -67,7 +67,7 @@ public class TimesheetRowController {
 	
 	@PostMapping("/timesheetRow")
 	@ApiOperation(value = "Creates a new timesheet row in the system", notes = "404 if the project id or timesheet id in the body cannot be found.")
-	public ResponseEntity<String> createTimesheetRow(@ApiParam("Timesheet row information for the new row to be created.")@RequestBody TimesheetRowDTO timesheetRowDto) {
+	public ResponseEntity<String> createTimesheetRow(@ApiParam(value = "Timesheet row information for the new row to be created.", required = true)@RequestBody TimesheetRowDTO timesheetRowDto) {
 		
 		if(timesheetRowDto.getProjectId() != null) {
 			if(this.projectService.findById(timesheetRowDto.getProjectId()).isPresent() == false) {
@@ -91,7 +91,7 @@ public class TimesheetRowController {
 	
 	@DeleteMapping("/timesheetRow")
 	@ApiOperation(value = "Delete a timesheet row in the system by their identifier.", notes = "404 if the row's identifier cannot be found.")
-	public ResponseEntity<String> delete(@ApiParam("Id of the timesheet row to be deleted")@RequestParam(value="id") int id) {
+	public ResponseEntity<String> delete(@ApiParam(value = "Id of the timesheet row to be deleted", required = true) @RequestParam(value="id") int id) {
 		
 		Optional<TimesheetRow> optionalRow = this.timesheetRowService.getById(id);
 		

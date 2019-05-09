@@ -10,28 +10,28 @@ import com.example.Timesheet.com.model.TimesheetStatus;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-@ApiModel(description = "Class used by PersonComplex. Is a more detailed version of the Timesheet model.")
+@ApiModel(description = "<p>Class used by PersonComplex. Is a more detailed version of the Timesheet model.</p>")
 public class TimesheetComplex {
 	
-	@ApiModelProperty(notes = "Unique identifier of the timesheet. No two timesheets can have the same id.", example = "1", position = 0)
+	@ApiModelProperty(notes = "<p>Unique identifier of the timesheet. No two timesheets can have the same id.</p>", example = "1", position = 0)
 	private int id;
 	
-	@ApiModelProperty(notes = "Total amount of hours of the timesheet. Uses a dot (.) for decimals.", example = "40.5", position = 1)
+	@ApiModelProperty(notes = "<p>Total amount of hours of the timesheet. Uses a dot (.) for decimals.</p>", example = "40.5", position = 1)
 	private float total;
 	
-	@ApiModelProperty(notes = "Notes of the timesheet.", example = "Première timesheet", position = 2)
+	@ApiModelProperty(notes = "<p>Notes of the timesheet.</p>", example = "Première timesheet", position = 2)
 	private String notes;
 	
-	@ApiModelProperty(notes = "Date (year-month-date) at which the timesheet started.", example = "2019-06-29", position = 3)
+	@ApiModelProperty(notes = "<p>Date (year-month-date) at which the timesheet started.</p>", example = "2019-06-29", position = 3)
 	private Date startDate;
 	
-	@ApiModelProperty(notes = "Date (year-month-date) at which the timesheet ended.", example = "2019-07-05", position = 4)
+	@ApiModelProperty(notes = "<p>Date (year-month-date) at which the timesheet ended.</p>", example = "2019-07-05", position = 4)
 	private Date endDate;
 	
-	@ApiModelProperty(notes = "List of all timesheetRows that reference this timesheet.", position = 5)
+	@ApiModelProperty(notes = "<p>List of all timesheetRows that reference this timesheet.</p>", position = 5)
 	private List<TimesheetRow> timesheetRows;
 	
-	@ApiModelProperty(notes = "Object of the timesheetStatus used by the timesheet.", position = 6)
+	@ApiModelProperty(notes = "<p>Object of the timesheetStatus used by the timesheet.</p>", position = 6)
 	private TimesheetStatus timesheetStatus;
 	
 	public int getId() {

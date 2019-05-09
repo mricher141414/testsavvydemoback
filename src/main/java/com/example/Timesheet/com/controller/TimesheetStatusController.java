@@ -37,7 +37,7 @@ public class TimesheetStatusController {
 	
 	@PostMapping("/timesheetStatus")
 	@ApiOperation("Creates a new timesheet status in the system")
-	public String createTimesheetStatus(@ApiParam("Timesheet status information for the new status to be created")@RequestBody TimesheetStatusDTO timesheetStatusDto) {
+	public String createTimesheetStatus(@ApiParam(value = "Timesheet status information for the new status to be created", required = true)@RequestBody TimesheetStatusDTO timesheetStatusDto) {
 		
 		TimesheetStatus timesheetRow = this.timesheetStatusMapper.DTOtoTimesheetStatus(timesheetStatusDto, 0);
 		

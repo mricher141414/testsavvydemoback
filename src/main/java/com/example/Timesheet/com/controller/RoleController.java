@@ -55,7 +55,7 @@ public class RoleController {
 	@ApiOperation(value = "Updates a role in the system by their identifier.", notes = "404 if the role's identifier cannot be found. \n"
 																						+ "400 if name is null or empty")
 	public ResponseEntity<String> saveRole(@ApiParam("Role information to be modified.")@RequestBody RoleDTO roleDto,
-											@ApiParam(value = "Id of the role to be modified. Cannot be null.", required = true)@RequestParam int id){
+											@ApiParam(value = "Id of the role to be modified. Cannot be null.", required = true) @RequestParam int id){
 
 		if(this.roleService.getById(id).isPresent()) {
 		
@@ -75,7 +75,7 @@ public class RoleController {
 
 	@DeleteMapping("/roles")
 	@ApiOperation(value = "Deletes a role in the system by their identifier.", notes = "404 if the role's identifier cannot be found.")
-	public ResponseEntity<String> deleteRole(@ApiParam("Id of the role to be deleted.")@RequestParam(value="id") int id) {
+	public ResponseEntity<String> deleteRole(@ApiParam(value = "Id of the role to be deleted.", required = true) @RequestParam(value="id") int id) {
 		
 		Optional<Role> optionalRole = this.roleService.getById(id);
 		

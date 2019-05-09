@@ -54,7 +54,7 @@ public class PersonController {
 	  @PutMapping("/person")
 	  @ApiOperation(value = "Updates a person in the system by their identifier.", notes = "404 if any of the person's identifier specified in the address, department id, role id or manager id specified in the body is not found")
 	  public ResponseEntity<String> modifyPerson(@ApiParam("person information to be modified. There is no need to keep values that will not be modified.")@RequestBody PersonDTO persondto,
-			  										@ApiParam(value = "Id of the person to be modified. Cannot be null.", required = true)@RequestParam(value="id") int id) throws SQLException {
+		  											@ApiParam(value = "Id of the person to be modified. Cannot be null.", required = true)@RequestParam(value="id") int id) throws SQLException {
 	
 	  if (persondto.getDepartementId() != null) {
 		  if(departementService.getById(persondto.getDepartementId()).isPresent() == false) {

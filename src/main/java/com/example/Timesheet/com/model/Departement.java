@@ -9,13 +9,13 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
-@ApiModel(description = "Class representing a department tracked by the application.")
+@ApiModel(description = "<p>Class representing a department tracked by the application.</p>")
 public class Departement {
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
-	@ApiModelProperty(notes = "Unique identifier of the department. No two departments can have the same id.", example = "1", position = 0)
+	@ApiModelProperty(notes = "<p>Unique identifier of the department. No two departments can have the same id.</p>", example = "1", position = 0)
 	private int id;
 	
-	@ApiModelProperty(notes = "Name of the department", example = "Assurance qualité", position = 1)
+	@ApiModelProperty(notes = "<p>Name of the department</p>", example = "Assurance qualité", position = 1)
 	private String name;
 	
 	public Departement() {

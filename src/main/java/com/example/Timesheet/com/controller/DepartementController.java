@@ -71,7 +71,7 @@ public class DepartementController {
 	
 	@DeleteMapping("/departement")
 	@ApiOperation(value = "Deletes a department from the system.", notes = "404 if the department's identifier cannot be found")
-	public ResponseEntity<?> deleteDepartement(@ApiParam("Id of the department to be deleted. Cannot be null.")@RequestParam(value="id") int id){
+	public ResponseEntity<?> deleteDepartement(@ApiParam(value = "Id of the department to be deleted. Cannot be null.", required = true)@RequestParam(value="id") int id){
 		
 		Optional<Departement> optionalDepartement = this.departementService.getById(id);
 		
