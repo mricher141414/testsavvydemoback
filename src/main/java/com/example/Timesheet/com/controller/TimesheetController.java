@@ -246,7 +246,7 @@ public class TimesheetController {
 	}
 	
 	public PersonComplexWithManager addManagerToPersonComplexWithManager(PersonComplexWithManager personComplex, Person person) {
-		//personComplex.setManager(this.personService.findById(person.getManagerId()).get());
+		personComplex.setManager(this.personService.findById(person.getManagerId()).get());
 		return personComplex;
 
 	}
