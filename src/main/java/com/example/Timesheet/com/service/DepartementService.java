@@ -15,17 +15,17 @@ public class DepartementService {
 	@Autowired
 	private IDepartementDAO departement;
 	
-	public List<Departement> getDepartements(){
+	public List<Departement> getAll(){
 		
 		return (List<Departement>) this.departement.findAll();
 		
 	}
 	
-	public void saveDepartement(Departement departement) {
+	public void save(Departement departement) {
 		this.departement.save(departement);	
 	}
 	
-	public void deleteDepartement(Departement departement) {
+	public void delete(Departement departement) {
 		this.departement.delete(departement);	
 	}
 	

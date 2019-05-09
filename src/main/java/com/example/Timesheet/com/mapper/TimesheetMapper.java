@@ -6,15 +6,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
 
+import com.example.Timesheet.com.dto.TimesheetComplex;
 import com.example.Timesheet.com.dto.TimesheetDTO;
 import com.example.Timesheet.com.model.Timesheet;
+import com.example.Timesheet.com.service.TimesheetRowService;
 import com.example.Timesheet.com.service.TimesheetService;
+import com.example.Timesheet.com.service.TimesheetStatusService;
 
 @Component
 public class TimesheetMapper implements ITimesheetMapper {
 	
 	@Autowired
 	private TimesheetService timesheetService;
+	
+	@Autowired
+	private TimesheetRowService timesheetRowService;
+	
+	@Autowired
+	private TimesheetStatusService timesheetStatusService;
 	
     @Override
     public Timesheet DTOtoTimesheet(TimesheetDTO source, int id) {
@@ -32,7 +41,7 @@ public class TimesheetMapper implements ITimesheetMapper {
         timesheet.setStartDate( source.getStartDate() );
         timesheet.setEndDate( source.getEndDate() );
         
-        Optional<Timesheet> optionalTimesheet = this.timesheetService.getTimesheetById(id);
+        Optional<Timesheet> optionalTimesheet = this.timesheetService.getById(id);
         
         if(optionalTimesheet.isPresent()) {
         	Timesheet dbTimesheet = optionalTimesheet.get();
@@ -87,4 +96,23 @@ public class TimesheetMapper implements ITimesheetMapper {
 
         return timesheetDTO;
     }
+    
+    public TimesheetComplex fromTimesheetToComplex(Timesheet timesheet) {
+
+		TimesheetComplex timesheetComplex = new TimesheetComplex();
+
+
+		timesheetComplex.setId(timesheet.getId());
+		timesheetComplex.setTotal(timesheet.getTotal());
+		timesheetComplex.setEndDate(timesheet.getEndDate());
+		timesheetComplex.setNotes(timesheet.getNotes());
+		timesheetComplex.setStartDate(timesheet.getStartDate());
+		timesheetComplex.setTimesheetRows(this.timesheetRowService.getByTimesheetId(timesheet.getId()));
+
+		if(timesheet.getTimesheetStatusId()!= null) {
+			timesheetComplex.setTimesheetStatus(timesheetStatusService.getById(timesheet.getTimesheetStatusId()).get());
+
+		}
+		return timesheetComplex;
+	}
 }

@@ -28,7 +28,7 @@ public class SpringFoxConfig {
 				.build()
 				.apiInfo(getApiInfo())
 				.tags(new Tag("DepartementController", "Set of endpoints for listing, updating and deleting departments."),
-						new Tag("PersonController", "Set of endpoints for listing and updating people."),
+						new Tag("EmployeeController", "Set of endpoints for listing and updating employee."),
 						new Tag("RoleController", "Set of endpoints for listing, updating and deleting roles."),
 						new Tag("TimesheetStatusController", "Set of endpoints for listing and creating timesheet statuses."),
 						new Tag("TimesheetRowController", "Set of endpoints for listing, retrieving, creating and deleting timesheet rows."),

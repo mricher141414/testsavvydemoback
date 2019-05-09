@@ -16,17 +16,17 @@ public class TimesheetService {
 	@Autowired
 	private ITimesheetDAO timesheetDAO;
 
-	public void postTimesheet(Timesheet timesheet) {
+	public void save(Timesheet timesheet) {
 		
 		timesheetDAO.save(timesheet);
 
 	}
 
-	public List<Timesheet> getTimesheets() {
+	public List<Timesheet> getAll() {
 		return (List<Timesheet>) this.timesheetDAO.findAll();
 	}
 
-	public Optional<Timesheet> getTimesheetById(int id) {
+	public Optional<Timesheet> getById(int id) {
 
 		return this.timesheetDAO.findById(id);
 

@@ -17,7 +17,7 @@ public class RoleService {
 	private IRoleDAO role;
 
 
-	public List<Role> getRoles() {
+	public List<Role> getAll() {
 		return (List<Role>) this.role.findAll();
 	}
 
@@ -26,7 +26,7 @@ public class RoleService {
 
 	}
 
-	public void deleteRole(Role role) {
+	public void delete(Role role) {
 		this.role.delete(role);
 	}
 	

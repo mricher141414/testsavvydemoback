@@ -17,42 +17,42 @@ import io.swagger.annotations.ApiModelProperty;
 
 @Entity
 @Table(name = "Employee")
-@ApiModel(description = "<p>Class representing a person tracked by the application.</p>")
-public class Person {
+@ApiModel(description = "<p>Class representing a employee tracked by the application.</p>")
+public class Employee {
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
-	@ApiModelProperty(notes = "<p>Unique identifier of the person. No two persons can have the same id</p>", example = "1", position = 0)
+	@ApiModelProperty(notes = "<p>Unique identifier of the employee. No two employees can have the same id</p>", example = "1", position = 0)
 	private int id;
 	
 	@Column(name = "email_address")
-	@ApiModelProperty(notes = "<p>Email address of the person.</p>", example = "f.lecomte@cgi.com", position = 1)
+	@ApiModelProperty(notes = "<p>Email address of the employee.</p>", example = "f.lecomte@cgi.com", position = 1)
 	private String email;
 	
-	@ApiModelProperty(notes = "<p>Last name of the person.</p>", example = "Lecomte", position = 2)
+	@ApiModelProperty(notes = "<p>Last name of the employee.</p>", example = "Lecomte", position = 2)
 	private String lastName;
 	
-	@ApiModelProperty(notes = "<p>First name of the person.</p>", example = "François", position = 3)
+	@ApiModelProperty(notes = "<p>First name of the employee.</p>", example = "François", position = 3)
 	private String firstName;
 	
-	@ApiModelProperty(notes = "<p>Password of the person.</p>", example = "aaa", position = 4)
+	@ApiModelProperty(notes = "<p>Password of the employee.</p>", example = "aaa", position = 4)
 	private String password;
 	
 	@Column(name = "role_id")
-	@ApiModelProperty(notes = "<p>Unique identifier of the person's role.</p>", example = "2", position = 5)
+	@ApiModelProperty(notes = "<p>Unique identifier of the employee's role.</p>", example = "2", position = 5)
 	private Integer roleId;
 	
 	@Column(name = "departement_id")
-	@ApiModelProperty(notes = "<p>Unique identifier of the person's department.</p>", example = "1", position = 6)
+	@ApiModelProperty(notes = "<p>Unique identifier of the employee's department.</p>", example = "1", position = 6)
 	private Integer departementId;
 	
 	@Column(name = "manager_id")
-	@ApiModelProperty(notes = "<p>Unique identifier of the person's manager.</p>", example = "2", position = 7)
+	@ApiModelProperty(notes = "<p>Unique identifier of the employee's manager.</p>", example = "2", position = 7)
 	private Integer managerId;
 	
 	@Column(name = "date_of_birth")
-	@ApiModelProperty(notes = "<p>Date of birth (year-month-date) of the person.</p>", example = "1955-01-13", position = 8)
+	@ApiModelProperty(notes = "<p>Date of birth (year-month-date) of the employee.</p>", example = "1955-01-13", position = 8)
 	private Date dateOfBirth;
 	
-	@ApiModelProperty(notes = "<p>Physical address of the person's working location.", example = "101 rue des Abénaquis", position = 9)
+	@ApiModelProperty(notes = "<p>Physical address of the employee's working location.", example = "101 rue des Abénaquis", position = 9)
 	private String address;
 	
 	public void compensateTimezoneOnDates() {

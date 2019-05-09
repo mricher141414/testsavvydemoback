@@ -19,10 +19,10 @@ public class GlobalVars {
 	public static final String RoleIdIsNull = "The roleId in body is null. Please add a roleId";
 	
 	//person messages
-	public static final String PersonPutSuccessful = "The person with the specified id was modified successfully";
-	public static final String PersonIdNotFound = "No person with the specified id was found";
-	public static final String EmployeeIdNotFound = "No employee with the specified employeeId was found";
-	public static final String ManagerIdNotFound = "No person with the specified managerId was found";
+	public static final String EmployeePutSuccessful = "The employee with the specified id was modified successfully";
+	public static final String EmployeeIdNotFound = "No employee with the specified id was found";
+	public static final String EmployeeIdParameterNotFound = "No employee with the specified employeeId was found";
+	public static final String ManagerIdNotFound = "No employee with the specified managerId was found";
 	public static final String EmployeeIdIsNull = "The employeeId in body is null. Please add an employeeId";
 	public static final String ManagerIdIsNull = "The managerId in body is null. Please add a managerId";
 	

@@ -15,7 +15,7 @@ public class TimesheetStatusService {
 	@Autowired 
 	private ITimesheetStatusDAO timesheetStatusDAO;
 	
-	public void post(TimesheetStatus timesheetStatus) {
+	public void save(TimesheetStatus timesheetStatus) {
 		this.timesheetStatusDAO.save(timesheetStatus);
 	
 	}

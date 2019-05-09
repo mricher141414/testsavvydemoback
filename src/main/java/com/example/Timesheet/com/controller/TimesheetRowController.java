@@ -45,7 +45,7 @@ public class TimesheetRowController {
 	
 	@GetMapping("/timesheetRow")
 	@ApiOperation("Returns a list of all timesheet rows in the system.")
-	public List<TimesheetRow> findAllTimesheetRows(){
+	public List<TimesheetRow> getAll(){
 		
 		return timesheetRowService.getTimesheetRows();
 		
@@ -53,7 +53,7 @@ public class TimesheetRowController {
 	
 	@GetMapping("/timesheetRow/one")
 	@ApiOperation(value = "Returns the timesheet row with the specified identifier.", notes = "404 if the row's identifier cannot be found.")
-	public ResponseEntity<?> findTimesheetRowById(@ApiParam(value = "Id of the timesheet row to be found.", required = true, defaultValue = "1") @RequestParam(value="id") int id){
+	public ResponseEntity<?> getOne(@ApiParam(value = "Id of the timesheet row to be found.", required = true, defaultValue = "1") @RequestParam(value="id") int id){
 		
 		Optional<TimesheetRow> optionalRow = timesheetRowService.getById(id);
 		
@@ -67,16 +67,16 @@ public class TimesheetRowController {
 	
 	@PostMapping("/timesheetRow")
 	@ApiOperation(value = "Creates a new timesheet row in the system", notes = "404 if the project id or timesheet id in the body cannot be found.")
-	public ResponseEntity<String> createTimesheetRow(@ApiParam(value = "Timesheet row information for the new row to be created.", required = true)@RequestBody TimesheetRowDTO timesheetRowDto) {
+	public ResponseEntity<String> create(@ApiParam(value = "Timesheet row information for the new row to be created.", required = true)@RequestBody TimesheetRowDTO timesheetRowDto) {
 		
 		if(timesheetRowDto.getProjectId() != null) {
-			if(this.projectService.findById(timesheetRowDto.getProjectId()).isPresent() == false) {
+			if(this.projectService.getById(timesheetRowDto.getProjectId()).isPresent() == false) {
 				return GlobalFunctions.createNotFoundResponse(GlobalVars.ProjectIdNotFound, "/timesheetRow");
 			}
 		}
 		
 		if(timesheetRowDto.getTimesheetId() != null) {
-			if(this.timesheetService.getTimesheetById(timesheetRowDto.getTimesheetId()).isPresent() == false) {
+			if(this.timesheetService.getById(timesheetRowDto.getTimesheetId()).isPresent() == false) {
 				return GlobalFunctions.createNotFoundResponse(GlobalVars.TimesheetIdNotFound, "/timesheetRow");
 			}
 		}

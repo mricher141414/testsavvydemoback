@@ -14,7 +14,7 @@ public class ProjectService {
 	@Autowired
 	private IProjectDAO projectDAO;
 	
-	public Optional<Project> findById(int id) {
+	public Optional<Project> getById(int id) {
 		return this.projectDAO.findById(id);
 	}
 }

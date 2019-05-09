@@ -20,7 +20,7 @@ import com.example.Timesheet.com.dto.DepartementDTO;
 import com.example.Timesheet.com.mapper.DepartementMapper;
 import com.example.Timesheet.com.model.Departement;
 import com.example.Timesheet.com.service.DepartementService;
-import com.example.Timesheet.com.service.PersonService;
+import com.example.Timesheet.com.service.EmployeeService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -38,25 +38,25 @@ public class DepartementController {
 	DepartementMapper departementMapper = new DepartementMapper();
 	
 	@Autowired
-	PersonService personService = new PersonService();
+	EmployeeService personService = new EmployeeService();
 	
 	@GetMapping("/departement")
 	@ApiOperation("Returns a list of all departments in the system.")
-	public List<Departement> getAllDepartements(){
-		return departementService.getDepartements();
+	public List<Departement> getAll(){
+		return departementService.getAll();
 		
 	}
 	
 	@PutMapping("/departement")
 	@ApiOperation(value = "Updates a department in the system by their identifier.", notes = "404 if the department's identifier is not found")
-	public ResponseEntity<?> modifyDepartement(@ApiParam("department information to be modified")@RequestBody DepartementDTO departementDTO,
+	public ResponseEntity<?> edit(@ApiParam("department information to be modified")@RequestBody DepartementDTO departementDTO,
 										@ApiParam(value = "Id of the department to be modified. Cannot be null", required = true)@RequestParam(value="id") int id){
 		
 		if(this.departementService.getById(id).isPresent()) {
 		
 			if(departementDTO.getName() != null && !departementDTO.getName().equals("")) { //Validation
 				Departement departement = departementMapper.DTOtoDepartement(departementDTO, id);
-				departementService.saveDepartement(departement);
+				departementService.save(departement);
 				return new ResponseEntity<String>(GlobalVars.DepartementPutSuccessful, HttpStatus.OK);
 				
 			}else {
@@ -71,7 +71,7 @@ public class DepartementController {
 	
 	@DeleteMapping("/departement")
 	@ApiOperation(value = "Deletes a department from the system.", notes = "404 if the department's identifier cannot be found")
-	public ResponseEntity<?> deleteDepartement(@ApiParam(value = "Id of the department to be deleted. Cannot be null.", required = true)@RequestParam(value="id") int id){
+	public ResponseEntity<?> delete(@ApiParam(value = "Id of the department to be deleted. Cannot be null.", required = true)@RequestParam(value="id") int id){
 		
 		Optional<Departement> optionalDepartement = this.departementService.getById(id);
 		
@@ -79,11 +79,11 @@ public class DepartementController {
 		
 			Departement departement = optionalDepartement.get();
 			
-			if(this.personService.findAllByDepartementId(id).size() > 0) {
+			if(this.personService.getAllByDepartementId(id).size() > 0) {
 				return GlobalFunctions.createBadRequest(GlobalVars.EmployeeUsesDepartementCannotDelete, "/departement");
 			}
 			
-			this.departementService.deleteDepartement(departement);
+			this.departementService.delete(departement);
 			return new ResponseEntity<String>(GlobalVars.DepartementDeleteSuccessful, HttpStatus.OK);
 		}
 		else {

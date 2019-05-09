@@ -10,40 +10,40 @@ import com.example.Timesheet.com.model.Role;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-@ApiModel(description = "<p>Class received by the user by the endpoint timesheet/manager. Is a more detailed version of the Person model.</p>"
+@ApiModel(description = "<p>Class received by the user by the endpoint timesheet/manager. Is a more detailed version of the Employee model.</p>"
 			)
-public class PersonComplex {
+public class EmployeeComplex {
 	
-	@ApiModelProperty(notes = "<p>Unique identifier of the person. No two persons can have the same id.</p>", example = "1", position = 0)
+	@ApiModelProperty(notes = "<p>Unique identifier of the employee. No two employees can have the same id.</p>", example = "1", position = 0)
 	protected int id;
 	
-	@ApiModelProperty(notes = "<p>Email address of the person.</p>", example = "f.lecomte@cgi.com", position = 1)
+	@ApiModelProperty(notes = "<p>Email address of the employee.</p>", example = "f.lecomte@cgi.com", position = 1)
 	protected String emailAddress;
 	
-	@ApiModelProperty(notes = "<p>Last name of the person.</p>", example = "Lecomte", position = 2)
+	@ApiModelProperty(notes = "<p>Last name of the employee.</p>", example = "Lecomte", position = 2)
 	protected String lastName;
 	
-	@ApiModelProperty(notes = "<p>First name of the person.</p>", example = "François", position = 3)
+	@ApiModelProperty(notes = "<p>First name of the employee.</p>", example = "François", position = 3)
 	protected String firstName;
 	
-	@ApiModelProperty(notes = "<p>Password of the person.</p>", example = "aaa", position = 4)
+	@ApiModelProperty(notes = "<p>Password of the employee.</p>", example = "aaa", position = 4)
 	protected String password;
 	
-	@ApiModelProperty(notes = "<p>Full object of the role the person has. <br>"
+	@ApiModelProperty(notes = "<p>Full object of the role the employee has. <br>"
 			+ "Check the role model for more information.</p>", position = 5)
 	protected Role role;
 	
-	@ApiModelProperty(notes = "<p>Full object of the department the person is in. <br>"
+	@ApiModelProperty(notes = "<p>Full object of the department the employee is in. <br>"
 			+ "Check the department model for more information.</p>", position = 6)
 	protected Departement departement;
 	
-	@ApiModelProperty(notes = "<p>Physical address of the person's working place.</p>", example = "101 rue des Abénaquis", position = 8)
+	@ApiModelProperty(notes = "<p>Physical address of the employee's working place.</p>", example = "101 rue des Abénaquis", position = 8)
 	protected String address;
 	
-	@ApiModelProperty(notes = "<p>Date of birth (year-month-day) of the person.</p>", example = "1955-01-13", position = 7)
+	@ApiModelProperty(notes = "<p>Date of birth (year-month-day) of the employee.</p>", example = "1955-01-13", position = 7)
 	protected Date dateOfBirth;
 	
-	@ApiModelProperty(notes = "<p>List of TimesheetComplex objects to represent all the timesheets that the person has that matches the condition.</p>", position = 9)
+	@ApiModelProperty(notes = "<p>List of TimesheetComplex objects to represent all the timesheets that the employee has that matches the condition.</p>", position = 9)
 	protected List<TimesheetComplex> timesheets = new ArrayList<TimesheetComplex>();
 
 	//getters and setters

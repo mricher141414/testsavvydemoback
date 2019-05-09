@@ -29,7 +29,7 @@ public class TimesheetStatusController {
 	
 	@GetMapping("/timesheetStatus")
 	@ApiOperation("Returns a list of all timesheet statuses in the system.")
-	public List<TimesheetStatus> findAllTimesheetStatuses(){
+	public List<TimesheetStatus> getAll(){
 		
 		return timesheetStatusService.getAll();
 		
@@ -37,11 +37,11 @@ public class TimesheetStatusController {
 	
 	@PostMapping("/timesheetStatus")
 	@ApiOperation("Creates a new timesheet status in the system")
-	public String createTimesheetStatus(@ApiParam(value = "Timesheet status information for the new status to be created", required = true)@RequestBody TimesheetStatusDTO timesheetStatusDto) {
+	public String create(@ApiParam(value = "Timesheet status information for the new status to be created", required = true)@RequestBody TimesheetStatusDTO timesheetStatusDto) {
 		
 		TimesheetStatus timesheetRow = this.timesheetStatusMapper.DTOtoTimesheetStatus(timesheetStatusDto, 0);
 		
-		this.timesheetStatusService.post(timesheetRow);
+		this.timesheetStatusService.save(timesheetRow);
 		
 		return "{\"id\": "+timesheetRow.getId()+"}";
 	}

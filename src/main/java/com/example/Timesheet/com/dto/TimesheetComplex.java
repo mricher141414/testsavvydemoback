@@ -3,7 +3,7 @@ package com.example.Timesheet.com.dto;
 import java.sql.Date;
 import java.util.List;
 
-import com.example.Timesheet.com.model.Person;
+import com.example.Timesheet.com.model.Employee;
 import com.example.Timesheet.com.model.TimesheetRow;
 import com.example.Timesheet.com.model.TimesheetStatus;
 
