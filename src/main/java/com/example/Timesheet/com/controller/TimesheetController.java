@@ -159,7 +159,7 @@ public class TimesheetController {
 			PersonComplexWithManager personCompWithManager = (PersonComplexWithManager) personWithManager;
 			personCompWithManager = this.addManagerToPersonComplexWithManager(personCompWithManager, optionalEmployee.get());
 			
-			return new ResponseEntity<PersonComplex>(personWithManager, HttpStatus.OK);
+			return new ResponseEntity<PersonComplex>(personCompWithManager, HttpStatus.OK);
 		}
 		
 		else {
