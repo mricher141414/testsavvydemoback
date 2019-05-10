@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -27,6 +28,7 @@ import com.example.Timesheet.com.model.Employee;
 import com.example.Timesheet.com.model.Timesheet;
 import com.example.Timesheet.com.service.EmployeeService;
 import com.example.Timesheet.com.service.TimesheetService;
+import com.example.Timesheet.com.service.TimesheetRowService;
 import com.example.Timesheet.com.service.TimesheetStatusService;
 
 import io.swagger.annotations.Api;
@@ -52,6 +54,9 @@ public class TimesheetController {
 
 	@Autowired
 	private EmployeeMapper personMapper = new EmployeeMapper();
+	
+	@Autowired
+	private TimesheetRowService timesheetRowService = new TimesheetRowService();
 	
 	@GetMapping("/timesheet/all")
 	@ApiOperation("Returns a list of all timesheets in the system.")
@@ -132,6 +137,26 @@ public class TimesheetController {
 		else {
 			return GlobalFunctions.createNotFoundResponse(GlobalVars.TimesheetIdNotFound, "/timesheet");
 		}
+	}
+	
+	@DeleteMapping("/timesheet")
+	@ApiOperation(value = "Deletes a timesheet in the system by their identifier.", notes = "404 if the timeseet's identifier cannot be found. 400 if it is still referenced by a timesheetRow")
+	public ResponseEntity<String> delete(@ApiParam(value = "Id of the timesheet to be deleted", required = true) @RequestParam(value = "id") int id) {
+		
+		Optional<Timesheet> optionalTimesheet = timesheetService.getById(id);
+		
+		if (optionalTimesheet.isPresent() == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalVars.TimesheetIdNotFound, "/timesheet");
+		}
+		
+		Timesheet timesheet = optionalTimesheet.get();
+		
+		if(timesheetRowService.getByTimesheetId(id).size() > 0) {
+			return GlobalFunctions.createBadRequest(GlobalVars.TimesheetRowUsesTimesheetCannotDelete, "/timesheet");
+		}
+		
+		timesheetService.delete(timesheet);
+		return new ResponseEntity<String>(GlobalVars.TimesheetDeleteSuccessful, HttpStatus.OK);
 	}
 	
 	@GetMapping("/timesheet/employee")

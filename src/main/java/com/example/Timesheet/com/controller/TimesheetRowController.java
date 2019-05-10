@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -83,10 +84,38 @@ public class TimesheetRowController {
 		
 		TimesheetRow timesheetRow = this.timesheetRowMapper.DTOtoTimesheetRow(timesheetRowDto, 0);
 		
-		this.timesheetRowService.postTimesheetRow(timesheetRow);
+		this.timesheetRowService.save(timesheetRow);
 		
 		return new ResponseEntity<String>("{\"id\": "+timesheetRow.getId()+"}", HttpStatus.OK);
 		
+	}
+	
+	@PutMapping("/timesheetRow")
+	@ApiOperation(value = "Updates a timesheet row in the system by their identifier.", notes = "404 if any of the row's identifier in the address, project id or timesheet id specified in the body is not found")
+	public ResponseEntity<String> edit(@ApiParam("Timesheet row information to be modified. There is no need to keep values that will not be modified.") @RequestBody TimesheetRowDTO timesheetRowDto,
+										@ApiParam(value = "Id of the timesheet row to be modified. Cannot be null.", required = true) @RequestParam int id) {
+		
+		if(timesheetRowService.getById(id).isPresent() == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalVars.TimesheetRowIdNotFound, "/timesheetRow");
+		}
+		
+		if(timesheetRowDto.getProjectId() != null) {
+			if(this.projectService.getById(timesheetRowDto.getProjectId()).isPresent() == false) {
+				return GlobalFunctions.createNotFoundResponse(GlobalVars.ProjectIdNotFound, "/timesheetRow");
+			}
+		}
+		
+		if(timesheetRowDto.getTimesheetId() != null) {
+			if(this.timesheetService.getById(timesheetRowDto.getTimesheetId()).isPresent() == false) {
+				return GlobalFunctions.createNotFoundResponse(GlobalVars.TimesheetIdNotFound, "/timesheetRow");
+			}
+		}
+		
+		TimesheetRow timesheetRow = timesheetRowMapper.DTOtoTimesheetRow(timesheetRowDto, id);
+		
+		timesheetRowService.save(timesheetRow);
+		
+		return new ResponseEntity<String>(GlobalVars.TimesheetRowPutSuccessful, HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/timesheetRow")

@@ -21,7 +21,7 @@ public class RoleService {
 		return (List<Role>) this.role.findAll();
 	}
 
-	public void saveRole(Role role) {
+	public void save(Role role) {
 		this.role.save(role);
 
 	}

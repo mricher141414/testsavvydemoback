@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -50,6 +51,17 @@ public class RoleController {
 		return roleService.getAll();
 
 	}
+	
+	@PostMapping("/role")
+	@ApiOperation("Creates a new role in the system.")
+	public String create(@ApiParam(value = "Role information for the new status to be created.", required = true)@RequestBody RoleDTO roleDto) {
+		
+		Role role = this.roleMapper.DTOtoRole(roleDto, 0);
+		
+		this.roleService.save(role);
+		
+		return "{\"id\": "+role.getId()+"}";
+	}
 
 	@PutMapping("/role")
 	@ApiOperation(value = "Updates a role in the system by their identifier.", notes = "404 if the role's identifier cannot be found. \n"
@@ -61,7 +73,7 @@ public class RoleController {
 		
 			if(roleDto.getName() != null || !roleDto.getName().equals("")) {
 				Role role = roleMapper.DTOtoRole(roleDto, id);
-				roleService.saveRole(role);
+				roleService.save(role);
 				
 				return new ResponseEntity<String>(GlobalVars.RolePutSuccessful, HttpStatus.OK);
 			}else {

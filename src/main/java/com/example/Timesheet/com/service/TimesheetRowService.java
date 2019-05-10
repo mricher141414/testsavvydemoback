@@ -15,7 +15,7 @@ public class TimesheetRowService {
 	@Autowired
 	private ITimesheetRowDAO timesheetRowDAO;
 
-	public void postTimesheetRow(TimesheetRow timesheet) {
+	public void save(TimesheetRow timesheet) {
 		
 		timesheetRowDAO.save(timesheet);
 

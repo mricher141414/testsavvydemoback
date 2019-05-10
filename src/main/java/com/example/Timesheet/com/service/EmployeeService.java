@@ -45,4 +45,8 @@ public class EmployeeService {
 	public List<Employee> getAllByDepartementId(int id) {
 		return this.employeeDao.findAllByDepartementId(id);
 	}
+	
+	public void delete(Employee employee) {
+		this.employeeDao.delete(employee);
+	}
 }

@@ -28,6 +28,9 @@ public class TimesheetStatusService {
 		 
 		return this.timesheetStatusDAO.findById(id);
 	}
-	
+
+	public void delete(TimesheetStatus timesheetStatus) {
+		timesheetStatusDAO.delete(timesheetStatus);
+	}
 
 }

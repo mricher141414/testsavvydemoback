@@ -32,6 +32,10 @@ public class TimesheetService {
 
 	}
 	
+	public void delete(Timesheet timesheet) {
+		timesheetDAO.delete(timesheet);
+	}
+	
 	public List<Timesheet> getTimesheetByEmployeeId(int id) {
 
 		return this.timesheetDAO.findByEmployeeId(id);
@@ -44,5 +48,7 @@ public class TimesheetService {
 
 	}
 
-
+	public List<Timesheet> getByTimesheetStatusId(int id) {
+		return timesheetDAO.findByTimesheetStatusId(id);
+	}
 }

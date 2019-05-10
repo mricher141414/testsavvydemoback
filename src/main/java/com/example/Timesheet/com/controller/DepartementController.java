@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,7 +45,16 @@ public class DepartementController {
 	@ApiOperation("Returns a list of all departments in the system.")
 	public List<Departement> getAll(){
 		return departementService.getAll();
+	}
+	
+	@PostMapping("/departement")
+	@ApiOperation("Create a new department in the system.")
+	public String create(@ApiParam(value = "Department information for the new department to be created.", required = true)@RequestBody DepartementDTO departementDto) {
+		Departement department = departementMapper.DTOtoDepartement(departementDto, 0);
 		
+		departementService.save(department);
+		
+		return "{\"id\": "+ department.getId()+"}";
 	}
 	
 	@PutMapping("/departement")

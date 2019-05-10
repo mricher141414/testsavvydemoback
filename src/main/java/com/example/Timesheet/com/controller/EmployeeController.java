@@ -3,12 +3,15 @@ package com.example.Timesheet.com.controller;
 import java.sql.SQLException;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +24,7 @@ import com.example.Timesheet.com.mapper.EmployeeMapper;
 import com.example.Timesheet.com.model.Employee;
 import com.example.Timesheet.com.service.EmployeeService;
 import com.example.Timesheet.com.service.RoleService;
+import com.example.Timesheet.com.service.TimesheetService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -45,38 +49,98 @@ public class EmployeeController {
 	 @Autowired
 	 EmployeeMapper employeeMapper = new EmployeeMapper();
 	 
+	 @Autowired
+	 TimesheetService timesheetService = new TimesheetService();
+	 
 	 @GetMapping("/employee")
 	 @ApiOperation("Returns a list of all employees in the system.")
 	 public List<Employee> getAll() throws SQLException {		
 		 return employeeService.getAll();
 	 }
 	 
-	  @PutMapping("/employee")
-	  @ApiOperation(value = "Updates an employee in the system by their identifier.", notes = "404 if any of the employee's identifier specified in the address, department id, role id or manager id specified in the body is not found")
-	  public ResponseEntity<String> edit(@ApiParam("Employee information to be modified. There is no need to keep values that will not be modified.")@RequestBody EmployeeDto employeeDto,
-		  											@ApiParam(value = "Id of the employee to be modified. Cannot be null.", required = true)@RequestParam(value="id") int id) throws SQLException {
-	
-	  if (employeeDto.getDepartementId() != null) {
-		  if(departementService.getById(employeeDto.getDepartementId()).isPresent() == false) {
-			  return GlobalFunctions.createNotFoundResponse(GlobalVars.DepartementIdNotFound, "/employee");
-		  }
-	  }
-	  
-	  if (employeeDto.getManagerId() != null) {
-		  if(employeeService.getById(employeeDto.getManagerId()).isPresent() == false) {
-			  return GlobalFunctions.createNotFoundResponse(GlobalVars.ManagerIdNotFound, "/employee");
-		  }
-	  }
-	  
-	  if (employeeDto.getRoleId() != null) {
-		  if(roleService.getById(employeeDto.getRoleId()).isPresent() == false) {
-			  return GlobalFunctions.createNotFoundResponse(GlobalVars.RoleIdNotFound, "/employee");
+	 @PostMapping("/employee")
+	 @ApiOperation("Creates a new employee in the system.")
+	 public ResponseEntity<String> create(@ApiParam(value = "Employee information for the new employee to be created.", required = true) @RequestBody EmployeeDto employeeDto) {
+		 
+		 if (employeeDto.getDepartementId() != null) {
+			  if(departementService.getById(employeeDto.getDepartementId()).isPresent() == false) {
+				  return GlobalFunctions.createNotFoundResponse(GlobalVars.DepartementIdNotFound, "/employee");
 			  }
 		  }
 		  
+		  if (employeeDto.getManagerId() != null) {
+			  if(employeeService.getById(employeeDto.getManagerId()).isPresent() == false) {
+				  return GlobalFunctions.createNotFoundResponse(GlobalVars.ManagerIdNotFound, "/employee");
+			  }
+		  }
+		  
+		  if (employeeDto.getRoleId() != null) {
+			  if(roleService.getById(employeeDto.getRoleId()).isPresent() == false) {
+				  return GlobalFunctions.createNotFoundResponse(GlobalVars.RoleIdNotFound, "/employee");
+				  }
+			  }
+		 
+		 Employee employee = employeeMapper.dtoToEmployee(employeeDto, 0);
+		 
+		 employeeService.saveEmployee(employee);
+		 
+		 return new ResponseEntity<String>("{\"id\": "+employee.getId()+"}", HttpStatus.OK);
+	 }
+	 
+	 @PutMapping("/employee")
+	 @ApiOperation(value = "Updates an employee in the system by their identifier.", notes = "404 if any of the employee's identifier specified in the address, department id, role id or manager id specified in the body is not found")
+	 public ResponseEntity<String> edit(@ApiParam("Employee information to be modified. There is no need to keep values that will not be modified.")@RequestBody EmployeeDto employeeDto,
+	  											@ApiParam(value = "Id of the employee to be modified. Cannot be null.", required = true)@RequestParam(value="id") int id) throws SQLException {
+
+		  if (employeeService.getById(id).isPresent() == false) {
+			  return GlobalFunctions.createNotFoundResponse(GlobalVars.EmployeeIdNotFound, "/employee");
+		  }
+		  
+		  if (employeeDto.getDepartementId() != null) {
+			  if(departementService.getById(employeeDto.getDepartementId()).isPresent() == false) {
+				  return GlobalFunctions.createNotFoundResponse(GlobalVars.DepartementIdNotFound, "/employee");
+			  }
+		  }
+		  
+		  if (employeeDto.getManagerId() != null) {
+			  if(employeeService.getById(employeeDto.getManagerId()).isPresent() == false) {
+				  return GlobalFunctions.createNotFoundResponse(GlobalVars.ManagerIdNotFound, "/employee");
+			  }
+		  }
+		  
+		  if (employeeDto.getRoleId() != null) {
+			  if(roleService.getById(employeeDto.getRoleId()).isPresent() == false) {
+				  return GlobalFunctions.createNotFoundResponse(GlobalVars.RoleIdNotFound, "/employee");
+			  }
+		  }
+			  
 		  Employee employee = employeeMapper.dtoToEmployee(employeeDto, id);
 		  employeeService.saveEmployee(employee);
 		
 		  return new ResponseEntity<String>(GlobalVars.EmployeePutSuccessful, HttpStatus.OK);
-	  }
+	 }
+	 
+	 @DeleteMapping("/employee")
+	 @ApiOperation(value = "Deletes an employee in the system by their identifier.", notes = "404 if the employee's identifier cannot be found.<br> 400 if the employee is still referenced by a timesheet or another employee.")
+	 public ResponseEntity<String> delete(@ApiParam(value = "Id of the employee to be deleted. Cannot be null", required = true) @RequestParam int id) {
+		 
+		 Optional<Employee> optionalEmployee = this.employeeService.getById(id);
+		 
+		 if(optionalEmployee.isPresent() == false) {
+			 return GlobalFunctions.createNotFoundResponse(GlobalVars.EmployeeIdNotFound, "/employee");
+		 }
+		 
+		 Employee employee = optionalEmployee.get();
+		 
+		 if(this.employeeService.getAllByManagerId(id).size() > 0) {
+			 return GlobalFunctions.createBadRequest(GlobalVars.EmployeeUsesManagerCannotDelete, "/employee");
+		 }
+		 
+		 if(this.timesheetService.getTimesheetByEmployeeId(id).size() > 0) {
+			 return GlobalFunctions.createBadRequest(GlobalVars.TimesheetUsesEmployeeCannotDelete, "/employee");
+		 }
+		 
+		 this.employeeService.delete(employee);
+		 return new ResponseEntity<String>(GlobalVars.EmployeeDeleteSuccessful, HttpStatus.OK);
+	 }
 }
