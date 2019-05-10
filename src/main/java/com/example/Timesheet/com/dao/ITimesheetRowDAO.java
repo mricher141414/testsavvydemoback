@@ -8,6 +8,6 @@ import com.example.Timesheet.com.model.TimesheetRow;
 
 public interface ITimesheetRowDAO extends CrudRepository<TimesheetRow, Integer>{
 	
-	
 	List<TimesheetRow> findByTimesheetId(int id);
+	List<TimesheetRow> findByProjectId(int id);
 }

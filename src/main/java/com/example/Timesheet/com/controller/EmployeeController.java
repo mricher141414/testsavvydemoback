@@ -23,6 +23,7 @@ import com.example.Timesheet.com.dto.EmployeeDto;
 import com.example.Timesheet.com.mapper.EmployeeMapper;
 import com.example.Timesheet.com.model.Employee;
 import com.example.Timesheet.com.service.EmployeeService;
+import com.example.Timesheet.com.service.ProjectService;
 import com.example.Timesheet.com.service.RoleService;
 import com.example.Timesheet.com.service.TimesheetService;
 
@@ -51,6 +52,9 @@ public class EmployeeController {
 	 
 	 @Autowired
 	 TimesheetService timesheetService = new TimesheetService();
+	 
+	 @Autowired
+	 ProjectService projectService = new ProjectService();
 	 
 	 @GetMapping("/employee")
 	 @ApiOperation("Returns a list of all employees in the system.")
@@ -121,7 +125,7 @@ public class EmployeeController {
 	 }
 	 
 	 @DeleteMapping("/employee")
-	 @ApiOperation(value = "Deletes an employee in the system by their identifier.", notes = "404 if the employee's identifier cannot be found.<br> 400 if the employee is still referenced by a timesheet or another employee.")
+	 @ApiOperation(value = "Deletes an employee in the system by their identifier.", notes = "404 if the employee's identifier cannot be found.<br> 400 if the employee is still referenced by a timesheet, project or another employee.")
 	 public ResponseEntity<String> delete(@ApiParam(value = "Id of the employee to be deleted. Cannot be null", required = true) @RequestParam int id) {
 		 
 		 Optional<Employee> optionalEmployee = this.employeeService.getById(id);
@@ -138,6 +142,10 @@ public class EmployeeController {
 		 
 		 if(this.timesheetService.getTimesheetByEmployeeId(id).size() > 0) {
 			 return GlobalFunctions.createBadRequest(GlobalVars.TimesheetUsesEmployeeCannotDelete, "/employee");
+		 }
+		 
+		 if(projectService.getByProjectManagerId(id).size() > 0) {
+			 return GlobalFunctions.createBadRequest(GlobalVars.ProjectUsesEmployeeCannotDelete, "/employee");
 		 }
 		 
 		 this.employeeService.delete(employee);

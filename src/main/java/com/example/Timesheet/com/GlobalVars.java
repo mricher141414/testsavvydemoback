@@ -28,6 +28,7 @@ public class GlobalVars {
 	public static final String ManagerIdIsNull = "The managerId in body is null. Please add a managerId";
 	public static final String EmployeeUsesManagerCannotDelete = "The employee with the specified id cannot be deleted, as some employees are referencing it as their manager.";
 	public static final String TimesheetUsesEmployeeCannotDelete = "The employee with the specified id cannot be deleted, as some timesheets are referencing it.";
+	public static final String ProjectUsesEmployeeCannotDelete = "The employee with the specified id cannot be deleted, as some projects are referencing it as their project manager.";
 	
 	//timesheetRow messages
 	public static final String TimesheetRowIdNotFound = "No timesheetRow was found with the specified id";
@@ -49,8 +50,15 @@ public class GlobalVars {
 	public static final String TimesheetStatusIdIsNull = "The timesheetStatusId in body is null. Please add a timesheetStatusId";
 	
 	//project messages
-	public static final String ProjectIdNotFound = "No project was found with the specified projectId";
+	public static final String ProjectIdParameterNotFound = "No project was found with the specified projectId";
+	public static final String ProjectIdNotFound = "No project was found with the specified id";
 	public static final String ProjectIdIsNull = "The projectId in body is null. Please add a projectId";
+	public static final String ProjectPutSuccessful = "The project with the specified id was modified successfully";
+	public static final String TimesheetRowUsesProjectCannotDelete = "The project with the specified id cannot be deleted, as some timesheet rows are referencing it.";
+	public static final String ProjectDeleteSuccessful = "The project with the specified id was deleted.";
+	
+	//client messages
+	public static final String ClientIdParameterNotFound = "No client was found with the specified clientId";
 	
 	//global messages
 	public static final String NameIsEmpty = "Name is empty";

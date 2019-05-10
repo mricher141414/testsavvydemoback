@@ -72,7 +72,7 @@ public class TimesheetRowController {
 		
 		if(timesheetRowDto.getProjectId() != null) {
 			if(this.projectService.getById(timesheetRowDto.getProjectId()).isPresent() == false) {
-				return GlobalFunctions.createNotFoundResponse(GlobalVars.ProjectIdNotFound, "/timesheetRow");
+				return GlobalFunctions.createNotFoundResponse(GlobalVars.ProjectIdParameterNotFound, "/timesheetRow");
 			}
 		}
 		
@@ -101,7 +101,7 @@ public class TimesheetRowController {
 		
 		if(timesheetRowDto.getProjectId() != null) {
 			if(this.projectService.getById(timesheetRowDto.getProjectId()).isPresent() == false) {
-				return GlobalFunctions.createNotFoundResponse(GlobalVars.ProjectIdNotFound, "/timesheetRow");
+				return GlobalFunctions.createNotFoundResponse(GlobalVars.ProjectIdParameterNotFound, "/timesheetRow");
 			}
 		}
 		

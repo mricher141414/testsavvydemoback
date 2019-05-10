@@ -19,6 +19,7 @@ import io.swagger.annotations.ApiModelProperty;
 @Table(name = "Employee")
 @ApiModel(description = "<p>Class representing a employee tracked by the application.</p>")
 public class Employee {
+	
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	@ApiModelProperty(notes = "<p>Unique identifier of the employee. No two employees can have the same id</p>", example = "1", position = 0)
 	private int id;
