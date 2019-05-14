@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.Timesheet.com.GlobalFunctions;
-import com.example.Timesheet.com.GlobalVars;
+import com.example.Timesheet.com.GlobalMessages;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -75,13 +75,13 @@ public class RoleController {
 				Role role = roleMapper.DTOtoRole(roleDto, id);
 				roleService.save(role);
 				
-				return new ResponseEntity<String>(GlobalVars.RolePutSuccessful, HttpStatus.OK);
+				return new ResponseEntity<String>(GlobalMessages.RolePutSuccessful, HttpStatus.OK);
 			}else {
-				return GlobalFunctions.createBadRequest(GlobalVars.NameIsEmpty, "/role");
+				return GlobalFunctions.createBadRequest(GlobalMessages.NameIsEmpty, "/role");
 			}
 		}
 		else {
-			return GlobalFunctions.createNotFoundResponse(GlobalVars.RoleIdNotFound, "/role");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.RoleIdNotFound, "/role");
 		}
 	}
 
@@ -95,15 +95,15 @@ public class RoleController {
 			Role role = optionalRole.get();
 			
 			if(this.personService.getAllByRoleId(id).size() > 0) {
-				return GlobalFunctions.createBadRequest(GlobalVars.EmployeeUsesRoleCannotDelete, "/role");
+				return GlobalFunctions.createBadRequest(GlobalMessages.EmployeeUsesRoleCannotDelete, "/role");
 			}
 			
 			this.roleService.delete(role);
 	
-			return new ResponseEntity<String>(GlobalVars.RoleDeleteSuccessful, HttpStatus.OK);
+			return new ResponseEntity<String>(GlobalMessages.RoleDeleteSuccessful, HttpStatus.OK);
 		}
 		else {
-			return GlobalFunctions.createNotFoundResponse(GlobalVars.RoleIdNotFound, "/role");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.RoleIdNotFound, "/role");
 		}
 	}
 

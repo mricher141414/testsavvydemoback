@@ -8,7 +8,7 @@ import java.util.TimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.example.Timesheet.com.GlobalVars;
+import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.dto.EmployeeComplex;
 import com.example.Timesheet.com.dto.EmployeeComplexWithManager;
 import com.example.Timesheet.com.dto.EmployeeDto;

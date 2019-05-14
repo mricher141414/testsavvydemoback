@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Timesheet.com.GlobalFunctions;
-import com.example.Timesheet.com.GlobalVars;
+import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.dto.TimesheetRowDTO;
 import com.example.Timesheet.com.mapper.TimesheetRowMapper;
 import com.example.Timesheet.com.model.TimesheetRow;
@@ -62,7 +62,7 @@ public class TimesheetRowController {
 			return new ResponseEntity<TimesheetRow>(optionalRow.get(), HttpStatus.OK);
 		}
 		else {
-			return GlobalFunctions.createNotFoundResponse(GlobalVars.TimesheetRowIdNotFound, "/timesheetRow/one");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetRowIdNotFound, "/timesheetRow/one");
 		}
 	}
 	
@@ -72,13 +72,13 @@ public class TimesheetRowController {
 		
 		if(timesheetRowDto.getProjectId() != null) {
 			if(this.projectService.getById(timesheetRowDto.getProjectId()).isPresent() == false) {
-				return GlobalFunctions.createNotFoundResponse(GlobalVars.ProjectIdParameterNotFound, "/timesheetRow");
+				return GlobalFunctions.createNotFoundResponse(GlobalMessages.ProjectIdParameterNotFound, "/timesheetRow");
 			}
 		}
 		
 		if(timesheetRowDto.getTimesheetId() != null) {
 			if(this.timesheetService.getById(timesheetRowDto.getTimesheetId()).isPresent() == false) {
-				return GlobalFunctions.createNotFoundResponse(GlobalVars.TimesheetIdNotFound, "/timesheetRow");
+				return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetIdNotFound, "/timesheetRow");
 			}
 		}
 		
@@ -96,18 +96,18 @@ public class TimesheetRowController {
 										@ApiParam(value = "Id of the timesheet row to be modified. Cannot be null.", required = true) @RequestParam int id) {
 		
 		if(timesheetRowService.getById(id).isPresent() == false) {
-			return GlobalFunctions.createNotFoundResponse(GlobalVars.TimesheetRowIdNotFound, "/timesheetRow");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetRowIdNotFound, "/timesheetRow");
 		}
 		
 		if(timesheetRowDto.getProjectId() != null) {
 			if(this.projectService.getById(timesheetRowDto.getProjectId()).isPresent() == false) {
-				return GlobalFunctions.createNotFoundResponse(GlobalVars.ProjectIdParameterNotFound, "/timesheetRow");
+				return GlobalFunctions.createNotFoundResponse(GlobalMessages.ProjectIdParameterNotFound, "/timesheetRow");
 			}
 		}
 		
 		if(timesheetRowDto.getTimesheetId() != null) {
 			if(this.timesheetService.getById(timesheetRowDto.getTimesheetId()).isPresent() == false) {
-				return GlobalFunctions.createNotFoundResponse(GlobalVars.TimesheetIdNotFound, "/timesheetRow");
+				return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetIdNotFound, "/timesheetRow");
 			}
 		}
 		
@@ -115,7 +115,7 @@ public class TimesheetRowController {
 		
 		timesheetRowService.save(timesheetRow);
 		
-		return new ResponseEntity<String>(GlobalVars.TimesheetRowPutSuccessful, HttpStatus.OK);
+		return new ResponseEntity<String>(GlobalMessages.TimesheetRowPutSuccessful, HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/timesheetRow")
@@ -129,10 +129,10 @@ public class TimesheetRowController {
 			TimesheetRow timesheetRow = optionalRow.get();
 			this.timesheetRowService.deleteTimesheetRow(timesheetRow);
 			
-			return new ResponseEntity<String>(GlobalVars.TimesheetRowDeleteSuccessful, HttpStatus.OK);
+			return new ResponseEntity<String>(GlobalMessages.TimesheetRowDeleteSuccessful, HttpStatus.OK);
 		}
 		else {
-			return GlobalFunctions.createNotFoundResponse(GlobalVars.TimesheetRowIdNotFound, "/timesheetRow");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetRowIdNotFound, "/timesheetRow");
 		}
 	}
 

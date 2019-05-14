@@ -27,7 +27,8 @@ public class SpringFoxConfig {
 				.paths(PathSelectors.any())
 				.build()
 				.apiInfo(getApiInfo())
-				.tags(new Tag("DepartementController", "Set of endpoints for listing, creating, updating and deleting departments."),
+				.tags(new Tag("ClientController", "Set of endpoints for listing, creating, updating and deleting clients."),
+						new Tag("DepartementController", "Set of endpoints for listing, creating, updating and deleting departments."),
 						new Tag("EmployeeController", "Set of endpoints for listing, creating, updating and deleting employee."),
 						new Tag("ProjectController", "Set of endpoints for listing, creating, updating and deleting projects."),
 						new Tag("RoleController", "Set of endpoints for listing, creating, updating and deleting roles."),

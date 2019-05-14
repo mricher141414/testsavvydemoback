@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Timesheet.com.GlobalFunctions;
-import com.example.Timesheet.com.GlobalVars;
+import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.dto.TimesheetStatusDTO;
 import com.example.Timesheet.com.mapper.TimesheetStatusMapper;
 import com.example.Timesheet.com.model.TimesheetStatus;
@@ -64,14 +64,14 @@ public class TimesheetStatusController {
 										@ApiParam(value = "Id of the timesheet status to be modified. Cannot be null.", required = true) @RequestParam int id) {
 		
 		if(timesheetStatusService.getById(id).isPresent() == false) {
-			return GlobalFunctions.createNotFoundResponse(GlobalVars.TimesheetStatusIdNotFound, "/timesheetStatus");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetStatusIdNotFound, "/timesheetStatus");
 		}
 		
 		TimesheetStatus timesheetStatus = timesheetStatusMapper.DTOtoTimesheetStatus(timesheetStatusDto, id);
 		
 		timesheetStatusService.save(timesheetStatus);
 		
-		return new ResponseEntity<String>(GlobalVars.TimesheetPutSuccessful, HttpStatus.OK);
+		return new ResponseEntity<String>(GlobalMessages.TimesheetPutSuccessful, HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/timesheetStatus")
@@ -81,16 +81,16 @@ public class TimesheetStatusController {
 		Optional<TimesheetStatus> optionalStatus = timesheetStatusService.getById(id);
 		
 		if (optionalStatus.isPresent() == false) {
-			return GlobalFunctions.createNotFoundResponse(GlobalVars.TimesheetStatusIdNotFound, "/timesheetStatus");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetStatusIdNotFound, "/timesheetStatus");
 		}
 		
 		TimesheetStatus timesheetStatus = optionalStatus.get();
 		
 		if(timesheetService.getByTimesheetStatusId(id).size() > 0) {
-			return GlobalFunctions.createBadRequest(GlobalVars.TimesheetUsesTimesheetStatusCannotDelete, "/timesheetStatus");
+			return GlobalFunctions.createBadRequest(GlobalMessages.TimesheetUsesTimesheetStatusCannotDelete, "/timesheetStatus");
 		}
 		
 		timesheetStatusService.delete(timesheetStatus);
-		return new ResponseEntity<String>(GlobalVars.TimesheetStatusDeleteSuccessful, HttpStatus.OK);
+		return new ResponseEntity<String>(GlobalMessages.TimesheetStatusDeleteSuccessful, HttpStatus.OK);
 	}
 }

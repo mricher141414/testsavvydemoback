@@ -10,7 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.example.Timesheet.com.GlobalVars;
+import com.example.Timesheet.com.GlobalMessages;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -59,7 +59,7 @@ public class Employee {
 	public void compensateTimezoneOnDates() {
 		Date dateOfBirth = this.getDateOfBirth();
         
-        TimeZone timeZone = TimeZone.getTimeZone(GlobalVars.Timezone);
+        TimeZone timeZone = TimeZone.getTimeZone(GlobalMessages.Timezone);
         int offset = timeZone.getOffset(dateOfBirth.getTime());
         
         dateOfBirth.setTime(dateOfBirth.getTime() - offset);
