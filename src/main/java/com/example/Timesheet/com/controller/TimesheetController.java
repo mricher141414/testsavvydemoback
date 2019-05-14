@@ -192,11 +192,12 @@ public class TimesheetController {
 
 		if(this.personService.getById(id).isPresent()) {
 			List<Employee> employeesOfManager = this.personService.getAllByManagerId(id);
-			EmployeeComplex personWithTimesheets = new EmployeeComplex();
 			List<EmployeeComplex> listOfPeople = new ArrayList<EmployeeComplex>();
 	
 			for(Employee person : employeesOfManager) {
-	
+				
+				EmployeeComplex personWithTimesheets = new EmployeeComplex();
+				
 				personMapper.fromEmployeeToComplex(person, personWithTimesheets);
 				
 				personMapper.addTimesheetsToEmployeeComplexByStartDate(personWithTimesheets, startDate);
