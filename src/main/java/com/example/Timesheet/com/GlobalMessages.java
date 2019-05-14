@@ -1,6 +1,6 @@
 package com.example.Timesheet.com;
 
-public class GlobalVars {
+public class GlobalMessages {
 	
 	public static final String Timezone = "Canada/Eastern";
 	
@@ -59,6 +59,10 @@ public class GlobalVars {
 	
 	//client messages
 	public static final String ClientIdParameterNotFound = "No client was found with the specified clientId";
+	public static final String ClientIdNotFound = "No client was found with the specified id";
+	public static final String ClientPutSuccessful = "The client with the specified id was modified successfully.";
+	public static final String ProjectUsesClientCannotDelete = "The client with the specified id cannot be deleted, as some projects are referencing it.";
+	public static final String ClientDeleteSuccessful = "The project with the specified id was deleted.";
 	
 	//global messages
 	public static final String NameIsEmpty = "Name is empty";

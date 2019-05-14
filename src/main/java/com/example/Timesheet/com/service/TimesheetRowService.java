@@ -40,5 +40,9 @@ public class TimesheetRowService {
 	public List<TimesheetRow> getByTimesheetId(int id) {
 		return this.timesheetRowDAO.findByTimesheetId(id);
 	}
+	
+	public List<TimesheetRow> getByProjectId(int id) {
+		return timesheetRowDAO.findByProjectId(id);
+	}
 
 }

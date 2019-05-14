@@ -11,4 +11,5 @@ import com.example.Timesheet.com.model.Project;
 public interface IProjectDAO extends CrudRepository<Project, Integer> {
 	
 	List<Project> findAllByProjectManagerId(int id);
+	List<Project> findAllByClientId(int id);
 }

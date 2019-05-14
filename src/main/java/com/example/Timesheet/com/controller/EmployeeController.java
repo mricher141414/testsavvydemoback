@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Timesheet.com.GlobalFunctions;
-import com.example.Timesheet.com.GlobalVars;
+import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.dto.EmployeeDto;
 import com.example.Timesheet.com.mapper.EmployeeMapper;
 import com.example.Timesheet.com.model.Employee;
@@ -68,19 +68,19 @@ public class EmployeeController {
 		 
 		 if (employeeDto.getDepartementId() != null) {
 			  if(departementService.getById(employeeDto.getDepartementId()).isPresent() == false) {
-				  return GlobalFunctions.createNotFoundResponse(GlobalVars.DepartementIdNotFound, "/employee");
+				  return GlobalFunctions.createNotFoundResponse(GlobalMessages.DepartementIdNotFound, "/employee");
 			  }
 		  }
 		  
 		  if (employeeDto.getManagerId() != null) {
 			  if(employeeService.getById(employeeDto.getManagerId()).isPresent() == false) {
-				  return GlobalFunctions.createNotFoundResponse(GlobalVars.ManagerIdNotFound, "/employee");
+				  return GlobalFunctions.createNotFoundResponse(GlobalMessages.ManagerIdNotFound, "/employee");
 			  }
 		  }
 		  
 		  if (employeeDto.getRoleId() != null) {
 			  if(roleService.getById(employeeDto.getRoleId()).isPresent() == false) {
-				  return GlobalFunctions.createNotFoundResponse(GlobalVars.RoleIdNotFound, "/employee");
+				  return GlobalFunctions.createNotFoundResponse(GlobalMessages.RoleIdNotFound, "/employee");
 				  }
 			  }
 		 
@@ -97,31 +97,31 @@ public class EmployeeController {
 	  											@ApiParam(value = "Id of the employee to be modified. Cannot be null.", required = true)@RequestParam(value="id") int id) throws SQLException {
 
 		  if (employeeService.getById(id).isPresent() == false) {
-			  return GlobalFunctions.createNotFoundResponse(GlobalVars.EmployeeIdNotFound, "/employee");
+			  return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdNotFound, "/employee");
 		  }
 		  
 		  if (employeeDto.getDepartementId() != null) {
 			  if(departementService.getById(employeeDto.getDepartementId()).isPresent() == false) {
-				  return GlobalFunctions.createNotFoundResponse(GlobalVars.DepartementIdNotFound, "/employee");
+				  return GlobalFunctions.createNotFoundResponse(GlobalMessages.DepartementIdNotFound, "/employee");
 			  }
 		  }
 		  
 		  if (employeeDto.getManagerId() != null) {
 			  if(employeeService.getById(employeeDto.getManagerId()).isPresent() == false) {
-				  return GlobalFunctions.createNotFoundResponse(GlobalVars.ManagerIdNotFound, "/employee");
+				  return GlobalFunctions.createNotFoundResponse(GlobalMessages.ManagerIdNotFound, "/employee");
 			  }
 		  }
 		  
 		  if (employeeDto.getRoleId() != null) {
 			  if(roleService.getById(employeeDto.getRoleId()).isPresent() == false) {
-				  return GlobalFunctions.createNotFoundResponse(GlobalVars.RoleIdNotFound, "/employee");
+				  return GlobalFunctions.createNotFoundResponse(GlobalMessages.RoleIdNotFound, "/employee");
 			  }
 		  }
 			  
 		  Employee employee = employeeMapper.dtoToEmployee(employeeDto, id);
 		  employeeService.saveEmployee(employee);
 		
-		  return new ResponseEntity<String>(GlobalVars.EmployeePutSuccessful, HttpStatus.OK);
+		  return new ResponseEntity<String>(GlobalMessages.EmployeePutSuccessful, HttpStatus.OK);
 	 }
 	 
 	 @DeleteMapping("/employee")
@@ -131,24 +131,24 @@ public class EmployeeController {
 		 Optional<Employee> optionalEmployee = this.employeeService.getById(id);
 		 
 		 if(optionalEmployee.isPresent() == false) {
-			 return GlobalFunctions.createNotFoundResponse(GlobalVars.EmployeeIdNotFound, "/employee");
+			 return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdNotFound, "/employee");
 		 }
 		 
 		 Employee employee = optionalEmployee.get();
 		 
 		 if(this.employeeService.getAllByManagerId(id).size() > 0) {
-			 return GlobalFunctions.createBadRequest(GlobalVars.EmployeeUsesManagerCannotDelete, "/employee");
+			 return GlobalFunctions.createBadRequest(GlobalMessages.EmployeeUsesManagerCannotDelete, "/employee");
 		 }
 		 
 		 if(this.timesheetService.getTimesheetByEmployeeId(id).size() > 0) {
-			 return GlobalFunctions.createBadRequest(GlobalVars.TimesheetUsesEmployeeCannotDelete, "/employee");
+			 return GlobalFunctions.createBadRequest(GlobalMessages.TimesheetUsesEmployeeCannotDelete, "/employee");
 		 }
 		 
 		 if(projectService.getByProjectManagerId(id).size() > 0) {
-			 return GlobalFunctions.createBadRequest(GlobalVars.ProjectUsesEmployeeCannotDelete, "/employee");
+			 return GlobalFunctions.createBadRequest(GlobalMessages.ProjectUsesEmployeeCannotDelete, "/employee");
 		 }
 		 
 		 this.employeeService.delete(employee);
-		 return new ResponseEntity<String>(GlobalVars.EmployeeDeleteSuccessful, HttpStatus.OK);
+		 return new ResponseEntity<String>(GlobalMessages.EmployeeDeleteSuccessful, HttpStatus.OK);
 	 }
 }

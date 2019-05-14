@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.Timesheet.com.dto.EmployeeComplexWithManager;
 import com.example.Timesheet.com.dto.EmployeeComplex;
 import com.example.Timesheet.com.GlobalFunctions;
-import com.example.Timesheet.com.GlobalVars;
+import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.dto.TimesheetDTO;
 import com.example.Timesheet.com.mapper.EmployeeMapper;
 import com.example.Timesheet.com.mapper.TimesheetMapper;
@@ -79,7 +79,7 @@ public class TimesheetController {
 			return new ResponseEntity<>(optionalTimesheet.get(),HttpStatus.OK);
 		}
 		else {
-			return GlobalFunctions.createNotFoundResponse(GlobalVars.TimesheetIdNotFound, "/timesheet");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetIdNotFound, "/timesheet");
 		}
 	}
 
@@ -90,13 +90,13 @@ public class TimesheetController {
 		
 		if(timesheetDto.getEmployeeId() != null) {
 			if(personService.getById(timesheetDto.getEmployeeId()).isPresent() == false) {
-				return GlobalFunctions.createNotFoundResponse(GlobalVars.EmployeeIdParameterNotFound, "/timesheet");
+				return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdParameterNotFound, "/timesheet");
 			}
 		}
 		
 		if(timesheetDto.getTimesheetStatusId() != null) {
 			if(timesheetStatusService.getById(timesheetDto.getTimesheetStatusId()).isPresent() == false) {
-				return GlobalFunctions.createNotFoundResponse(GlobalVars.TimesheetStatusIdNotFound, "/timesheet");
+				return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetStatusIdNotFound, "/timesheet");
 			}
 		}
 		
@@ -118,13 +118,13 @@ public class TimesheetController {
 			
 			if(timesheetDto.getEmployeeId() != null) {
 				if (personService.getById(timesheetDto.getEmployeeId()).isPresent() == false) {
-					return GlobalFunctions.createNotFoundResponse(GlobalVars.EmployeeIdParameterNotFound, "/timesheet");
+					return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdParameterNotFound, "/timesheet");
 				}
 			}
 			
 			if(timesheetDto.getTimesheetStatusId() != null) {
 				if (timesheetStatusService.getById(timesheetDto.getTimesheetStatusId()).isPresent() == false) {
-					return GlobalFunctions.createNotFoundResponse(GlobalVars.TimesheetStatusIdNotFound, "/timesheet");
+					return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetStatusIdNotFound, "/timesheet");
 				}
 			}
 			
@@ -132,10 +132,10 @@ public class TimesheetController {
 	
 			this.timesheetService.save(timesheet);
 	
-			return new ResponseEntity<String>(GlobalVars.TimesheetPutSuccessful, HttpStatus.OK);
+			return new ResponseEntity<String>(GlobalMessages.TimesheetPutSuccessful, HttpStatus.OK);
 		}
 		else {
-			return GlobalFunctions.createNotFoundResponse(GlobalVars.TimesheetIdNotFound, "/timesheet");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetIdNotFound, "/timesheet");
 		}
 	}
 	
@@ -146,17 +146,17 @@ public class TimesheetController {
 		Optional<Timesheet> optionalTimesheet = timesheetService.getById(id);
 		
 		if (optionalTimesheet.isPresent() == false) {
-			return GlobalFunctions.createNotFoundResponse(GlobalVars.TimesheetIdNotFound, "/timesheet");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetIdNotFound, "/timesheet");
 		}
 		
 		Timesheet timesheet = optionalTimesheet.get();
 		
 		if(timesheetRowService.getByTimesheetId(id).size() > 0) {
-			return GlobalFunctions.createBadRequest(GlobalVars.TimesheetRowUsesTimesheetCannotDelete, "/timesheet");
+			return GlobalFunctions.createBadRequest(GlobalMessages.TimesheetRowUsesTimesheetCannotDelete, "/timesheet");
 		}
 		
 		timesheetService.delete(timesheet);
-		return new ResponseEntity<String>(GlobalVars.TimesheetDeleteSuccessful, HttpStatus.OK);
+		return new ResponseEntity<String>(GlobalMessages.TimesheetDeleteSuccessful, HttpStatus.OK);
 	}
 	
 	@GetMapping("/timesheet/employee")
@@ -179,7 +179,7 @@ public class TimesheetController {
 		}
 		
 		else {
-			return GlobalFunctions.createNotFoundResponse(GlobalVars.EmployeeIdNotFound, "/timesheet/employee");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdNotFound, "/timesheet/employee");
 		}
 	}
 
@@ -208,7 +208,7 @@ public class TimesheetController {
 			return new ResponseEntity<List<EmployeeComplex>>(listOfPeople, HttpStatus.OK);
 		}
 		else {
-			return GlobalFunctions.createNotFoundResponse(GlobalVars.EmployeeIdNotFound, "/timesheet/manager");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdNotFound, "/timesheet/manager");
 		}
 	}
 }

@@ -2,6 +2,7 @@ package com.example.Timesheet.com.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Timesheet.com.GlobalFunctions;
-import com.example.Timesheet.com.GlobalVars;
+import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.dto.ProjectDto;
 import com.example.Timesheet.com.mapper.ProjectMapper;
 import com.example.Timesheet.com.model.Employee;
@@ -62,13 +63,13 @@ public class ProjectController {
 		
 		if (projectDto.getProjectManagerId() != null) {
 			  if(employeeService.getById(projectDto.getProjectManagerId()).isPresent() == false) {
-				  return GlobalFunctions.createNotFoundResponse(GlobalVars.ManagerIdNotFound, "/project");
+				  return GlobalFunctions.createNotFoundResponse(GlobalMessages.ManagerIdNotFound, "/project");
 			  }
 		  }
 		  
 		  if (projectDto.getClientId() != null) {
 			  if(clientService.getById(projectDto.getClientId()).isPresent() == false) {
-				  return GlobalFunctions.createNotFoundResponse(GlobalVars.ClientIdParameterNotFound, "/project");
+				  return GlobalFunctions.createNotFoundResponse(GlobalMessages.ClientIdParameterNotFound, "/project");
 				  }
 			  }
 		 
@@ -85,18 +86,18 @@ public class ProjectController {
 										@ApiParam(value = "Id of the project to be modified. Cannot be null.", required = true)@RequestParam int id) {
 		
 		if(projectService.getById(id).isPresent() == false) {
-			  return GlobalFunctions.createNotFoundResponse(GlobalVars.ProjectIdNotFound, "/project");
+			  return GlobalFunctions.createNotFoundResponse(GlobalMessages.ProjectIdNotFound, "/project");
 		}
 		
 		if (projectDto.getProjectManagerId() != null) {
 			  if(employeeService.getById(projectDto.getProjectManagerId()).isPresent() == false) {
-				  return GlobalFunctions.createNotFoundResponse(GlobalVars.ManagerIdNotFound, "/project");
+				  return GlobalFunctions.createNotFoundResponse(GlobalMessages.ManagerIdNotFound, "/project");
 			  }
 		  }
 		  
 		  if (projectDto.getClientId() != null) {
 			  if(clientService.getById(projectDto.getClientId()).isPresent() == false) {
-				  return GlobalFunctions.createNotFoundResponse(GlobalVars.RoleIdNotFound, "/project");
+				  return GlobalFunctions.createNotFoundResponse(GlobalMessages.RoleIdNotFound, "/project");
 				  }
 			  }
 		 
@@ -104,12 +105,26 @@ public class ProjectController {
 		 
 		 projectService.save(project);
 		 
-		 return new ResponseEntity<String>("{\"id\": "+project.getId()+"}", HttpStatus.OK);
+		 return new ResponseEntity<String>(GlobalMessages.ProjectPutSuccessful, HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/project")
 	@ApiOperation(value = "Deletes a project in the system by their identifier.", notes = "404 if the project's identifier cannot be found.<br> 400 if the project is still referenced by a timesheet row.")
 	public ResponseEntity<String> delete(@RequestParam int id) {
-		return null;
+		
+		Optional<Project> optionalProject = projectService.getById(id);
+		
+		if(optionalProject.isPresent() == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ProjectIdNotFound, "/project");
+		}
+		
+		if(timesheetRowService.getByProjectId(id).size() > 0) {
+			return GlobalFunctions.createBadRequest(GlobalMessages.TimesheetRowUsesProjectCannotDelete, "/project");
+		}
+		
+		Project project = optionalProject.get();
+		
+		projectService.delete(project);
+		return new ResponseEntity<String>(GlobalMessages.ProjectDeleteSuccessful, HttpStatus.OK);
 	}
 }

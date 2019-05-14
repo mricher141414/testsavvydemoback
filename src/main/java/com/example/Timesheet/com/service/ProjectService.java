@@ -34,4 +34,8 @@ public class ProjectService {
 	public List<Project> getByProjectManagerId(int id) {
 		return projectDAO.findAllByProjectManagerId(id);
 	}
+	
+	public List<Project> getByClientId(int id) {
+		return projectDAO.findAllByClientId(id);
+	}
 }

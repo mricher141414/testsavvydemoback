@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Timesheet.com.GlobalFunctions;
-import com.example.Timesheet.com.GlobalVars;
+import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.dto.DepartementDTO;
 import com.example.Timesheet.com.mapper.DepartementMapper;
 import com.example.Timesheet.com.model.Departement;
@@ -67,14 +67,14 @@ public class DepartementController {
 			if(departementDTO.getName() != null && !departementDTO.getName().equals("")) { //Validation
 				Departement departement = departementMapper.DTOtoDepartement(departementDTO, id);
 				departementService.save(departement);
-				return new ResponseEntity<String>(GlobalVars.DepartementPutSuccessful, HttpStatus.OK);
+				return new ResponseEntity<String>(GlobalMessages.DepartementPutSuccessful, HttpStatus.OK);
 				
 			}else {
-				return GlobalFunctions.createBadRequest(GlobalVars.NameIsEmpty, "/departement"); 
+				return GlobalFunctions.createBadRequest(GlobalMessages.NameIsEmpty, "/departement"); 
 			}
 		}
 		else {
-			return GlobalFunctions.createNotFoundResponse(GlobalVars.DepartementIdNotFound, "/departement");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.DepartementIdNotFound, "/departement");
 		}
 		
 	}
@@ -90,14 +90,14 @@ public class DepartementController {
 			Departement departement = optionalDepartement.get();
 			
 			if(this.personService.getAllByDepartementId(id).size() > 0) {
-				return GlobalFunctions.createBadRequest(GlobalVars.EmployeeUsesDepartementCannotDelete, "/departement");
+				return GlobalFunctions.createBadRequest(GlobalMessages.EmployeeUsesDepartementCannotDelete, "/departement");
 			}
 			
 			this.departementService.delete(departement);
-			return new ResponseEntity<String>(GlobalVars.DepartementDeleteSuccessful, HttpStatus.OK);
+			return new ResponseEntity<String>(GlobalMessages.DepartementDeleteSuccessful, HttpStatus.OK);
 		}
 		else {
-			return GlobalFunctions.createNotFoundResponse(GlobalVars.DepartementIdNotFound, "/departement");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.DepartementIdNotFound, "/departement");
 		}
 	}
 
