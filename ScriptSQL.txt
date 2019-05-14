@@ -1,4 +1,4 @@
-Drop table timesheet_row;
+Drop table timesheet_row;;
 
 Drop table Project;
 
