@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
 
 import com.example.Timesheet.com.dto.TimesheetComplex;
-import com.example.Timesheet.com.dto.TimesheetDTO;
+import com.example.Timesheet.com.dto.TimesheetDto;
 import com.example.Timesheet.com.model.Timesheet;
 import com.example.Timesheet.com.service.TimesheetRowService;
 import com.example.Timesheet.com.service.TimesheetService;
@@ -26,7 +26,7 @@ public class TimesheetMapper implements ITimesheetMapper {
 	private TimesheetStatusService timesheetStatusService;
 	
     @Override
-    public Timesheet DTOtoTimesheet(TimesheetDTO source, int id) {
+    public Timesheet DTOtoTimesheet(TimesheetDto source, int id) {
         if ( source == null ) {
             return null;
         }
@@ -77,12 +77,12 @@ public class TimesheetMapper implements ITimesheetMapper {
     }
 
     @Override
-    public TimesheetDTO timesheetToDTO(Timesheet destination) {
+    public TimesheetDto timesheetToDTO(Timesheet destination) {
         if ( destination == null ) {
             return null;
         }
 
-        TimesheetDTO timesheetDTO = new TimesheetDTO();
+        TimesheetDto timesheetDTO = new TimesheetDto();
 
         timesheetDTO.setId( destination.getId() );
         timesheetDTO.setTotal( destination.getTotal() );
@@ -115,4 +115,18 @@ public class TimesheetMapper implements ITimesheetMapper {
 		}
 		return timesheetComplex;
 	}
+    
+    public Timesheet fromComplexToTimesheet(TimesheetComplex timesheetComplex, int employeeId) {
+    	Timesheet timesheet = new Timesheet();
+    	
+    	timesheet.setId(timesheetComplex.getId());
+    	timesheet.setTotal(timesheetComplex.getTotal());
+    	timesheet.setEndDate(timesheetComplex.getEndDate());
+    	timesheet.setNotes(timesheetComplex.getNotes());
+    	timesheet.setStartDate(timesheetComplex.getStartDate());
+    	timesheet.setTimesheetStatusId(timesheetComplex.getTimesheetStatus().getId());
+    	timesheet.setEmployeeId(employeeId);
+    	
+    	return timesheet;
+    }
 }
