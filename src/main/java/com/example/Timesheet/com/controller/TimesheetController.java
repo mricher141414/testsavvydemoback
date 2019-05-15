@@ -107,7 +107,7 @@ public class TimesheetController {
 
 		this.timesheetService.save(timesheet);
 
-		return new ResponseEntity<String>("{\"id\": "+timesheet.getId()+"}", HttpStatus.OK);
+		return GlobalFunctions.createOkResponseFromObject(timesheet);
 
 	}
 
@@ -135,7 +135,7 @@ public class TimesheetController {
 	
 			this.timesheetService.save(timesheet);
 	
-			return new ResponseEntity<String>(GlobalMessages.TimesheetPutSuccessful, HttpStatus.OK);
+			return GlobalFunctions.createOkResponseFromObject(timesheet);
 		}
 		else {
 			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetIdNotFound, "/timesheet");
@@ -159,7 +159,7 @@ public class TimesheetController {
 		}
 		
 		timesheetService.delete(timesheet);
-		return new ResponseEntity<String>(GlobalMessages.TimesheetDeleteSuccessful, HttpStatus.OK);
+		return GlobalFunctions.createOkResponseFromObject(timesheet);
 	}
 	
 	@GetMapping("/timesheet/employee")

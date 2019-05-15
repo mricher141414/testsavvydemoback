@@ -77,7 +77,7 @@ public class ProjectController {
 		 
 		 projectService.save(project);
 		 
-		 return new ResponseEntity<String>("{\"id\": "+project.getId()+"}", HttpStatus.OK);
+		 return GlobalFunctions.createOkResponseFromObject(project);
 	}
 	
 	@PutMapping("/project")
@@ -105,7 +105,7 @@ public class ProjectController {
 		 
 		 projectService.save(project);
 		 
-		 return new ResponseEntity<String>(GlobalMessages.ProjectPutSuccessful, HttpStatus.OK);
+		 return GlobalFunctions.createOkResponseFromObject(project);
 	}
 	
 	@DeleteMapping("/project")
@@ -125,6 +125,6 @@ public class ProjectController {
 		Project project = optionalProject.get();
 		
 		projectService.delete(project);
-		return new ResponseEntity<String>(GlobalMessages.ProjectDeleteSuccessful, HttpStatus.OK);
+		return GlobalFunctions.createOkResponseFromObject(project);
 	}
 }

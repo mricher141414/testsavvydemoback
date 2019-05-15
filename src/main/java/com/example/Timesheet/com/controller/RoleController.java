@@ -54,13 +54,13 @@ public class RoleController {
 	
 	@PostMapping("/role")
 	@ApiOperation("Creates a new role in the system.")
-	public String create(@ApiParam(value = "Role information for the new status to be created.", required = true)@RequestBody RoleDTO roleDto) {
+	public ResponseEntity<String> create(@ApiParam(value = "Role information for the new status to be created.", required = true)@RequestBody RoleDTO roleDto) {
 		
 		Role role = this.roleMapper.DTOtoRole(roleDto, 0);
 		
 		this.roleService.save(role);
 		
-		return "{\"id\": "+role.getId()+"}";
+		return GlobalFunctions.createOkResponseFromObject(role);
 	}
 
 	@PutMapping("/role")
@@ -75,7 +75,7 @@ public class RoleController {
 				Role role = roleMapper.DTOtoRole(roleDto, id);
 				roleService.save(role);
 				
-				return new ResponseEntity<String>(GlobalMessages.RolePutSuccessful, HttpStatus.OK);
+				return GlobalFunctions.createOkResponseFromObject(role);
 			}else {
 				return GlobalFunctions.createBadRequest(GlobalMessages.NameIsEmpty, "/role");
 			}
@@ -100,7 +100,7 @@ public class RoleController {
 			
 			this.roleService.delete(role);
 	
-			return new ResponseEntity<String>(GlobalMessages.RoleDeleteSuccessful, HttpStatus.OK);
+			return GlobalFunctions.createOkResponseFromObject(role);
 		}
 		else {
 			return GlobalFunctions.createNotFoundResponse(GlobalMessages.RoleIdNotFound, "/role");

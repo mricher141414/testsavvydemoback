@@ -49,12 +49,12 @@ public class DepartementController {
 	
 	@PostMapping("/departement")
 	@ApiOperation("Create a new department in the system.")
-	public String create(@ApiParam(value = "Department information for the new department to be created.", required = true)@RequestBody DepartementDTO departementDto) {
+	public ResponseEntity<?> create(@ApiParam(value = "Department information for the new department to be created.", required = true)@RequestBody DepartementDTO departementDto) {
 		Departement department = departementMapper.DTOtoDepartement(departementDto, 0);
 		
 		departementService.save(department);
 		
-		return "{\"id\": "+ department.getId()+"}";
+		return GlobalFunctions.createOkResponseFromObject(department);
 	}
 	
 	@PutMapping("/departement")
@@ -67,7 +67,7 @@ public class DepartementController {
 			if(departementDTO.getName() != null && !departementDTO.getName().equals("")) { //Validation
 				Departement departement = departementMapper.DTOtoDepartement(departementDTO, id);
 				departementService.save(departement);
-				return new ResponseEntity<String>(GlobalMessages.DepartementPutSuccessful, HttpStatus.OK);
+				return GlobalFunctions.createOkResponseFromObject(departement);
 				
 			}else {
 				return GlobalFunctions.createBadRequest(GlobalMessages.NameIsEmpty, "/departement"); 
@@ -94,7 +94,7 @@ public class DepartementController {
 			}
 			
 			this.departementService.delete(departement);
-			return new ResponseEntity<String>(GlobalMessages.DepartementDeleteSuccessful, HttpStatus.OK);
+			return GlobalFunctions.createOkResponseFromObject(departement);
 		}
 		else {
 			return GlobalFunctions.createNotFoundResponse(GlobalMessages.DepartementIdNotFound, "/departement");
