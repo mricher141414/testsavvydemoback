@@ -1,12 +1,16 @@
 package com.example.Timesheet.com.model;
 
 import java.sql.Date;
+import java.util.TimeZone;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import com.example.Timesheet.com.GlobalMessages;
+import com.example.Timesheet.com.GlobalVars;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -40,6 +44,25 @@ public class Project {
 	@Column(name = "project_manager_id")
 	@ApiModelProperty(notes = "<p>Unique identifier of the employee that manages the project. <br>", example = "1", position = 6)
 	private Integer projectManagerId;
+	
+	public void compensateTimezoneOnDates() {
+		Date startDate = this.getStartDate();
+		Date endDate = this.getEndDate();
+		
+		if(startDate == null || endDate == null) {
+			return;
+		}
+        
+        TimeZone timeZone = TimeZone.getTimeZone(GlobalVars.Timezone);
+        int offset = timeZone.getOffset(startDate.getTime());
+        startDate.setTime(startDate.getTime() - offset);
+        
+        offset = timeZone.getOffset(endDate.getTime());
+        endDate.setTime(endDate.getTime() - offset);
+        
+        this.setStartDate(startDate);
+        this.setEndDate(endDate);
+	}
 	
 	//getters and setters
 	

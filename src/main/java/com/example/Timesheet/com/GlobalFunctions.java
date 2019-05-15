@@ -7,6 +7,10 @@ import java.util.Date;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+
 public class GlobalFunctions {
 	private static Timestamp createTimestamp() {
 		Calendar calendar = Calendar.getInstance();
@@ -36,5 +40,20 @@ public class GlobalFunctions {
 				+ "}";
 		
 		return new ResponseEntity<String>(json,HttpStatus.BAD_REQUEST);
+	}
+	
+	public static <T> ResponseEntity<String> createOkResponseFromObject(T object) {
+		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+		
+		String json = "";
+		
+		try {
+			json = ow.writeValueAsString(object);
+		}
+		catch(JsonProcessingException ex) {
+			ex.printStackTrace();
+		}
+		
+		return new ResponseEntity<String>(json, HttpStatus.OK);
 	}
 }

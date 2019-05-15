@@ -26,10 +26,13 @@ import com.example.Timesheet.com.mapper.EmployeeMapper;
 import com.example.Timesheet.com.mapper.TimesheetMapper;
 import com.example.Timesheet.com.model.Employee;
 import com.example.Timesheet.com.model.Timesheet;
+import com.example.Timesheet.com.model.TimesheetRow;
 import com.example.Timesheet.com.service.EmployeeService;
 import com.example.Timesheet.com.service.TimesheetService;
 import com.example.Timesheet.com.service.TimesheetRowService;
 import com.example.Timesheet.com.service.TimesheetStatusService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -47,7 +50,7 @@ public class TimesheetController {
 	private TimesheetMapper timesheetMapper = new TimesheetMapper();
 
 	@Autowired
-	private EmployeeService personService = new EmployeeService();
+	private EmployeeService employeeService = new EmployeeService();
 
 	@Autowired
 	private TimesheetStatusService timesheetStatusService = new TimesheetStatusService();
@@ -89,7 +92,7 @@ public class TimesheetController {
 	public ResponseEntity<String> addNew(@ApiParam(value = "Timesheet information for the new timesheet to be created.", required = true) @RequestBody TimesheetDTO timesheetDto) {
 		
 		if(timesheetDto.getEmployeeId() != null) {
-			if(personService.getById(timesheetDto.getEmployeeId()).isPresent() == false) {
+			if(employeeService.getById(timesheetDto.getEmployeeId()).isPresent() == false) {
 				return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdParameterNotFound, "/timesheet");
 			}
 		}
@@ -117,7 +120,7 @@ public class TimesheetController {
 		if(this.timesheetService.getById(id).isPresent()) {
 			
 			if(timesheetDto.getEmployeeId() != null) {
-				if (personService.getById(timesheetDto.getEmployeeId()).isPresent() == false) {
+				if (employeeService.getById(timesheetDto.getEmployeeId()).isPresent() == false) {
 					return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdParameterNotFound, "/timesheet");
 				}
 			}
@@ -166,7 +169,7 @@ public class TimesheetController {
 	public ResponseEntity<?> findByEmployeeId(@ApiParam(value = "Id of the employee to get the information from", required = true) @RequestParam(value="id") int id, 
 												@ApiParam(value =  "Start date of the timesheets to get along with the person.", required = true) @RequestParam(value="startDate") Date startDate){
 		
-		Optional<Employee> optionalEmployee = this.personService.getById(id);
+		Optional<Employee> optionalEmployee = this.employeeService.getById(id);
 		
 		if(optionalEmployee.isPresent()) {
 			EmployeeComplex personWithManager = new EmployeeComplexWithManager(); 
@@ -190,8 +193,8 @@ public class TimesheetController {
 	public ResponseEntity<?> findByManagerId(@ApiParam(value = "Id of the employee to get the information from.", required = true) @RequestParam(value="id") int id, 
 												@ApiParam(value = "Start date of the timesheets to get along with the person's managed persons.", required = true) @RequestParam(value="startDate") Date startDate) {
 
-		if(this.personService.getById(id).isPresent()) {
-			List<Employee> employeesOfManager = this.personService.getAllByManagerId(id);
+		if(this.employeeService.getById(id).isPresent()) {
+			List<Employee> employeesOfManager = this.employeeService.getAllByManagerId(id);
 			List<EmployeeComplex> listOfPeople = new ArrayList<EmployeeComplex>();
 	
 			for(Employee person : employeesOfManager) {
@@ -210,5 +213,45 @@ public class TimesheetController {
 		else {
 			return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdNotFound, "/timesheet/manager");
 		}
+	}
+	
+	//functions that are used only by the frontend
+	
+	@PostMapping("/createtimesheet")
+	public ResponseEntity<?> createTimesheetWithRows(@RequestParam(value = "id") int id, @RequestParam(value = "date") Date date) {
+		
+		if (employeeService.getById(id).isPresent() == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdNotFound, "/createTimesheet");
+		}
+		
+		Timesheet timesheet = timesheetService.createTimesheetFromDateAndEmployeeId(id, date);
+		timesheet.compensateTimezoneOnDates();
+		
+		timesheetService.save(timesheet);
+		
+		timesheetRowService.createWeekFromTimesheet(timesheet);
+		
+		return GlobalFunctions.createOkResponseFromObject(timesheet);
+	}
+	
+	@DeleteMapping("/deletetimesheet")
+	public ResponseEntity<?> deleteTimesheetWithRows(@RequestParam(value = "id") int id) {
+		
+		Optional<Timesheet> optionalTimesheet = timesheetService.getById(id);
+		
+		if(optionalTimesheet.isPresent() == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetIdNotFound, "/deletetimesheet");
+		}
+		
+		List<TimesheetRow> timesheetRows = timesheetRowService.getByTimesheetId(id);
+		
+		for(TimesheetRow row : timesheetRows) {
+			timesheetRowService.deleteTimesheetRow(row);
+		}
+		
+		Timesheet timesheet = optionalTimesheet.get();
+		
+		timesheetService.delete(timesheet);
+		return GlobalFunctions.createOkResponseFromObject(timesheet);
 	}
 }

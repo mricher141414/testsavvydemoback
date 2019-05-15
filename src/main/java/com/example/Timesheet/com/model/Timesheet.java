@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import com.example.Timesheet.com.GlobalMessages;
+import com.example.Timesheet.com.GlobalVars;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -30,10 +32,12 @@ public class Timesheet {
 	
 	@ApiModelProperty(notes = "<p>Date (year-month-date) at which the timesheet started.</p>", example = "2019-06-29", position = 3)
 	@Column(name = "start_date")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date startDate;
 	
 	@Column(name = "end_date")
 	@ApiModelProperty(notes = "<p>Date (year-month-date) at which the timesheet ended.</p>", example = "2019-07-05", position = 4)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date endDate;
 	
 	@Column(name = "employee_id")
@@ -52,7 +56,7 @@ public class Timesheet {
 			return;
 		}
         
-        TimeZone timeZone = TimeZone.getTimeZone(GlobalMessages.Timezone);
+        TimeZone timeZone = TimeZone.getTimeZone(GlobalVars.Timezone);
         int offset = timeZone.getOffset(startDate.getTime());
         startDate.setTime(startDate.getTime() - offset);
         

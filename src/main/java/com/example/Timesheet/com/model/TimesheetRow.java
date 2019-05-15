@@ -9,7 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import com.example.Timesheet.com.GlobalMessages;
+import com.example.Timesheet.com.GlobalVars;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -43,7 +43,7 @@ public class TimesheetRow {
 			return;
 		}
         
-        TimeZone timeZone = TimeZone.getTimeZone(GlobalMessages.Timezone);
+        TimeZone timeZone = TimeZone.getTimeZone(GlobalVars.Timezone);
         int offset = timeZone.getOffset(date.getTime());
         
         offset = timeZone.getOffset(date.getTime());

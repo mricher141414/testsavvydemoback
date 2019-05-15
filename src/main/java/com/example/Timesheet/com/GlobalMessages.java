@@ -2,8 +2,6 @@ package com.example.Timesheet.com;
 
 public class GlobalMessages {
 	
-	public static final String Timezone = "Canada/Eastern";
-	
 	//Department messages
 	public static final String DepartementIdNotFound = "No department was found with the specified id";
 	public static final String EmployeeUsesDepartementCannotDelete = "The department with the specified id could not be deleted, as some employees are referencing it";
