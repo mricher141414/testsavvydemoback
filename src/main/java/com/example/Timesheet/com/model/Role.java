@@ -1,5 +1,6 @@
 package com.example.Timesheet.com.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,14 +20,11 @@ public class Role {
 	
 	@ApiModelProperty(notes = "<p>Name of the role.</p>", example = "Manager", position = 1)
 	private String name;
-
-	public Role() {
-
-	}
-
-	public Role(String name) {	
-		this.name = name;
-	}
+	
+	@ApiModelProperty(notes = "<p>Description about the role</p>", example = "Les gestionnaires qui s'occupe de gérer les équipes et les projets", position = 2)
+	private String descrole;
+	
+	//getters and setters
 
 	public int getId() {
 		return id;
@@ -44,4 +42,11 @@ public class Role {
 		this.name = name;
 	}
 
+	public String getDescription() {
+		return descrole;
+	}
+
+	public void setDescription(String description) {
+		this.descrole = description;
+	}
 }

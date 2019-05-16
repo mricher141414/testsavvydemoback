@@ -46,6 +46,9 @@ public class EmployeeComplex {
 	@ApiModelProperty(notes = "<p>List of TimesheetComplex objects to represent all the timesheets that the employee has that matches the condition.</p>", position = 9)
 	protected List<TimesheetComplex> timesheets = new ArrayList<TimesheetComplex>();
 
+	@ApiModelProperty(notes = "<p>Amount of money the employee makes</p>.", example = "16.50", position = 10)
+	protected float salary;
+	
 	//getters and setters
 	
 	public int getId() {
@@ -111,9 +114,15 @@ public class EmployeeComplex {
 	}
 	
 	public void addToTimesheets(TimesheetComplex timesheetComplex) {		
-		timesheets.add(timesheetComplex);
-		
+		timesheets.add(timesheetComplex);	
+	}
+	public float getSalary() {
+		return salary;
+	}
+	public void setSalary(float salary) {
+		this.salary = salary;
 	}
 
+	
 	
 }

@@ -71,14 +71,11 @@ public class RoleController {
 
 		if(this.roleService.getById(id).isPresent()) {
 		
-			if(roleDto.getName() != null || !roleDto.getName().equals("")) {
 				Role role = roleMapper.DTOtoRole(roleDto, id);
 				roleService.save(role);
 				
 				return new ResponseEntity<String>(GlobalMessages.RolePutSuccessful, HttpStatus.OK);
-			}else {
-				return GlobalFunctions.createBadRequest(GlobalMessages.NameIsEmpty, "/role");
-			}
+			
 		}
 		else {
 			return GlobalFunctions.createNotFoundResponse(GlobalMessages.RoleIdNotFound, "/role");

@@ -25,6 +25,7 @@ public class DepartementMapper implements IDepartementMapper {
 
         departement.setId( id );
         departement.setName( source.getName() );
+        departement.setDescription(source.getDescription());
         
         Optional<Departement> optionalDepartement = this.departementService.getById(id);
         
@@ -33,6 +34,10 @@ public class DepartementMapper implements IDepartementMapper {
         	
         	if(departement.getName() == null) {
         		departement.setName(dbDepartement.getName());
+        	}
+        	
+        	if(departement.getDescription() == null) {
+        		departement.setDescription(dbDepartement.getDescription());
         	}
         }
 
@@ -49,6 +54,7 @@ public class DepartementMapper implements IDepartementMapper {
 
         departementDTO.setId( destination.getId() );
         departementDTO.setName( destination.getName() );
+        departementDTO.setDescription(destination.getDescription());
 
         return departementDTO;
     }

@@ -166,7 +166,7 @@ public class TimesheetController {
 	@GetMapping("/timesheet/employee")
 	@ApiOperation(value = "Returns a detailed list of all the person's information with all information of all timesheets with the specified startDate.", 
 					response = EmployeeComplexWithManager.class, 
-					notes = "404 if the person's identifier cannot be found")
+					notes = "404 if the employee's identifier cannot be found")
 	public ResponseEntity<?> findByEmployeeId(@ApiParam(value = "Id of the employee to get the information from", required = true) @RequestParam(value="id") int id, 
 												@ApiParam(value =  "Start date of the timesheets to get along with the person.", required = true) @RequestParam(value="startDate") Date startDate){
 		
@@ -219,7 +219,9 @@ public class TimesheetController {
 	//functions that are used only by the frontend
 	
 	@GetMapping("employeetimesheets")
-	public ResponseEntity<?> getAllTimesheetFromEmployee (@RequestParam(value = "id") int id) {
+	@ApiOperation(value = "Returns a list of all the timesheets of an employee.",  
+					notes = "404 if the employee's identifier cannot be found")
+	public ResponseEntity<?> getAllTimesheetFromEmployee (@ApiParam(value = "Id of the employee to list all timesheets from", required = true) @RequestParam(value = "id") int id) {
 		
 		if (employeeService.getById(id).isPresent() == false) {
 			return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdNotFound, "/employeetimesheets");
@@ -230,7 +232,10 @@ public class TimesheetController {
 	
 	
 	@PostMapping("/createtimesheet")
-	public ResponseEntity<?> createTimesheetWithRows (@RequestBody Employee employee, @RequestParam(value = "date") Date date) {
+	@ApiOperation(value = "Creates a new timesheet in the system with 7 timesheet rows (one for each day).", 
+	notes = "404 if the id of the employee passed in the body cannot be found.")
+	public ResponseEntity<?> createTimesheetWithRows (@ApiParam(value = "Employee to who the timesheet belongs", required = true) @RequestBody Employee employee, 
+														@ApiParam(value = "Date that the timesheet is using. Can be any day of the week", required = true) @RequestParam(value = "date") Date date) {
 		
 		Integer id = employee.getId();
 		
@@ -249,7 +254,9 @@ public class TimesheetController {
 	}
 	
 	@PutMapping("/edittimesheet")
-	public ResponseEntity<String> editTimesheetWithRows(@RequestBody TimesheetComplex timesheetComplex) {
+	@ApiOperation(value = "Updates a timesheet in the system by their identifier and its timesheet rows.", 
+					notes = "404 if the timesheet's identifier cannot be found.")
+	public ResponseEntity<String> editTimesheetWithRows(@ApiParam(value = "Object containing the timesheet info and its timesheet rows", required = true) @RequestBody TimesheetComplex timesheetComplex) {
 		Integer id = 0;
 		
 		if(timesheetComplex.getId() != null) {
@@ -281,7 +288,9 @@ public class TimesheetController {
 	}
 	
 	@DeleteMapping("/deletetimesheet")
-	public ResponseEntity<?> deleteTimesheetWithRows(@RequestParam(value = "id") int id) {
+	@ApiOperation(value = "Deletes a timesheet in the system by their identifier along with all its timesheet rows", 
+	notes = "404 if the timeseet's identifier cannot be found.")
+	public ResponseEntity<?> deleteTimesheetWithRows(@ApiParam(value = "Id of the timesheet to be deleted", required = true) @RequestParam(value = "id") int id) {
 		
 		Optional<Timesheet> optionalTimesheet = timesheetService.getById(id);
 		

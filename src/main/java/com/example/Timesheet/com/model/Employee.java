@@ -57,6 +57,10 @@ public class Employee {
 	@ApiModelProperty(notes = "<p>Physical address of the employee's working location.", example = "101 rue des Abénaquis", position = 9)
 	private String address;
 	
+	@ApiModelProperty(notes = "<p>Amount of money the employee makes</p>.", example = "16.50", position = 10)
+	@Column(name = "salaire")
+	private Float salary;
+	
 	public void compensateTimezoneOnDates() {
 		Date dateOfBirth = this.getDateOfBirth();
         
@@ -76,7 +80,6 @@ public class Employee {
 	public void setDateOfBirth(Date dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
-
 
 	public int getId() {
 		return id;
@@ -149,8 +152,16 @@ public class Employee {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	
-	
-	
 
+	public Float getSalary() {
+		return salary;
+	}
+
+	public void setSalary(Float salary) {
+		if (salary == null) {
+			salary = 0F;
+		}
+		this.salary = salary;
+	}
+	
 }

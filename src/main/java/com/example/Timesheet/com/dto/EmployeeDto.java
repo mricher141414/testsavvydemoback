@@ -43,6 +43,9 @@ public class EmployeeDto {
 	@ApiModelProperty(notes = "<p>Date of birth (year-month-day) of the employee.</p>", example = "1955-01-13", position = 8)
 	private Date dateOfBirth;
 	
+	@ApiModelProperty(notes = "<p>Amount of money the employee makes</p>.", example = "16.50", position = 10)
+	private float salary;
+	
 	//getters and setters
 	
 	public Date getDateOfBirth() {
@@ -105,7 +108,11 @@ public class EmployeeDto {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	
-	
+	public float getSalary() {
+		return salary;
+	}
+	public void setSalary(float salary) {
+		this.salary = salary;
+	}	
 
 }

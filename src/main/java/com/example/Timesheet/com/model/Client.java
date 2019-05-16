@@ -1,5 +1,6 @@
 package com.example.Timesheet.com.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,6 +20,13 @@ public class Client {
 	@ApiModelProperty(notes = "<p>Name of the client.</p>", example = "Les entreprises Pères et fils Inc.", position = 1)
 	private String name;
 	
+	@ApiModelProperty(notes = "<p>Physical address of the client.</p>", example = "125 rue Bienvenue", position = 2)
+	@Column(name = "adress")
+	private String address;
+	
+	@ApiModelProperty(notes = "<p>Description about who the client is, what he does, etc..</p>", example = "Entreprise qui offres des thérapies de famille", position = 3)
+	private String descclient;
+	
 	//getters and setters
 	
 	public int getId() {
@@ -33,6 +41,17 @@ public class Client {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public String getDescription() {
+		return descclient;
+	}
+	public void setDescription(String description) {
+		this.descclient = description;
+	}
 	
 }

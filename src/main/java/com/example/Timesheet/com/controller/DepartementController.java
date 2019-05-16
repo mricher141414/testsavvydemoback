@@ -64,14 +64,9 @@ public class DepartementController {
 		
 		if(this.departementService.getById(id).isPresent()) {
 		
-			if(departementDTO.getName() != null && !departementDTO.getName().equals("")) { //Validation
 				Departement departement = departementMapper.DTOtoDepartement(departementDTO, id);
 				departementService.save(departement);
 				return new ResponseEntity<String>(GlobalMessages.DepartementPutSuccessful, HttpStatus.OK);
-				
-			}else {
-				return GlobalFunctions.createBadRequest(GlobalMessages.NameIsEmpty, "/departement"); 
-			}
 		}
 		else {
 			return GlobalFunctions.createNotFoundResponse(GlobalMessages.DepartementIdNotFound, "/departement");

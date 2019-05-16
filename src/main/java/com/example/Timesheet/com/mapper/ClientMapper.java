@@ -25,6 +25,8 @@ public class ClientMapper implements IClientMapper {
 		
 		client.setId(id);
 		client.setName(source.getName());
+		client.setAddress(source.getAddress());
+		client.setDescription(source.getDescription());
 		
 		Optional<Client> optionalClient = clientService.getById(id);
 		
@@ -33,6 +35,14 @@ public class ClientMapper implements IClientMapper {
 			
 			if(client.getName() == null) {
 				client.setName(dbClient.getName());
+			}
+			
+			if(client.getAddress() == null) {
+				client.setAddress(dbClient.getAddress());
+			}
+			
+			if(client.getDescription() == null) {
+				client.setDescription(dbClient.getDescription());
 			}
 		}
 		
@@ -49,6 +59,8 @@ public class ClientMapper implements IClientMapper {
 		
 		clientDto.setId(destination.getId());
 		clientDto.setName(destination.getName());
+		clientDto.setAddress(destination.getAddress());
+		clientDto.setDescription(destination.getDescription());
 		
 		return clientDto;
 	}

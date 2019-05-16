@@ -25,6 +25,7 @@ public class RoleMapper implements IRoleMapper {
 
         role.setId( id );
         role.setName( roleDTO.getName() );
+        role.setDescription(roleDTO.getDescription());
         
         Optional<Role> optionalRole = roleService.getById(id);
         
@@ -33,6 +34,10 @@ public class RoleMapper implements IRoleMapper {
         	
         	if(role.getName() == null) {
         		role.setName(dbRole.getName());
+        	}
+        	
+        	if(role.getDescription() == null) {
+        		role.setDescription(roleDTO.getDescription());
         	}
         }
 
@@ -49,8 +54,8 @@ public class RoleMapper implements IRoleMapper {
 
         roleDTO.setId( role.getId() );
         roleDTO.setName( role.getName() );
+        roleDTO.setDescription(role.getDescription());
 
         return roleDTO;
     }
-
 }

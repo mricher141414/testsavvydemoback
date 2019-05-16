@@ -56,6 +56,7 @@ public class EmployeeMapper implements IEmployeeMapper {
         employee.setDepartementId( source.getDepartementId() );
         employee.setManagerId( source.getManagerId() );
         employee.setAddress( source.getAddress() );
+        employee.setSalary(source.getSalary());
         
         Optional<Employee> optionalEmployee = this.employeeService.getById(id);
         
@@ -97,6 +98,10 @@ public class EmployeeMapper implements IEmployeeMapper {
         	if(employee.getAddress() == null) {
         		employee.setAddress(dbEmployee.getAddress());
         	}
+        	
+        	if(employee.getSalary() == 0) {
+        		employee.setSalary(dbEmployee.getSalary());
+        	}
         }
         
         employee.compensateTimezoneOnDates();
@@ -122,6 +127,7 @@ public class EmployeeMapper implements IEmployeeMapper {
         employeeDto.setDepartementId( destination.getDepartementId() );
         employeeDto.setManagerId( destination.getManagerId() );
         employeeDto.setAddress( destination.getAddress() );
+        employeeDto.setSalary(destination.getSalary());
 
         return employeeDto;
     }
@@ -134,6 +140,7 @@ public class EmployeeMapper implements IEmployeeMapper {
 		employeeComplex.setEmailAddress(employee.getEmail());
 		employeeComplex.setPassword(employee.getPassword());
 		employeeComplex.setDateOfBirth(employee.getDateOfBirth());
+		employeeComplex.setSalary(employee.getSalary());
 
 		if(employee.getRoleId()!= null) {
 			employeeComplex.setRole(this.roleService.getById(employee.getRoleId()).get());
@@ -157,6 +164,5 @@ public class EmployeeMapper implements IEmployeeMapper {
 	public EmployeeComplexWithManager addManagerToEmployeeComplexWithManager(EmployeeComplexWithManager employeeComplex, Employee employee) {
 		employeeComplex.setManager(this.employeeService.getById(employee.getManagerId()).get());
 		return employeeComplex;
-
 	}
 }
