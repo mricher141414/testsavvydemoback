@@ -88,7 +88,7 @@ public class EmployeeController {
 		 
 		 employeeService.saveEmployee(employee);
 		 
-		 return GlobalFunctions.createOkResponseFromObject(employee);
+		 return new ResponseEntity<String>("{\"id\": "+employee.getId()+"}", HttpStatus.OK);
 	 }
 	 
 	 @PutMapping("/employee")
@@ -121,7 +121,7 @@ public class EmployeeController {
 		  Employee employee = employeeMapper.dtoToEmployee(employeeDto, id);
 		  employeeService.saveEmployee(employee);
 		
-		  return GlobalFunctions.createOkResponseFromObject(employee);
+		  return new ResponseEntity<String>(GlobalMessages.EmployeePutSuccessful, HttpStatus.OK);
 	 }
 	 
 	 @DeleteMapping("/employee")
@@ -149,6 +149,6 @@ public class EmployeeController {
 		 }
 		 
 		 this.employeeService.delete(employee);
-		 return GlobalFunctions.createOkResponseFromObject(employee);
+		 return new ResponseEntity<String>(GlobalMessages.EmployeeDeleteSuccessful, HttpStatus.OK);
 	 }
 }

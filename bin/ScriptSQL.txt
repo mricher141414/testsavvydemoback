@@ -1,0 +1,90 @@
+Drop table timesheet_row;
+
+Drop table Project;
+
+Drop table Client;
+
+Drop table Timesheet;
+
+Drop table Timesheet_Status;
+
+Drop table Employee;
+
+Drop table Role;
+Drop table Departement;
+
+
+CREATE TABLE Role(
+Id INT IDENTITY(1,1),
+Name VARCHAR(50) NOT NULL,
+PRIMARY KEY(Id)
+);
+
+CREATE TABLE Client(
+Id INT IDENTITY(1,1),
+Name VARCHAR(50) NOT NULL,
+PRIMARY KEY(Id)
+);
+
+
+CREATE TABLE Timesheet_Status(
+Id INT IDENTITY(1,1),
+Name VARCHAR(50) NOT NULL,
+PRIMARY KEY(Id)
+);
+
+CREATE TABLE Departement(
+Id INT IDENTITY(1,1),
+Name VARCHAR(50) NOT NULL,
+PRIMARY KEY(Id)
+);
+
+CREATE TABLE Employee(
+Id INT IDENTITY(1,1),
+first_name VARCHAR(50) NOT NULL,
+last_name VARCHAR(50) NOT NULL,
+email_address VARCHAR(100) NOT NULL,
+password VARCHAR(100) NOT NULL,
+address VARCHAR(200),
+date_of_birth DATE,
+PRIMARY KEY(Id),
+role_id INT FOREIGN KEY REFERENCES Role(Id),
+departement_id INT FOREIGN KEY REFERENCES Departement(Id),
+manager_id INT FOREIGN KEY REFERENCES Employee(Id)
+);
+
+CREATE TABLE Project(
+Id INT IDENTITY(1,1),
+name VARCHAR(50) NOT NULL,
+description VARCHAR(250),
+start_date DATE,
+end_date DATE,
+PRIMARY KEY(Id),
+client_id INT FOREIGN KEY REFERENCES Client(Id),
+project_manager_id INT FOREIGN KEY REFERENCES Employee(Id)
+);
+
+CREATE TABLE Timesheet(
+Id INT IDENTITY(1,1),
+total FLOAT,
+notes VARCHAR(250),
+start_date DATE,
+end_date DATE,
+PRIMARY KEY(Id),
+employee_id INT FOREIGN KEY REFERENCES Employee(Id),
+timesheet_status_id INT FOREIGN KEY REFERENCES Timesheet_Status(Id)
+);
+
+CREATE TABLE Timesheet_row(
+Id INT IDENTITY(1,1),
+date DATE,
+value FLOAT,
+PRIMARY KEY(Id),
+timesheet_id INT FOREIGN KEY REFERENCES Timesheet(Id),
+project_id INT FOREIGN KEY REFERENCES Project(Id),
+
+);
+
+INSERT INTO Departement (Name) VALUES 
+("Assurance qualité"),
+("Departement de test");

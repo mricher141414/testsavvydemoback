@@ -18,10 +18,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Timesheet.com.dto.EmployeeComplexWithManager;
+import com.example.Timesheet.com.dto.TimesheetComplex;
 import com.example.Timesheet.com.dto.EmployeeComplex;
 import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalMessages;
-import com.example.Timesheet.com.dto.TimesheetDTO;
+import com.example.Timesheet.com.dto.TimesheetDto;
 import com.example.Timesheet.com.mapper.EmployeeMapper;
 import com.example.Timesheet.com.mapper.TimesheetMapper;
 import com.example.Timesheet.com.model.Employee;
@@ -89,7 +90,7 @@ public class TimesheetController {
 	@PostMapping("/timesheet")
 	@ApiOperation(value = "Creates a new timesheet in the system.", 
 					notes = "404 if the manager id or timesheet status id in the body cannot be found.")
-	public ResponseEntity<String> addNew(@ApiParam(value = "Timesheet information for the new timesheet to be created.", required = true) @RequestBody TimesheetDTO timesheetDto) {
+	public ResponseEntity<String> addNew(@ApiParam(value = "Timesheet information for the new timesheet to be created.", required = true) @RequestBody TimesheetDto timesheetDto) {
 		
 		if(timesheetDto.getEmployeeId() != null) {
 			if(employeeService.getById(timesheetDto.getEmployeeId()).isPresent() == false) {
@@ -107,14 +108,14 @@ public class TimesheetController {
 
 		this.timesheetService.save(timesheet);
 
-		return GlobalFunctions.createOkResponseFromObject(timesheet);
+		return new ResponseEntity<String>("{\"id\": "+timesheet.getId()+"}", HttpStatus.OK);
 
 	}
 
 	@PutMapping("/timesheet")
 	@ApiOperation(value = "Updates a timesheet in the system by their identifier.", 
 					notes = "404 if the timesheet's identifier or any of the manager id and timesheet status id in the body cannot be found.")
-	public ResponseEntity<String> edit(@ApiParam("Timesheet information to be modified. There is no need to keep values that will not be modified.")@RequestBody TimesheetDTO timesheetDto,
+	public ResponseEntity<String> edit(@ApiParam("Timesheet information to be modified. There is no need to keep values that will not be modified.")@RequestBody TimesheetDto timesheetDto,
 										@ApiParam(value = "Id of the timesheet to be modified.", required = true) @RequestParam(value="id") int id) {
 		
 		if(this.timesheetService.getById(id).isPresent()) {
@@ -135,7 +136,7 @@ public class TimesheetController {
 	
 			this.timesheetService.save(timesheet);
 	
-			return GlobalFunctions.createOkResponseFromObject(timesheet);
+			return new ResponseEntity<String>(GlobalMessages.TimesheetPutSuccessful, HttpStatus.OK);
 		}
 		else {
 			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetIdNotFound, "/timesheet");
@@ -159,7 +160,7 @@ public class TimesheetController {
 		}
 		
 		timesheetService.delete(timesheet);
-		return GlobalFunctions.createOkResponseFromObject(timesheet);
+		return new ResponseEntity<String>(GlobalMessages.TimesheetDeleteSuccessful, HttpStatus.OK);
 	}
 	
 	@GetMapping("/timesheet/employee")
@@ -217,10 +218,23 @@ public class TimesheetController {
 	
 	//functions that are used only by the frontend
 	
-	@PostMapping("/createtimesheet")
-	public ResponseEntity<?> createTimesheetWithRows(@RequestParam(value = "id") int id, @RequestParam(value = "date") Date date) {
+	@GetMapping("employeetimesheets")
+	public ResponseEntity<?> getAllTimesheetFromEmployee (@RequestParam(value = "id") int id) {
 		
 		if (employeeService.getById(id).isPresent() == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdNotFound, "/employeetimesheets");
+		}
+		
+		return GlobalFunctions.createOkResponseFromObject(timesheetService.getTimesheetByEmployeeId(id));
+	}
+	
+	
+	@PostMapping("/createtimesheet")
+	public ResponseEntity<?> createTimesheetWithRows (@RequestBody Employee employee, @RequestParam(value = "date") Date date) {
+		
+		Integer id = employee.getId();
+		
+		if (id == null || employeeService.getById(id).isPresent() == false) {
 			return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdNotFound, "/createTimesheet");
 		}
 		
@@ -231,7 +245,39 @@ public class TimesheetController {
 		
 		timesheetRowService.createWeekFromTimesheet(timesheet);
 		
-		return GlobalFunctions.createOkResponseFromObject(timesheet);
+		return GlobalFunctions.createOkResponseFromObject(employee);
+	}
+	
+	@PutMapping("/edittimesheet")
+	public ResponseEntity<String> editTimesheetWithRows(@RequestBody TimesheetComplex timesheetComplex) {
+		Integer id = 0;
+		
+		if(timesheetComplex.getId() != null) {
+			id = timesheetComplex.getId();
+		}
+		
+		Optional<Timesheet> optionalTimesheet = timesheetService.getById(id);
+		
+		if (optionalTimesheet.isPresent() == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetIdNotFound, "/edittimesheet");
+		}
+		
+		Timesheet dbTimesheet = optionalTimesheet.get();
+		
+		List<TimesheetRow> rows = timesheetComplex.getTimesheetRows();
+		
+		for(TimesheetRow row : rows) {
+			row.setTimesheetId(id);
+			timesheetRowService.save(row);
+		}
+		
+		Timesheet timesheet = timesheetMapper.fromComplexToTimesheet(timesheetComplex, dbTimesheet.getEmployeeId());
+		
+		timesheet.compensateTimezoneOnDates();
+		
+		timesheetService.save(timesheet);
+		
+		return GlobalFunctions.createOkResponseFromObject(timesheetComplex);
 	}
 	
 	@DeleteMapping("/deletetimesheet")

@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import com.example.Timesheet.com.GlobalVars;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -23,6 +24,7 @@ public class TimesheetRow {
 	private int id;
 	
 	@ApiModelProperty(notes = "<p>Date (year-month-date) of the row.</p>", example = "2019-07-01", position = 1)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date date;
 	
 	@ApiModelProperty(notes = "<p>Amount of hours logged in for the row. Use a dot (.) for decimals.</p>", example = "8.5", position = 2)

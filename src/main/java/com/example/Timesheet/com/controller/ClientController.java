@@ -50,13 +50,13 @@ public class ClientController {
 	
 	@PostMapping("/client")
 	@ApiOperation("Creates a new client in the system.")
-	public ResponseEntity<?> create(@ApiParam(value = "Client information for the new client to be created.", required = true)@RequestBody ClientDto clientDto) {
+	public String create(@ApiParam(value = "Client information for the new client to be created.", required = true)@RequestBody ClientDto clientDto) {
 		
 		Client client = clientMapper.dtoToClient(clientDto, 0);
 		
 		clientService.save(client);
 		
-		return GlobalFunctions.createOkResponseFromObject(client);
+		return "{\"id\": "+ client.getId()+"}";
 	}
 	
 	@PutMapping("/client")
@@ -72,7 +72,7 @@ public class ClientController {
 		
 		clientService.save(client);
 		
-		return GlobalFunctions.createOkResponseFromObject(client);
+		return new ResponseEntity<String>(GlobalMessages.ClientPutSuccessful, HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/client")
@@ -92,6 +92,6 @@ public class ClientController {
 		Client client = optionalClient.get();
 		
 		clientService.delete(client);
-		return GlobalFunctions.createOkResponseFromObject(client);
+		return new ResponseEntity<String>(GlobalMessages.ClientDeleteSuccessful, HttpStatus.OK);
 	}
 }
