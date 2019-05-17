@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalMessages;
-import com.example.Timesheet.com.dto.TimesheetRowDTO;
+import com.example.Timesheet.com.dto.TimesheetRowDto;
 import com.example.Timesheet.com.mapper.TimesheetRowMapper;
 import com.example.Timesheet.com.model.TimesheetRow;
 import com.example.Timesheet.com.service.ProjectService;
@@ -68,7 +68,7 @@ public class TimesheetRowController {
 	
 	@PostMapping("/timesheetRow")
 	@ApiOperation(value = "Creates a new timesheet row in the system", notes = "404 if the project id or timesheet id in the body cannot be found.")
-	public ResponseEntity<String> create(@ApiParam(value = "Timesheet row information for the new row to be created.", required = true)@RequestBody TimesheetRowDTO timesheetRowDto) {
+	public ResponseEntity<String> create(@ApiParam(value = "Timesheet row information for the new row to be created.", required = true)@RequestBody TimesheetRowDto timesheetRowDto) {
 		
 		if(timesheetRowDto.getProjectId() != null) {
 			if(this.projectService.getById(timesheetRowDto.getProjectId()).isPresent() == false) {
@@ -92,7 +92,7 @@ public class TimesheetRowController {
 	
 	@PutMapping("/timesheetRow")
 	@ApiOperation(value = "Updates a timesheet row in the system by their identifier.", notes = "404 if any of the row's identifier in the address, project id or timesheet id specified in the body is not found")
-	public ResponseEntity<String> edit(@ApiParam("Timesheet row information to be modified. There is no need to keep values that will not be modified.") @RequestBody TimesheetRowDTO timesheetRowDto,
+	public ResponseEntity<String> edit(@ApiParam("Timesheet row information to be modified. There is no need to keep values that will not be modified.") @RequestBody TimesheetRowDto timesheetRowDto,
 										@ApiParam(value = "Id of the timesheet row to be modified. Cannot be null.", required = true) @RequestParam int id) {
 		
 		if(timesheetRowService.getById(id).isPresent() == false) {

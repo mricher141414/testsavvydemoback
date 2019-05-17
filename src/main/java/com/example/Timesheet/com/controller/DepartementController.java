@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalMessages;
-import com.example.Timesheet.com.dto.DepartementDTO;
+import com.example.Timesheet.com.dto.DepartementDto;
 import com.example.Timesheet.com.mapper.DepartementMapper;
 import com.example.Timesheet.com.model.Departement;
 import com.example.Timesheet.com.service.DepartementService;
@@ -49,7 +49,7 @@ public class DepartementController {
 	
 	@PostMapping("/departement")
 	@ApiOperation("Create a new department in the system.")
-	public String create(@ApiParam(value = "Department information for the new department to be created.", required = true)@RequestBody DepartementDTO departementDto) {
+	public String create(@ApiParam(value = "Department information for the new department to be created.", required = true)@RequestBody DepartementDto departementDto) {
 		Departement department = departementMapper.DTOtoDepartement(departementDto, 0);
 		
 		departementService.save(department);
@@ -59,7 +59,7 @@ public class DepartementController {
 	
 	@PutMapping("/departement")
 	@ApiOperation(value = "Updates a department in the system by their identifier.", notes = "404 if the department's identifier is not found")
-	public ResponseEntity<?> edit(@ApiParam("department information to be modified")@RequestBody DepartementDTO departementDTO,
+	public ResponseEntity<?> edit(@ApiParam("department information to be modified")@RequestBody DepartementDto departementDTO,
 										@ApiParam(value = "Id of the department to be modified. Cannot be null", required = true)@RequestParam(value="id") int id){
 		
 		if(this.departementService.getById(id).isPresent()) {

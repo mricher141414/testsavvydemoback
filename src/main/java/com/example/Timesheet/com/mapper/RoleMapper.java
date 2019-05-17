@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.example.Timesheet.com.dto.RoleDTO;
+import com.example.Timesheet.com.dto.RoleDto;
 import com.example.Timesheet.com.model.Role;
 import com.example.Timesheet.com.service.RoleService;
 
@@ -16,7 +16,7 @@ public class RoleMapper implements IRoleMapper {
 	private RoleService roleService;
 	
 	@Override
-    public Role DTOtoRole(RoleDTO roleDTO, int id) {
+    public Role DTOtoRole(RoleDto roleDTO, int id) {
         if ( roleDTO == null ) {
             return null;
         }
@@ -45,12 +45,12 @@ public class RoleMapper implements IRoleMapper {
     }
 
     @Override
-    public RoleDTO roleToDTO(Role role) {
+    public RoleDto roleToDTO(Role role) {
         if ( role == null ) {
             return null;
         }
 
-        RoleDTO roleDTO = new RoleDTO();
+        RoleDto roleDTO = new RoleDto();
 
         roleDTO.setId( role.getId() );
         roleDTO.setName( role.getName() );

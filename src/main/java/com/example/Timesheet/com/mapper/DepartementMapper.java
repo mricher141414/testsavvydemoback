@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.example.Timesheet.com.dto.DepartementDTO;
+import com.example.Timesheet.com.dto.DepartementDto;
 import com.example.Timesheet.com.model.Departement;
 import com.example.Timesheet.com.service.DepartementService;
 
@@ -16,7 +16,7 @@ public class DepartementMapper implements IDepartementMapper {
 	private DepartementService departementService;
 	
 	@Override
-    public Departement DTOtoDepartement(DepartementDTO source, int id) {
+    public Departement DTOtoDepartement(DepartementDto source, int id) {
         if ( source == null ) {
             return null;
         }
@@ -45,12 +45,12 @@ public class DepartementMapper implements IDepartementMapper {
     }
 
     @Override
-    public DepartementDTO DepartementToDTO(Departement destination) {
+    public DepartementDto DepartementToDTO(Departement destination) {
         if ( destination == null ) {
             return null;
         }
 
-        DepartementDTO departementDTO = new DepartementDTO();
+        DepartementDto departementDTO = new DepartementDto();
 
         departementDTO.setId( destination.getId() );
         departementDTO.setName( destination.getName() );

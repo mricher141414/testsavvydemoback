@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalMessages;
-import com.example.Timesheet.com.dto.TimesheetStatusDTO;
+import com.example.Timesheet.com.dto.TimesheetStatusDto;
 import com.example.Timesheet.com.mapper.TimesheetStatusMapper;
 import com.example.Timesheet.com.model.TimesheetStatus;
 import com.example.Timesheet.com.service.TimesheetService;
@@ -49,7 +49,7 @@ public class TimesheetStatusController {
 	
 	@PostMapping("/timesheetStatus")
 	@ApiOperation("Creates a new timesheet status in the system")
-	public String create(@ApiParam(value = "Timesheet status information for the new status to be created", required = true)@RequestBody TimesheetStatusDTO timesheetStatusDto) {
+	public String create(@ApiParam(value = "Timesheet status information for the new status to be created", required = true)@RequestBody TimesheetStatusDto timesheetStatusDto) {
 		
 		TimesheetStatus timesheetStatus = this.timesheetStatusMapper.DTOtoTimesheetStatus(timesheetStatusDto, 0);
 		
@@ -60,7 +60,7 @@ public class TimesheetStatusController {
 	
 	@PutMapping("/timesheetStatus")
 	@ApiOperation(value = "Updates a timesheet status in the system by their identifier.", notes = "404 if the status's identifier cannot be found.")
-	public ResponseEntity<String> edit(@ApiParam(value = "Timesheet status information to be modified. There is no need to keep values that will not be modified.")@RequestBody TimesheetStatusDTO timesheetStatusDto,
+	public ResponseEntity<String> edit(@ApiParam(value = "Timesheet status information to be modified. There is no need to keep values that will not be modified.")@RequestBody TimesheetStatusDto timesheetStatusDto,
 										@ApiParam(value = "Id of the timesheet status to be modified. Cannot be null.", required = true) @RequestParam int id) {
 		
 		if(timesheetStatusService.getById(id).isPresent() == false) {

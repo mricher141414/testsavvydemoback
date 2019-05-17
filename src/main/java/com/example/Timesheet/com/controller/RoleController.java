@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.Timesheet.com.dto.RoleDTO;
+import com.example.Timesheet.com.dto.RoleDto;
 import com.example.Timesheet.com.mapper.RoleMapper;
 import com.example.Timesheet.com.model.Role;
 import com.example.Timesheet.com.service.EmployeeService;
@@ -54,7 +54,7 @@ public class RoleController {
 	
 	@PostMapping("/role")
 	@ApiOperation("Creates a new role in the system.")
-	public String create(@ApiParam(value = "Role information for the new status to be created.", required = true)@RequestBody RoleDTO roleDto) {
+	public String create(@ApiParam(value = "Role information for the new status to be created.", required = true)@RequestBody RoleDto roleDto) {
 		
 		Role role = this.roleMapper.DTOtoRole(roleDto, 0);
 		
@@ -66,7 +66,7 @@ public class RoleController {
 	@PutMapping("/role")
 	@ApiOperation(value = "Updates a role in the system by their identifier.", notes = "404 if the role's identifier cannot be found. \n"
 																						+ "400 if name is null or empty")
-	public ResponseEntity<String> edit(@ApiParam("Role information to be modified.")@RequestBody RoleDTO roleDto,
+	public ResponseEntity<String> edit(@ApiParam("Role information to be modified.")@RequestBody RoleDto roleDto,
 											@ApiParam(value = "Id of the role to be modified. Cannot be null.", required = true) @RequestParam int id){
 
 		if(this.roleService.getById(id).isPresent()) {

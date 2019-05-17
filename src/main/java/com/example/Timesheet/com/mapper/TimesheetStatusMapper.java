@@ -1,12 +1,12 @@
 package com.example.Timesheet.com.mapper;
 
-import com.example.Timesheet.com.dto.TimesheetStatusDTO;
+import com.example.Timesheet.com.dto.TimesheetStatusDto;
 import com.example.Timesheet.com.model.TimesheetStatus;
 
 public class TimesheetStatusMapper implements ITimesheetStatusMapper {
 	
 	 @Override
-	    public TimesheetStatus DTOtoTimesheetStatus(TimesheetStatusDTO source, int id) {
+	    public TimesheetStatus DTOtoTimesheetStatus(TimesheetStatusDto source, int id) {
 	        if ( source == null ) {
 	            return null;
 	        }
@@ -20,12 +20,12 @@ public class TimesheetStatusMapper implements ITimesheetStatusMapper {
 	    }
 
 	    @Override
-	    public TimesheetStatusDTO TimesheetStatusToDTO(TimesheetStatus destination) {
+	    public TimesheetStatusDto TimesheetStatusToDTO(TimesheetStatus destination) {
 	        if ( destination == null ) {
 	            return null;
 	        }
 
-	        TimesheetStatusDTO timesheetStatusDTO = new TimesheetStatusDTO();
+	        TimesheetStatusDto timesheetStatusDTO = new TimesheetStatusDto();
 
 	        timesheetStatusDTO.setId( destination.getId() );
 	        timesheetStatusDTO.setName( destination.getName() );

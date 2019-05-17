@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(description = "<p>Class sent by the user to modify an existing department.<br>"
 		+ "No property is required when modifying a department.</p>")
 
-public class DepartementDTO {
+public class DepartementDto {
 	
 	@ApiModelProperty(notes = "<p>Unique identifier of the department. No two departments can have the same id. <br>"
 			+ "The id is not required, but it is part of the object to facilitate a copy and paste from an existing object.</p>", example = "1", position = 0)
