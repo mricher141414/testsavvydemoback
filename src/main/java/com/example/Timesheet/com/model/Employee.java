@@ -158,9 +158,6 @@ public class Employee {
 	}
 
 	public void setSalary(Float salary) {
-		if (salary == null) {
-			salary = 0F;
-		}
 		this.salary = salary;
 	}
 	
