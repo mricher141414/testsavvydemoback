@@ -35,6 +35,7 @@ public class ProjectMapper implements IProjectMapper {
         
         if(optionalProject.isPresent()) {
         	Project dbProject = optionalProject.get();
+        	project.setVersion(dbProject.getVersion());
         	
         	if(project.getName() == null) {
         		project.setName(dbProject.getName());

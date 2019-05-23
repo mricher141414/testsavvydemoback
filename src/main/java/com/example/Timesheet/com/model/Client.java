@@ -5,11 +5,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Version;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
+@Table(name = "Client")
 @ApiModel(description = "<p>Class representing a client tracked by the application.</p>")
 public class Client {
 	
@@ -21,11 +24,13 @@ public class Client {
 	private String name;
 	
 	@ApiModelProperty(notes = "<p>Physical address of the client.</p>", example = "125 rue Bienvenue", position = 2)
-	@Column(name = "adress")
 	private String address;
 	
 	@ApiModelProperty(notes = "<p>Description about who the client is, what he does, etc..</p>", example = "Entreprise qui offres des thérapies de famille", position = 3)
-	private String descclient;
+	private String description;
+	
+	@Version
+	private Integer version;
 	
 	//getters and setters
 	
@@ -48,10 +53,16 @@ public class Client {
 		this.address = address;
 	}
 	public String getDescription() {
-		return descclient;
+		return description;
 	}
 	public void setDescription(String description) {
-		this.descclient = description;
+		this.description = description;
+	}
+	public Integer getVersion() {
+		return version;
+	}
+	public void setVersion(Integer version) {
+		this.version = version;
 	}
 	
 }

@@ -31,6 +31,7 @@ public class RoleMapper implements IRoleMapper {
         
         if(optionalRole.isPresent()) {
         	Role dbRole = optionalRole.get();
+        	role.setVersion(dbRole.getVersion());
         	
         	if(role.getName() == null) {
         		role.setName(dbRole.getName());

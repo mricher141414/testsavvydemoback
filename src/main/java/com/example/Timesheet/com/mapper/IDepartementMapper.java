@@ -2,13 +2,13 @@ package com.example.Timesheet.com.mapper;
 
 import org.mapstruct.Mapper;
 
-import com.example.Timesheet.com.dto.DepartementDto;
-import com.example.Timesheet.com.model.Departement;
+import com.example.Timesheet.com.dto.DepartmentDto;
+import com.example.Timesheet.com.model.Department;
 
 @Mapper
 public interface IDepartementMapper {
 	
-	Departement DTOtoDepartement(DepartementDto source, int id);
-	DepartementDto DepartementToDTO(Departement destination);
+	Department DTOtoDepartement(DepartmentDto source, int id);
+	DepartmentDto DepartementToDTO(Department destination);
 
 }

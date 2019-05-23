@@ -80,7 +80,7 @@ public class TimesheetController {
 		Optional<Timesheet> optionalTimesheet = timesheetService.getById(id);
 		
 		if(optionalTimesheet.isPresent()) {
-			return new ResponseEntity<>(optionalTimesheet.get(),HttpStatus.OK);
+			return GlobalFunctions.createOkResponseFromObject(optionalTimesheet.get());
 		}
 		else {
 			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetIdNotFound, "/timesheet");
@@ -108,7 +108,7 @@ public class TimesheetController {
 
 		this.timesheetService.save(timesheet);
 
-		return new ResponseEntity<String>("{\"id\": "+timesheet.getId()+"}", HttpStatus.OK);
+		return GlobalFunctions.createOkResponseFromObject(timesheet);
 
 	}
 
@@ -136,7 +136,7 @@ public class TimesheetController {
 	
 			this.timesheetService.save(timesheet);
 	
-			return new ResponseEntity<String>(GlobalMessages.TimesheetPutSuccessful, HttpStatus.OK);
+			return GlobalFunctions.createOkResponseFromObject(timesheet);
 		}
 		else {
 			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetIdNotFound, "/timesheet");
@@ -160,7 +160,7 @@ public class TimesheetController {
 		}
 		
 		timesheetService.delete(timesheet);
-		return new ResponseEntity<String>(GlobalMessages.TimesheetDeleteSuccessful, HttpStatus.OK);
+		return GlobalFunctions.createOkResponseFromObject(timesheet);
 	}
 	
 	@GetMapping("/timesheet/employee")
@@ -179,7 +179,7 @@ public class TimesheetController {
 			EmployeeComplexWithManager personCompWithManager = (EmployeeComplexWithManager) personWithManager;
 			personCompWithManager = personMapper.addManagerToEmployeeComplexWithManager(personCompWithManager, optionalEmployee.get());
 			
-			return new ResponseEntity<EmployeeComplex>(personCompWithManager, HttpStatus.OK);
+			return GlobalFunctions.createOkResponseFromObject(personCompWithManager);
 		}
 		
 		else {
@@ -209,7 +209,7 @@ public class TimesheetController {
 				listOfPeople.add(personWithTimesheets);
 	
 			}
-			return new ResponseEntity<List<EmployeeComplex>>(listOfPeople, HttpStatus.OK);
+			return GlobalFunctions.createOkResponseFromObject(listOfPeople);
 		}
 		else {
 			return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdNotFound, "/timesheet/manager");

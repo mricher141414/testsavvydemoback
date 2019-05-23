@@ -24,6 +24,10 @@ public class ClientService {
 	}
 	
 	public Client save(Client client) {
+		if(clientDao.existsById(client.getId()) == false) {
+			client.setVersion(0);
+		}
+		
 		return clientDao.save(client);
 	}
 	

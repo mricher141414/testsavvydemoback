@@ -27,16 +27,9 @@ public class TimesheetRow {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date date;
 	
-	@ApiModelProperty(notes = "<p>Amount of hours logged in for the row. Use a dot (.) for decimals.</p>", example = "8.5", position = 2)
-	private float value;
-	
 	@Column(name = "timesheet_id")
-	@ApiModelProperty(notes = "<p>Unique identifier of the timesheet that the row is currently in. No two timesheets can have the same id.</p>", example = "1", position = 3)
+	@ApiModelProperty(notes = "<p>Unique identifier of the timesheet that the row is currently in. No two timesheets can have the same id.</p>", example = "1", position = 2)
 	private Integer timesheetId;
-	
-	@Column(name = "project_id")
-	@ApiModelProperty(notes = "<p>Unique identifier of the project the person has worked on for that row. No two projects can have the same id.</p>", example = "4", position = 4)
-	private Integer projectId;
 	
 	public void compensateTimezoneOnDates() {
 		Date date = this.getDate();
@@ -56,14 +49,6 @@ public class TimesheetRow {
 	
 	//getters and setters
 	
-	public float getValue() {
-		return this.value;
-	}
-	
-	public void setValue(Float value) {
-		this.value = value;
-	}
-	
 	public int getId() {
 		return id;
 	}
@@ -81,11 +66,5 @@ public class TimesheetRow {
 	}
 	public void setTimesheetId(Integer timesheetId) {
 		this.timesheetId = timesheetId;
-	}
-	public Integer getProjectId() {
-		return projectId;
-	}
-	public void setProjectId(Integer projectId) {
-		this.projectId = projectId;
 	}
 }

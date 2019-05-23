@@ -5,8 +5,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.example.Timesheet.com.dto.DepartementDto;
-import com.example.Timesheet.com.model.Departement;
+import com.example.Timesheet.com.dto.DepartmentDto;
+import com.example.Timesheet.com.model.Department;
 import com.example.Timesheet.com.service.DepartementService;
 
 @Component
@@ -16,41 +16,43 @@ public class DepartementMapper implements IDepartementMapper {
 	private DepartementService departementService;
 	
 	@Override
-    public Departement DTOtoDepartement(DepartementDto source, int id) {
+    public Department DTOtoDepartement(DepartmentDto source, int id) {
         if ( source == null ) {
             return null;
         }
 
-        Departement departement = new Departement();
+        Department department = new Department();
 
-        departement.setId( id );
-        departement.setName( source.getName() );
-        departement.setDescription(source.getDescription());
+        department.setId( id );
+        department.setName( source.getName() );
+        department.setDescription(source.getDescription());
         
-        Optional<Departement> optionalDepartement = this.departementService.getById(id);
+        Optional<Department> optionalDepartement = this.departementService.getById(id);
         
         if(optionalDepartement.isPresent()) {
-        	Departement dbDepartement = optionalDepartement.get();
         	
-        	if(departement.getName() == null) {
-        		departement.setName(dbDepartement.getName());
+        	Department dbDepartment = optionalDepartement.get();
+        	department.setVersion(dbDepartment.getVersion());
+        	
+        	if(department.getName() == null) {
+        		department.setName(dbDepartment.getName());
         	}
         	
-        	if(departement.getDescription() == null) {
-        		departement.setDescription(dbDepartement.getDescription());
+        	if(department.getDescription() == null) {
+        		department.setDescription(dbDepartment.getDescription());
         	}
         }
 
-        return departement;
+        return department;
     }
 
     @Override
-    public DepartementDto DepartementToDTO(Departement destination) {
+    public DepartmentDto DepartementToDTO(Department destination) {
         if ( destination == null ) {
             return null;
         }
 
-        DepartementDto departementDTO = new DepartementDto();
+        DepartmentDto departementDTO = new DepartmentDto();
 
         departementDTO.setId( destination.getId() );
         departementDTO.setName( destination.getName() );

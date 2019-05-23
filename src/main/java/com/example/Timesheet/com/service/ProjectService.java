@@ -6,14 +6,14 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.Timesheet.com.dao.IProjectDAO;
+import com.example.Timesheet.com.dao.IProjectDao;
 import com.example.Timesheet.com.model.Project;
 
 @Service
 public class ProjectService {
 
 	@Autowired
-	private IProjectDAO projectDAO;
+	private IProjectDao projectDAO;
 	
 	public List<Project> getAll() {
 		return (List<Project>) projectDAO.findAll();
@@ -23,8 +23,13 @@ public class ProjectService {
 		return this.projectDAO.findById(id);
 	}
 	
-	public void save(Project project) {
-		projectDAO.save(project);
+	public Project save(Project project) {
+		if(projectDAO.existsById(project.getId()) == false) {
+			project.setVersion(0);
+		}
+		
+		project.compensateTimezoneOnDates();
+		return projectDAO.save(project);
 	}
 	
 	public void delete(Project project) {
@@ -37,5 +42,9 @@ public class ProjectService {
 	
 	public List<Project> getByClientId(int id) {
 		return projectDAO.findAllByClientId(id);
+	}
+	
+	public boolean projectExists(int id) {
+		return projectDAO.existsById(id);
 	}
 }

@@ -6,31 +6,35 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.Timesheet.com.dao.IDepartementDAO;
-import com.example.Timesheet.com.model.Departement;
+import com.example.Timesheet.com.dao.IDepartementDao;
+import com.example.Timesheet.com.model.Department;
 
 @Service
 public class DepartementService {
 	
 	@Autowired
-	private IDepartementDAO departement;
+	private IDepartementDao departmentDao;
 	
-	public List<Departement> getAll(){
+	public List<Department> getAll(){
 		
-		return (List<Departement>) this.departement.findAll();
+		return (List<Department>) this.departmentDao.findAll();
 		
 	}
 	
-	public void save(Departement departement) {
-		this.departement.save(departement);	
+	public void save(Department department) {
+		if(departmentDao.existsById(department.getId()) == false) {
+			department.setVersion(0);
+		}
+		
+		this.departmentDao.save(department);	
 	}
 	
-	public void delete(Departement departement) {
-		this.departement.delete(departement);	
+	public void delete(Department department) {
+		this.departmentDao.delete(department);	
 	}
 	
-	public Optional<Departement> getById(int id) {
-		return this.departement.findById(id);
+	public Optional<Department> getById(int id) {
+		return this.departmentDao.findById(id);
 	}
 
 }

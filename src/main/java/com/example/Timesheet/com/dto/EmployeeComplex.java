@@ -4,7 +4,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.Timesheet.com.model.Departement;
+import com.example.Timesheet.com.model.Department;
 import com.example.Timesheet.com.model.Role;
 
 import io.swagger.annotations.ApiModel;
@@ -35,7 +35,7 @@ public class EmployeeComplex {
 	
 	@ApiModelProperty(notes = "<p>Full object of the department the employee is in. <br>"
 			+ "Check the department model for more information.</p>", position = 6)
-	protected Departement departement;
+	protected Department department;
 	
 	@ApiModelProperty(notes = "<p>Physical address of the employee's working place.</p>", example = "101 rue des Abénaquis", position = 8)
 	protected String address;
@@ -47,7 +47,7 @@ public class EmployeeComplex {
 	protected List<TimesheetComplex> timesheets = new ArrayList<TimesheetComplex>();
 
 	@ApiModelProperty(notes = "<p>Amount of money the employee makes</p>.", example = "16.50", position = 10)
-	protected float salary;
+	protected Float salary;
 	
 	//getters and setters
 	
@@ -87,11 +87,11 @@ public class EmployeeComplex {
 	public void setRole(Role role) {
 		this.role = role;
 	}
-	public Departement getDepartement() {
-		return departement;
+	public Department getDepartment() {
+		return department;
 	}
-	public void setDepartement(Departement departement) {
-		this.departement = departement;
+	public void setDepartment(Department departement) {
+		this.department = departement;
 	}
 	public String getAddress() {
 		return address;
@@ -116,10 +116,10 @@ public class EmployeeComplex {
 	public void addToTimesheets(TimesheetComplex timesheetComplex) {		
 		timesheets.add(timesheetComplex);	
 	}
-	public float getSalary() {
+	public Float getSalary() {
 		return salary;
 	}
-	public void setSalary(float salary) {
+	public void setSalary(Float salary) {
 		this.salary = salary;
 	}
 

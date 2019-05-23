@@ -49,13 +49,13 @@ public class TimesheetStatusController {
 	
 	@PostMapping("/timesheetStatus")
 	@ApiOperation("Creates a new timesheet status in the system")
-	public String create(@ApiParam(value = "Timesheet status information for the new status to be created", required = true)@RequestBody TimesheetStatusDto timesheetStatusDto) {
+	public ResponseEntity<String> create(@ApiParam(value = "Timesheet status information for the new status to be created", required = true)@RequestBody TimesheetStatusDto timesheetStatusDto) {
 		
 		TimesheetStatus timesheetStatus = this.timesheetStatusMapper.DTOtoTimesheetStatus(timesheetStatusDto, 0);
 		
 		this.timesheetStatusService.save(timesheetStatus);
 		
-		return "{\"id\": "+timesheetStatus.getId()+"}";
+		return GlobalFunctions.createOkResponseFromObject(timesheetStatus);
 	}
 	
 	@PutMapping("/timesheetStatus")
@@ -71,7 +71,7 @@ public class TimesheetStatusController {
 		
 		timesheetStatusService.save(timesheetStatus);
 		
-		return new ResponseEntity<String>(GlobalMessages.TimesheetPutSuccessful, HttpStatus.OK);
+		return GlobalFunctions.createOkResponseFromObject(timesheetStatus);
 	}
 	
 	@DeleteMapping("/timesheetStatus")
@@ -91,6 +91,6 @@ public class TimesheetStatusController {
 		}
 		
 		timesheetStatusService.delete(timesheetStatus);
-		return new ResponseEntity<String>(GlobalMessages.TimesheetStatusDeleteSuccessful, HttpStatus.OK);
+		return GlobalFunctions.createOkResponseFromObject(timesheetStatus);
 	}
 }

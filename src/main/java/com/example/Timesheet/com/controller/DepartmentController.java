@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalMessages;
-import com.example.Timesheet.com.dto.DepartementDto;
+import com.example.Timesheet.com.dto.DepartmentDto;
 import com.example.Timesheet.com.mapper.DepartementMapper;
-import com.example.Timesheet.com.model.Departement;
+import com.example.Timesheet.com.model.Department;
 import com.example.Timesheet.com.service.DepartementService;
 import com.example.Timesheet.com.service.EmployeeService;
 
@@ -29,8 +29,8 @@ import io.swagger.annotations.ApiParam;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@Api(tags = "DepartementController")
-public class DepartementController {
+@Api(tags = "DepartmentController")
+public class DepartmentController {
 	
 	@Autowired
 	DepartementService departementService = new DepartementService();
@@ -43,30 +43,30 @@ public class DepartementController {
 	
 	@GetMapping("/departement")
 	@ApiOperation("Returns a list of all departments in the system.")
-	public List<Departement> getAll(){
+	public List<Department> getAll(){
 		return departementService.getAll();
 	}
 	
 	@PostMapping("/departement")
 	@ApiOperation("Create a new department in the system.")
-	public String create(@ApiParam(value = "Department information for the new department to be created.", required = true)@RequestBody DepartementDto departementDto) {
-		Departement department = departementMapper.DTOtoDepartement(departementDto, 0);
+	public ResponseEntity<String> create(@ApiParam(value = "Department information for the new department to be created.", required = true)@RequestBody DepartmentDto departementDto) {
+		Department department = departementMapper.DTOtoDepartement(departementDto, 0);
 		
 		departementService.save(department);
 		
-		return "{\"id\": "+ department.getId()+"}";
+		return GlobalFunctions.createOkResponseFromObject(department);
 	}
 	
 	@PutMapping("/departement")
 	@ApiOperation(value = "Updates a department in the system by their identifier.", notes = "404 if the department's identifier is not found")
-	public ResponseEntity<?> edit(@ApiParam("department information to be modified")@RequestBody DepartementDto departementDTO,
+	public ResponseEntity<?> edit(@ApiParam("department information to be modified")@RequestBody DepartmentDto departementDTO,
 										@ApiParam(value = "Id of the department to be modified. Cannot be null", required = true)@RequestParam(value="id") int id){
 		
 		if(this.departementService.getById(id).isPresent()) {
 		
-				Departement departement = departementMapper.DTOtoDepartement(departementDTO, id);
-				departementService.save(departement);
-				return new ResponseEntity<String>(GlobalMessages.DepartementPutSuccessful, HttpStatus.OK);
+				Department department = departementMapper.DTOtoDepartement(departementDTO, id);
+				departementService.save(department);
+				return GlobalFunctions.createOkResponseFromObject(department);
 		}
 		else {
 			return GlobalFunctions.createNotFoundResponse(GlobalMessages.DepartementIdNotFound, "/departement");
@@ -78,18 +78,18 @@ public class DepartementController {
 	@ApiOperation(value = "Deletes a department from the system.", notes = "404 if the department's identifier cannot be found")
 	public ResponseEntity<?> delete(@ApiParam(value = "Id of the department to be deleted. Cannot be null.", required = true)@RequestParam(value="id") int id){
 		
-		Optional<Departement> optionalDepartement = this.departementService.getById(id);
+		Optional<Department> optionalDepartment = this.departementService.getById(id);
 		
-		if(optionalDepartement.isPresent()) {
+		if(optionalDepartment.isPresent()) {
 		
-			Departement departement = optionalDepartement.get();
+			Department department = optionalDepartment.get();
 			
 			if(this.personService.getAllByDepartementId(id).size() > 0) {
 				return GlobalFunctions.createBadRequest(GlobalMessages.EmployeeUsesDepartementCannotDelete, "/departement");
 			}
 			
-			this.departementService.delete(departement);
-			return new ResponseEntity<String>(GlobalMessages.DepartementDeleteSuccessful, HttpStatus.OK);
+			this.departementService.delete(department);
+			return GlobalFunctions.createOkResponseFromObject(department);
 		}
 		else {
 			return GlobalFunctions.createNotFoundResponse(GlobalMessages.DepartementIdNotFound, "/departement");

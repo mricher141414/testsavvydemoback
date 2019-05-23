@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Version;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -22,7 +23,10 @@ public class Role {
 	private String name;
 	
 	@ApiModelProperty(notes = "<p>Description about the role</p>", example = "Les gestionnaires qui s'occupe de gérer les équipes et les projets", position = 2)
-	private String descrole;
+	private String description;
+	
+	@Version
+	private Integer version;
 	
 	//getters and setters
 
@@ -43,10 +47,19 @@ public class Role {
 	}
 
 	public String getDescription() {
-		return descrole;
+		return description;
 	}
 
 	public void setDescription(String description) {
-		this.descrole = description;
+		this.description = description;
 	}
+
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+	
 }

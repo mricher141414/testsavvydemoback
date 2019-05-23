@@ -20,22 +20,7 @@ public class TimesheetRowDto {
 			+ "Will cause an error if the timesheet id specified does not belong to an existing timesheet.</p>", example = "1", position = 3)
 	private Integer timesheetId;
 	
-	@ApiModelProperty(notes = "<p>Unique identifier of the project the person has worked on for that row. <br>"
-			+ "Will cause an error if the project id specified does not belong to an existing project.</p>", example = "4", position = 4)
-	private Integer projectId;
-	
-	@ApiModelProperty(notes = "<p>Amount of hours logged in for the row. Use a dot (.) for decimals.</p>", example = "8.5", position = 2)
-	private float value;
-	
 	//getters and setters
-	
-	public float getValue() {
-		return this.value;
-	}
-	
-	public void setValue(float value) {
-		this.value = value;
-	}
 	
 	public int getId() {
 		return id;
@@ -54,12 +39,6 @@ public class TimesheetRowDto {
 	}
 	public void setTimesheetId(Integer timesheetId) {
 		this.timesheetId = timesheetId;
-	}
-	public Integer getProjectId() {
-		return projectId;
-	}
-	public void setProjectId(Integer projectId) {
-		this.projectId = projectId;
 	}
 	
 	

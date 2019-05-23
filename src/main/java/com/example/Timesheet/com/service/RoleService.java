@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.Timesheet.com.dao.IRoleDAO;
+import com.example.Timesheet.com.dao.IRoleDao;
 import com.example.Timesheet.com.model.Role;
 
 @Service
@@ -14,24 +14,28 @@ import com.example.Timesheet.com.model.Role;
 public class RoleService {
 
 	@Autowired
-	private IRoleDAO role;
+	private IRoleDao roleDao;
 
 
 	public List<Role> getAll() {
-		return (List<Role>) this.role.findAll();
+		return (List<Role>) this.roleDao.findAll();
 	}
 
 	public void save(Role role) {
-		this.role.save(role);
+		if(roleDao.existsById(role.getId()) == false) {
+			role.setVersion(0);
+		}
+		
+		this.roleDao.save(role);
 
 	}
 
 	public void delete(Role role) {
-		this.role.delete(role);
+		this.roleDao.delete(role);
 	}
 	
 	
 	public Optional<Role> getById(int id) {
-		return this.role.findById(id);
+		return this.roleDao.findById(id);
 	}
 }

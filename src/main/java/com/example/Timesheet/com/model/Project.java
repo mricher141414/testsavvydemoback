@@ -8,9 +8,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Version;
 
 import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.GlobalVars;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -31,10 +33,12 @@ public class Project {
 	
 	@Column(name = "start_date")
 	@ApiModelProperty(notes = "<p>Date (year-month-day) at which the project started.</p>", example = "2018-05-01", position = 3)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date startDate;
 	
 	@Column(name = "end_date")
 	@ApiModelProperty(notes = "<p>Date (year-month-day) at which the project ends.</p>", example = "2018-11-30", position = 4)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date endDate;
 	
 	@Column(name = "client_id")
@@ -44,6 +48,9 @@ public class Project {
 	@Column(name = "project_manager_id")
 	@ApiModelProperty(notes = "<p>Unique identifier of the employee that manages the project. <br>", example = "1", position = 6)
 	private Integer projectManagerId;
+	
+	@Version
+	private Integer version;
 	
 	public void compensateTimezoneOnDates() {
 		Date startDate = this.getStartDate();
@@ -107,5 +114,11 @@ public class Project {
 	}
 	public void setProjectManagerId(Integer projectManagerId) {
 		this.projectManagerId = projectManagerId;
+	}
+	public int getVersion() {
+		return version;
+	}
+	public void setVersion(int version) {
+		this.version = version;
 	}	
 }

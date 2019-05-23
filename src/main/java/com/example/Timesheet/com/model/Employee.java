@@ -9,9 +9,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.GlobalVars;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -42,9 +44,9 @@ public class Employee {
 	@ApiModelProperty(notes = "<p>Unique identifier of the employee's role.</p>", example = "2", position = 5)
 	private Integer roleId;
 	
-	@Column(name = "departement_id")
+	@Column(name = "department_id")
 	@ApiModelProperty(notes = "<p>Unique identifier of the employee's department.</p>", example = "1", position = 6)
-	private Integer departementId;
+	private Integer departmentId;
 	
 	@Column(name = "manager_id")
 	@ApiModelProperty(notes = "<p>Unique identifier of the employee's manager.</p>", example = "2", position = 7)
@@ -52,14 +54,17 @@ public class Employee {
 	
 	@Column(name = "date_of_birth")
 	@ApiModelProperty(notes = "<p>Date of birth (year-month-date) of the employee.</p>", example = "1955-01-13", position = 8)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date dateOfBirth;
 	
 	@ApiModelProperty(notes = "<p>Physical address of the employee's working location.", example = "101 rue des Abénaquis", position = 9)
 	private String address;
 	
 	@ApiModelProperty(notes = "<p>Amount of money the employee makes</p>.", example = "16.50", position = 10)
-	@Column(name = "salaire")
 	private Float salary;
+	
+	@Version
+	private Integer version;
 	
 	public void compensateTimezoneOnDates() {
 		Date dateOfBirth = this.getDateOfBirth();
@@ -129,12 +134,12 @@ public class Employee {
 		this.roleId = roleId;
 	}
 
-	public Integer getDepartementId() {
-		return departementId;
+	public Integer getDepartmentId() {
+		return departmentId;
 	}
 
-	public void setDepartementId(Integer departementId) {
-		this.departementId = departementId;
+	public void setDepartmentId(Integer departmentId) {
+		this.departmentId = departmentId;
 	}
 
 	public Integer getManagerId() {
@@ -159,6 +164,14 @@ public class Employee {
 
 	public void setSalary(Float salary) {
 		this.salary = salary;
+	}
+
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
 	}
 	
 }

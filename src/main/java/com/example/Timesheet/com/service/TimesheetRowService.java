@@ -44,10 +44,6 @@ public class TimesheetRowService {
 		return this.timesheetRowDAO.findByTimesheetId(id);
 	}
 	
-	public List<TimesheetRow> getByProjectId(int id) {
-		return timesheetRowDAO.findByProjectId(id);
-	}
-	
 	public void createWeekFromTimesheet(Timesheet timesheet) {
 		
 		for (int i = 0; i < 7; i++) {
@@ -58,7 +54,6 @@ public class TimesheetRowService {
 			
 			timesheetRow.setDate(date);
 			timesheetRow.setTimesheetId(timesheet.getId());
-			timesheetRow.setValue(0F);
 			
 			this.save(timesheetRow);
 		}

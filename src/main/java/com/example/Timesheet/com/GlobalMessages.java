@@ -25,11 +25,14 @@ public class GlobalMessages {
 	public static final String EmployeeIdIsNull = "The employeeId in body is null. Please add an employeeId";
 	public static final String ManagerIdIsNull = "The managerId in body is null. Please add a managerId";
 	public static final String EmployeeUsesManagerCannotDelete = "The employee with the specified id cannot be deleted, as some employees are referencing it as their manager.";
+	public static final String EmployeeAssignedCannotDelete = "The employee with the specified id cannot be deleted, as it is still assigned to at least one project.";
 	public static final String TimesheetUsesEmployeeCannotDelete = "The employee with the specified id cannot be deleted, as some timesheets are referencing it.";
 	public static final String ProjectUsesEmployeeCannotDelete = "The employee with the specified id cannot be deleted, as some projects are referencing it as their project manager.";
 	
 	//timesheetRow messages
 	public static final String TimesheetRowIdNotFound = "No timesheetRow was found with the specified id";
+	public static final String TimesheetRowIdParameterNotFound = "No timesheetRow was found with the specified timesheetRowId";
+	public static final String TimeProjectUsesTimesheetRowCannotDelete = "The timesheet row with the specified id cannot be deleted, as some timeProjects are referencing it.";
 	public static final String TimesheetRowDeleteSuccessful = "The timesheetRow with the specified id was deleted";
 	public static final String TimesheetRowPutSuccessful = "The timesheetRow with the specified id was modified sucessfully.";
 	
@@ -52,6 +55,8 @@ public class GlobalMessages {
 	public static final String ProjectIdNotFound = "No project was found with the specified id";
 	public static final String ProjectIdIsNull = "The projectId in body is null. Please add a projectId";
 	public static final String ProjectPutSuccessful = "The project with the specified id was modified successfully";
+	public static final String ProjectAssignedCannotDelete = "The project with the specified id cannot be deleted, as it is still assigned to at least one employee.";
+	public static final String TimeProjectUsesProjectCannotDelete = "The project with the specified id cannot be deleted, as some timeProjects are referencing it.";
 	public static final String TimesheetRowUsesProjectCannotDelete = "The project with the specified id cannot be deleted, as some timesheet rows are referencing it.";
 	public static final String ProjectDeleteSuccessful = "The project with the specified id was deleted.";
 	
@@ -61,6 +66,14 @@ public class GlobalMessages {
 	public static final String ClientPutSuccessful = "The client with the specified id was modified successfully.";
 	public static final String ProjectUsesClientCannotDelete = "The client with the specified id cannot be deleted, as some projects are referencing it.";
 	public static final String ClientDeleteSuccessful = "The project with the specified id was deleted.";
+	
+	//timeProject messages
+	public static final String TimeProjectIdNotFound = "No timeProject was found with the specified id";
+	public static final String TimeProjectDeleteSuccessful = "The timeProject with the specified id was deleted";
+	public static final String TimeProjectPutSuccessful = "The timeProject with the specified id was modified sucessfully.";
+	
+	//projectEmployee messages
+	public static final String ProjectEmployeeIdNotFound = "No ProjectEmployee was found with the specified id.";
 	
 	//global messages
 	public static final String NameIsEmpty = "Name is empty";

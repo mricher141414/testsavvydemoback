@@ -20,7 +20,7 @@ import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.dto.ClientDto;
 import com.example.Timesheet.com.mapper.ClientMapper;
 import com.example.Timesheet.com.model.Client;
-import com.example.Timesheet.com.model.Departement;
+import com.example.Timesheet.com.model.Department;
 import com.example.Timesheet.com.service.ClientService;
 import com.example.Timesheet.com.service.ProjectService;
 
@@ -50,13 +50,13 @@ public class ClientController {
 	
 	@PostMapping("/client")
 	@ApiOperation("Creates a new client in the system.")
-	public String create(@ApiParam(value = "Client information for the new client to be created.", required = true)@RequestBody ClientDto clientDto) {
+	public ResponseEntity<String> create(@ApiParam(value = "Client information for the new client to be created.", required = true)@RequestBody ClientDto clientDto) {
 		
 		Client client = clientMapper.dtoToClient(clientDto, 0);
 		
 		clientService.save(client);
 		
-		return "{\"id\": "+ client.getId()+"}";
+		return GlobalFunctions.createOkResponseFromObject(client);
 	}
 	
 	@PutMapping("/client")
@@ -72,8 +72,8 @@ public class ClientController {
 		
 		clientService.save(client);
 		
-		return new ResponseEntity<String>(GlobalMessages.ClientPutSuccessful, HttpStatus.OK);
-	}
+		return GlobalFunctions.createOkResponseFromObject(client);
+}
 	
 	@DeleteMapping("/client")
 	@ApiOperation(value = "Deletes a client from the system.", notes = "404 if the client's identifier cannot be found")
@@ -92,6 +92,6 @@ public class ClientController {
 		Client client = optionalClient.get();
 		
 		clientService.delete(client);
-		return new ResponseEntity<String>(GlobalMessages.ClientDeleteSuccessful, HttpStatus.OK);
+		return GlobalFunctions.createOkResponseFromObject(client);
 	}
 }

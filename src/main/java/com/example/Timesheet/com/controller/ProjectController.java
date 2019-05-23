@@ -1,6 +1,7 @@
 package com.example.Timesheet.com.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,9 +23,12 @@ import com.example.Timesheet.com.dto.ProjectDto;
 import com.example.Timesheet.com.mapper.ProjectMapper;
 import com.example.Timesheet.com.model.Employee;
 import com.example.Timesheet.com.model.Project;
+import com.example.Timesheet.com.model.ProjectEmployee;
 import com.example.Timesheet.com.service.ClientService;
 import com.example.Timesheet.com.service.EmployeeService;
+import com.example.Timesheet.com.service.ProjectEmployeeService;
 import com.example.Timesheet.com.service.ProjectService;
+import com.example.Timesheet.com.service.TimeProjectService;
 import com.example.Timesheet.com.service.TimesheetRowService;
 
 import io.swagger.annotations.Api;
@@ -43,13 +47,16 @@ public class ProjectController {
 	private ProjectMapper projectMapper = new ProjectMapper();
 	
 	@Autowired
-	private TimesheetRowService timesheetRowService = new TimesheetRowService();
-	
-	@Autowired
 	private ClientService clientService = new ClientService();
 	
 	@Autowired
 	private EmployeeService employeeService = new EmployeeService();
+	
+	@Autowired
+	private TimeProjectService timeProjectService = new TimeProjectService();
+	
+	@Autowired
+	private ProjectEmployeeService projectEmployeeService = new ProjectEmployeeService();
 	
 	@GetMapping("/project")
 	@ApiOperation("Returns a list of all projects in the system.")
@@ -75,9 +82,9 @@ public class ProjectController {
 		 
 		 Project project = projectMapper.dtoToProject(projectDto, 0);
 		 
-		 projectService.save(project);
+		 project = projectService.save(project);
 		 
-		 return new ResponseEntity<String>("{\"id\": "+project.getId()+"}", HttpStatus.OK);
+		 return GlobalFunctions.createOkResponseFromObject(project);
 	}
 	
 	@PutMapping("/project")
@@ -103,14 +110,14 @@ public class ProjectController {
 		 
 		 Project project = projectMapper.dtoToProject(projectDto, id);
 		 
-		 projectService.save(project);
+		 project = projectService.save(project);
 		 
-		 return new ResponseEntity<String>(GlobalMessages.ProjectPutSuccessful, HttpStatus.OK);
-	}
+		 return GlobalFunctions.createOkResponseFromObject(project);
+}
 	
 	@DeleteMapping("/project")
-	@ApiOperation(value = "Deletes a project in the system by their identifier.", notes = "404 if the project's identifier cannot be found.<br> 400 if the project is still referenced by a timesheet row.")
-	public ResponseEntity<String> delete(@RequestParam int id) {
+	@ApiOperation(value = "Deletes a project in the system by their identifier.", notes = "404 if the project's identifier cannot be found.<br> 400 if the project is still assigned to some employees or is still referenced by a timeProject.")
+	public ResponseEntity<String> delete(@ApiParam(value = "Id of the project to be deleted. Cannot be null.", required = true)@RequestParam int id) {
 		
 		Optional<Project> optionalProject = projectService.getById(id);
 		
@@ -118,13 +125,35 @@ public class ProjectController {
 			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ProjectIdNotFound, "/project");
 		}
 		
-		if(timesheetRowService.getByProjectId(id).size() > 0) {
-			return GlobalFunctions.createBadRequest(GlobalMessages.TimesheetRowUsesProjectCannotDelete, "/project");
-		}
-		
 		Project project = optionalProject.get();
 		
+		if(projectEmployeeService.getByProjectId(id).size() > 0) {
+			return GlobalFunctions.createBadRequest(GlobalMessages.ProjectAssignedCannotDelete, "/project");
+		}
+		
+		if(timeProjectService.getByProjectId(id).size() > 0) {
+			return GlobalFunctions.createBadRequest(GlobalMessages.TimeProjectUsesProjectCannotDelete, "/project");
+		}
+		
 		projectService.delete(project);
-		return new ResponseEntity<String>(GlobalMessages.ProjectDeleteSuccessful, HttpStatus.OK);
+		return GlobalFunctions.createOkResponseFromObject(project);
+	}
+	
+	@GetMapping("/assignationproject")
+	@ApiOperation(value = "Returns all employees who are currently working on the project", notes = "404 if the project's identifier cannot be found.")
+	public ResponseEntity<String> getAllAssignationsOnProject(@ApiParam(value = "Id of the project to get the assignations from. Cannot be null.", required = true)@RequestParam int id) {
+		
+		if(projectService.projectExists(id) == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ProjectIdNotFound, "/assignationproject");
+		}
+		
+		List<ProjectEmployee> projectEmployees = projectEmployeeService.getByProjectId(id);
+		List<Employee> assignedEmployees = new ArrayList<Employee>();
+		
+		for (ProjectEmployee assignation : projectEmployees) {
+			assignedEmployees.add(employeeService.getById(assignation.getEmployeeId()).get());
+		}
+		
+		return GlobalFunctions.createOkResponseFromObject(assignedEmployees);
 	}
 }

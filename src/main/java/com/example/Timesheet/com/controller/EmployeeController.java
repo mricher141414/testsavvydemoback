@@ -1,7 +1,7 @@
 package com.example.Timesheet.com.controller;
 
 import java.sql.SQLException;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +22,10 @@ import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.dto.EmployeeDto;
 import com.example.Timesheet.com.mapper.EmployeeMapper;
 import com.example.Timesheet.com.model.Employee;
+import com.example.Timesheet.com.model.Project;
+import com.example.Timesheet.com.model.ProjectEmployee;
 import com.example.Timesheet.com.service.EmployeeService;
+import com.example.Timesheet.com.service.ProjectEmployeeService;
 import com.example.Timesheet.com.service.ProjectService;
 import com.example.Timesheet.com.service.RoleService;
 import com.example.Timesheet.com.service.TimesheetService;
@@ -39,22 +42,25 @@ import com.example.Timesheet.com.service.DepartementService;
 public class EmployeeController {
 	
 	 @Autowired
-	 EmployeeService employeeService = new EmployeeService();
+	 private EmployeeService employeeService = new EmployeeService();
 	 
 	 @Autowired
-	 DepartementService departementService = new DepartementService();
+	 private DepartementService departementService = new DepartementService();
 	 
 	 @Autowired
-	 RoleService roleService = new RoleService();
+	 private RoleService roleService = new RoleService();
 	 
 	 @Autowired
-	 EmployeeMapper employeeMapper = new EmployeeMapper();
+	 private EmployeeMapper employeeMapper = new EmployeeMapper();
 	 
 	 @Autowired
-	 TimesheetService timesheetService = new TimesheetService();
+	 private TimesheetService timesheetService = new TimesheetService();
 	 
 	 @Autowired
-	 ProjectService projectService = new ProjectService();
+	 private ProjectService projectService = new ProjectService();
+	 
+	 @Autowired
+	 private ProjectEmployeeService projectEmployeeService = new ProjectEmployeeService();
 	 
 	 @GetMapping("/employee")
 	 @ApiOperation("Returns a list of all employees in the system.")
@@ -66,8 +72,8 @@ public class EmployeeController {
 	 @ApiOperation("Creates a new employee in the system.")
 	 public ResponseEntity<String> create(@ApiParam(value = "Employee information for the new employee to be created.", required = true) @RequestBody EmployeeDto employeeDto) {
 		 
-		 if (employeeDto.getDepartementId() != null) {
-			  if(departementService.getById(employeeDto.getDepartementId()).isPresent() == false) {
+		 if (employeeDto.getDepartmentId() != null) {
+			  if(departementService.getById(employeeDto.getDepartmentId()).isPresent() == false) {
 				  return GlobalFunctions.createNotFoundResponse(GlobalMessages.DepartementIdNotFound, "/employee");
 			  }
 		  }
@@ -88,7 +94,7 @@ public class EmployeeController {
 		 
 		 employeeService.saveEmployee(employee);
 		 
-		 return new ResponseEntity<String>("{\"id\": "+employee.getId()+"}", HttpStatus.OK);
+		 return GlobalFunctions.createOkResponseFromObject(employee);
 	 }
 	 
 	 @PutMapping("/employee")
@@ -100,8 +106,8 @@ public class EmployeeController {
 			  return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdNotFound, "/employee");
 		  }
 		  
-		  if (employeeDto.getDepartementId() != null) {
-			  if(departementService.getById(employeeDto.getDepartementId()).isPresent() == false) {
+		  if (employeeDto.getDepartmentId() != null) {
+			  if(departementService.getById(employeeDto.getDepartmentId()).isPresent() == false) {
 				  return GlobalFunctions.createNotFoundResponse(GlobalMessages.DepartementIdNotFound, "/employee");
 			  }
 		  }
@@ -121,11 +127,11 @@ public class EmployeeController {
 		  Employee employee = employeeMapper.dtoToEmployee(employeeDto, id);
 		  employeeService.saveEmployee(employee);
 		
-		  return new ResponseEntity<String>(GlobalMessages.EmployeePutSuccessful, HttpStatus.OK);
+		  return GlobalFunctions.createOkResponseFromObject(employee);
 	 }
 	 
 	 @DeleteMapping("/employee")
-	 @ApiOperation(value = "Deletes an employee in the system by their identifier.", notes = "404 if the employee's identifier cannot be found.<br> 400 if the employee is still referenced by a timesheet, project or another employee.")
+	 @ApiOperation(value = "Deletes an employee in the system by their identifier.", notes = "404 if the employee's identifier cannot be found.<br> 400 if the employee is still referenced by a timesheet, project, another employee or is still assigned to a project.")
 	 public ResponseEntity<String> delete(@ApiParam(value = "Id of the employee to be deleted. Cannot be null", required = true) @RequestParam int id) {
 		 
 		 Optional<Employee> optionalEmployee = this.employeeService.getById(id);
@@ -135,6 +141,10 @@ public class EmployeeController {
 		 }
 		 
 		 Employee employee = optionalEmployee.get();
+		 
+		 if(projectEmployeeService.getByEmployeeId(id).size() > 0) {
+			 return GlobalFunctions.createBadRequest(GlobalMessages.EmployeeAssignedCannotDelete, "/employee");
+		 }
 		 
 		 if(this.employeeService.getAllByManagerId(id).size() > 0) {
 			 return GlobalFunctions.createBadRequest(GlobalMessages.EmployeeUsesManagerCannotDelete, "/employee");
@@ -149,6 +159,24 @@ public class EmployeeController {
 		 }
 		 
 		 this.employeeService.delete(employee);
-		 return new ResponseEntity<String>(GlobalMessages.EmployeeDeleteSuccessful, HttpStatus.OK);
+		 return GlobalFunctions.createOkResponseFromObject(employee);
 	 }
+
+	@GetMapping("/assignationemployee")
+	@ApiOperation(value = "Returns all projects who are currently assigned to the employee", notes = "404 if the employee's identifier cannot be found.")
+	public ResponseEntity<String> getAllAssignationsOnEmployee(@ApiParam(value = "Id of the employee to get the assignations from. Cannot be null.", required = true)@RequestParam int id) {
+		
+		if(employeeService.employeeExists(id) == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdNotFound, "/assignationemployee");
+		}
+		
+		List<ProjectEmployee> projectEmployees = projectEmployeeService.getByEmployeeId(id);
+		List<Project> assignedProjects = new ArrayList<Project>();
+		
+		for (ProjectEmployee assignation : projectEmployees) {
+			assignedProjects.add(projectService.getById(assignation.getProjectId()).get());
+		}
+		
+		return GlobalFunctions.createOkResponseFromObject(assignedProjects);
+	}
 }

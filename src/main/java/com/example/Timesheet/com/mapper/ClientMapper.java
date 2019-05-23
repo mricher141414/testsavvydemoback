@@ -31,7 +31,9 @@ public class ClientMapper implements IClientMapper {
 		Optional<Client> optionalClient = clientService.getById(id);
 		
 		if(optionalClient.isPresent()) {
+			
 			Client dbClient = optionalClient.get();
+			client.setVersion(dbClient.getVersion());
 			
 			if(client.getName() == null) {
 				client.setName(dbClient.getName());

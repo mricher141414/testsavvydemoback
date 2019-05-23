@@ -5,13 +5,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Version;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
 @ApiModel(description = "<p>Class representing a department tracked by the application.</p>")
-public class Departement {
+public class Department {
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	@ApiModelProperty(notes = "<p>Unique identifier of the department. No two departments can have the same id.</p>", example = "1", position = 0)
 	private int id;
@@ -19,8 +20,11 @@ public class Departement {
 	@ApiModelProperty(notes = "<p>Name of the department</p>", example = "Assurance qualité", position = 1)
 	private String name;
 	
-	@ApiModelProperty(notes = "<p>Description about the department</p>", example = "Département qui s'occupe de faire des tests", position = 3)
-	private String descdepartement;
+	@ApiModelProperty(notes = "<p>Description about the department</p>", example = "Département qui s'occupe de faire des tests", position = 2)
+	private String description;
+	
+	@Version
+	private Integer version;
 	
 	//getters and setters
 
@@ -41,12 +45,18 @@ public class Departement {
 	}
 
 	public String getDescription() {
-		return descdepartement;
+		return description;
 	}
 
 	public void setDescription(String description) {
-		this.descdepartement = description;
+		this.description = description;
 	}
-	
-	
+
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
 }

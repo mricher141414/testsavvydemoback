@@ -1,5 +1,6 @@
 package com.example.Timesheet.com.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.Timesheet.com.dao.IEmployeeDao;
 import com.example.Timesheet.com.model.Employee;
+import com.example.Timesheet.com.model.Project;
 
 @Service	
 public class EmployeeService {
@@ -15,7 +17,10 @@ public class EmployeeService {
 	private IEmployeeDao employeeDao;
 
 	public void saveEmployee(Employee employee) {
-
+		if(employeeDao.existsById(employee.getId()) == false) {
+			employee.setVersion(0);
+		}
+		
 		this.employeeDao.save(employee);
 		
 	}
@@ -43,10 +48,14 @@ public class EmployeeService {
 	}
 	
 	public List<Employee> getAllByDepartementId(int id) {
-		return this.employeeDao.findAllByDepartementId(id);
+		return this.employeeDao.findAllByDepartmentId(id);
 	}
 	
 	public void delete(Employee employee) {
 		this.employeeDao.delete(employee);
+	}
+	
+	public boolean employeeExists(int id) {
+		return employeeDao.existsById(id);
 	}
 }

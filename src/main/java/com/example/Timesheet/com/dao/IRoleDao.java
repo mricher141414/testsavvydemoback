@@ -4,7 +4,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.example.Timesheet.com.model.Role;
 
-public interface IRoleDAO extends CrudRepository<Role, Integer>{
+public interface IRoleDao extends CrudRepository<Role, Integer>{
 	
 	
 

@@ -53,7 +53,7 @@ public class EmployeeMapper implements IEmployeeMapper {
         employee.setFirstName( source.getFirstName() );
         employee.setPassword( source.getPassword() );
         employee.setRoleId( source.getRoleId() );
-        employee.setDepartementId( source.getDepartementId() );
+        employee.setDepartmentId( source.getDepartmentId() );
         employee.setManagerId( source.getManagerId() );
         employee.setAddress( source.getAddress() );
         employee.setSalary(source.getSalary());
@@ -62,6 +62,7 @@ public class EmployeeMapper implements IEmployeeMapper {
         
         if(optionalEmployee.isPresent()) {
         	Employee dbEmployee = optionalEmployee.get();
+        	employee.setVersion(dbEmployee.getVersion());
         	
         	if(employee.getDateOfBirth() == null) {
         		employee.setDateOfBirth(dbEmployee.getDateOfBirth());
@@ -87,8 +88,8 @@ public class EmployeeMapper implements IEmployeeMapper {
         		employee.setRoleId(dbEmployee.getRoleId());
         	}
         	
-        	if(employee.getDepartementId() == null) {
-        		employee.setDepartementId(dbEmployee.getDepartementId());
+        	if(employee.getDepartmentId() == null) {
+        		employee.setDepartmentId(dbEmployee.getDepartmentId());
         	}
         	
         	if(employee.getManagerId() == null) {
@@ -124,7 +125,7 @@ public class EmployeeMapper implements IEmployeeMapper {
         employeeDto.setFirstName( destination.getFirstName() );
         employeeDto.setPassword( destination.getPassword() );
         employeeDto.setRoleId( destination.getRoleId() );
-        employeeDto.setDepartementId( destination.getDepartementId() );
+        employeeDto.setDepartmentId( destination.getDepartmentId() );
         employeeDto.setManagerId( destination.getManagerId() );
         employeeDto.setAddress( destination.getAddress() );
         employeeDto.setSalary(destination.getSalary());
@@ -146,8 +147,8 @@ public class EmployeeMapper implements IEmployeeMapper {
 			employeeComplex.setRole(this.roleService.getById(employee.getRoleId()).get());
 		}
 
-		if(employee.getDepartementId() != null) {
-			employeeComplex.setDepartement(this.departementService.getById(employee.getDepartementId()).get());
+		if(employee.getDepartmentId() != null) {
+			employeeComplex.setDepartment(this.departementService.getById(employee.getDepartmentId()).get());
 		}
 
 	}

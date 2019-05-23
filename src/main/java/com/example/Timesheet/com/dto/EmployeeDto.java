@@ -31,7 +31,7 @@ public class EmployeeDto {
 	
 	@ApiModelProperty(notes = "<p>Unique identifier of the department the employee is in. <br>"
 			+ "Will cause an error if the department id specified does not belong to an existing department.</p>", example = "1", position = 6)
-	private Integer departementId;
+	private Integer departmentId;
 	
 	@ApiModelProperty(notes = "<p>Unique identifier of the employee that manages the employee <br>"
 			+ "Will cause an error if the employee id specified does not belong to an existing employee.</p>", example = "2", position = 7)
@@ -90,11 +90,11 @@ public class EmployeeDto {
 	public void setRoleId(Integer roleId) {
 		this.roleId = roleId;
 	}
-	public Integer getDepartementId() {
-		return departementId;
+	public Integer getDepartmentId() {
+		return departmentId;
 	}
-	public void setDepartementId(Integer departementId) {
-		this.departementId = departementId;
+	public void setDepartmentId(Integer departmentId) {
+		this.departmentId = departmentId;
 	}
 	public Integer getManagerId() {
 		return managerId;
