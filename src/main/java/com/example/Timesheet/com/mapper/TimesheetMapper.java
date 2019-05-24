@@ -1,5 +1,7 @@
 package com.example.Timesheet.com.mapper;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +10,10 @@ import org.springframework.stereotype.Component;
 
 import com.example.Timesheet.com.dto.TimesheetComplex;
 import com.example.Timesheet.com.dto.TimesheetDto;
+import com.example.Timesheet.com.dto.TimesheetRowDto;
+import com.example.Timesheet.com.dto.TimesheetRowTimeProject;
 import com.example.Timesheet.com.model.Timesheet;
+import com.example.Timesheet.com.model.TimesheetRow;
 import com.example.Timesheet.com.service.TimesheetRowService;
 import com.example.Timesheet.com.service.TimesheetService;
 import com.example.Timesheet.com.service.TimesheetStatusService;
@@ -24,6 +29,9 @@ public class TimesheetMapper implements ITimesheetMapper {
 	
 	@Autowired
 	private TimesheetStatusService timesheetStatusService;
+	
+	@Autowired
+	private TimesheetRowMapper timesheetRowMapper;
 	
     @Override
     public Timesheet DTOtoTimesheet(TimesheetDto source, int id) {
@@ -100,14 +108,24 @@ public class TimesheetMapper implements ITimesheetMapper {
     public TimesheetComplex fromTimesheetToComplex(Timesheet timesheet) {
 
 		TimesheetComplex timesheetComplex = new TimesheetComplex();
-
+		List<TimesheetRowTimeProject> timesheetRowTimeProjects = new ArrayList<TimesheetRowTimeProject>();
 
 		timesheetComplex.setId(timesheet.getId());
 		timesheetComplex.setTotal(timesheet.getTotal());
 		timesheetComplex.setEndDate(timesheet.getEndDate());
 		timesheetComplex.setNotes(timesheet.getNotes());
 		timesheetComplex.setStartDate(timesheet.getStartDate());
-		timesheetComplex.setTimesheetRows(this.timesheetRowService.getByTimesheetId(timesheet.getId()));
+		
+		List<TimesheetRow> rows = timesheetRowService.getByTimesheetId(timesheet.getId());
+		
+		for (TimesheetRow row : rows) {
+			TimesheetRowDto rowDto = timesheetRowMapper.TimesheetRowToDTO(row);
+			TimesheetRowTimeProject rowTimeProject = timesheetRowMapper.rowDtoToRowTimeProject(rowDto);
+			
+			timesheetRowTimeProjects.add(rowTimeProject);
+		}
+		
+		timesheetComplex.setTimesheetRows(timesheetRowTimeProjects);
 
 		if(timesheet.getTimesheetStatusId()!= null) {
 			timesheetComplex.setTimesheetStatus(timesheetStatusService.getById(timesheet.getTimesheetStatusId()).get());

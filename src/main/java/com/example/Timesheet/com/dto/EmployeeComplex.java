@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.example.Timesheet.com.model.Department;
 import com.example.Timesheet.com.model.Role;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -41,6 +42,7 @@ public class EmployeeComplex {
 	protected String address;
 	
 	@ApiModelProperty(notes = "<p>Date of birth (year-month-day) of the employee.</p>", example = "1955-01-13", position = 7)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	protected Date dateOfBirth;
 	
 	@ApiModelProperty(notes = "<p>List of TimesheetComplex objects to represent all the timesheets that the employee has that matches the condition.</p>", position = 9)

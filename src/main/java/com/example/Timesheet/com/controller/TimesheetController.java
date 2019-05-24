@@ -23,12 +23,16 @@ import com.example.Timesheet.com.dto.EmployeeComplex;
 import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.dto.TimesheetDto;
+import com.example.Timesheet.com.dto.TimesheetRowTimeProject;
 import com.example.Timesheet.com.mapper.EmployeeMapper;
 import com.example.Timesheet.com.mapper.TimesheetMapper;
+import com.example.Timesheet.com.mapper.TimesheetRowMapper;
 import com.example.Timesheet.com.model.Employee;
+import com.example.Timesheet.com.model.TimeProject;
 import com.example.Timesheet.com.model.Timesheet;
 import com.example.Timesheet.com.model.TimesheetRow;
 import com.example.Timesheet.com.service.EmployeeService;
+import com.example.Timesheet.com.service.TimeProjectService;
 import com.example.Timesheet.com.service.TimesheetService;
 import com.example.Timesheet.com.service.TimesheetRowService;
 import com.example.Timesheet.com.service.TimesheetStatusService;
@@ -61,6 +65,12 @@ public class TimesheetController {
 	
 	@Autowired
 	private TimesheetRowService timesheetRowService = new TimesheetRowService();
+	
+	@Autowired
+	private TimesheetRowMapper timesheetRowMapper;
+	
+	@Autowired
+	private TimeProjectService timeProjectService;
 	
 	@GetMapping("/timesheet/all")
 	@ApiOperation("Returns a list of all timesheets in the system.")
@@ -218,7 +228,7 @@ public class TimesheetController {
 	
 	//functions that are used only by the frontend
 	
-	@GetMapping("employeetimesheets")
+	@GetMapping("/employeetimesheets")
 	@ApiOperation(value = "Returns a list of all the timesheets of an employee.",  
 					notes = "404 if the employee's identifier cannot be found")
 	public ResponseEntity<?> getAllTimesheetFromEmployee (@ApiParam(value = "Id of the employee to list all timesheets from", required = true) @RequestParam(value = "id") int id) {
@@ -255,8 +265,10 @@ public class TimesheetController {
 	
 	@PutMapping("/edittimesheet")
 	@ApiOperation(value = "Updates a timesheet in the system by their identifier and its timesheet rows.", 
-					notes = "404 if the timesheet's identifier cannot be found.")
+					notes = "404 if the timesheet's identifier cannot be found. <br>"
+							+ "400 if a timeProject does not have an id parameter.")
 	public ResponseEntity<String> editTimesheetWithRows(@ApiParam(value = "Object containing the timesheet info and its timesheet rows", required = true) @RequestBody TimesheetComplex timesheetComplex) {
+		
 		Integer id = 0;
 		
 		if(timesheetComplex.getId() != null) {
@@ -271,11 +283,29 @@ public class TimesheetController {
 		
 		Timesheet dbTimesheet = optionalTimesheet.get();
 		
-		List<TimesheetRow> rows = timesheetComplex.getTimesheetRows();
+		List<TimesheetRowTimeProject> rowsTimeProject = timesheetComplex.getTimesheetRows();
 		
-		for(TimesheetRow row : rows) {
+		for(TimesheetRowTimeProject rowTimeProject : rowsTimeProject) {
+			
+			TimesheetRow row = timesheetRowMapper.timesheetRowTimeProjectToTimesheetRow(rowTimeProject);
 			row.setTimesheetId(id);
-			timesheetRowService.save(row);
+			
+			row.compensateTimezoneOnDates();
+			
+			row = timesheetRowService.save(row);
+			
+			List<TimeProject> timeProjects = rowTimeProject.getTimeProjects();
+			
+			for(TimeProject timeProject : timeProjects) {
+				
+				if(timeProject.getId() == null) {
+					return GlobalFunctions.createBadRequest(GlobalMessages.TimeProjectIdCannotBeNull, "/edittimesheet");
+				}
+				
+				timeProject.setTimesheetRowId(row.getId());
+				
+				timeProjectService.saveIncomplete(timeProject);
+			}
 		}
 		
 		Timesheet timesheet = timesheetMapper.fromComplexToTimesheet(timesheetComplex, dbTimesheet.getEmployeeId());
@@ -301,6 +331,13 @@ public class TimesheetController {
 		List<TimesheetRow> timesheetRows = timesheetRowService.getByTimesheetId(id);
 		
 		for(TimesheetRow row : timesheetRows) {
+			
+			List<TimeProject> timeProjects = timeProjectService.getByTimesheetRowId(row.getId());
+			
+			for(TimeProject timeProject : timeProjects) {
+				timeProjectService.delete(timeProject);
+			}
+			
 			timesheetRowService.deleteTimesheetRow(row);
 		}
 		

@@ -23,6 +23,29 @@ public class TimeProjectService {
 		timeProjectDao.save(timeProject);
 	}
 	
+	public TimeProject saveIncomplete(TimeProject timeProject) {
+
+		Optional<TimeProject> optionalTimeProject = timeProjectDao.findById(timeProject.getId());
+		
+		if(optionalTimeProject.isPresent()) {
+			TimeProject dbTimeProject = optionalTimeProject.get();
+		
+			if(timeProject.getProjectId() == null) {
+				timeProject.setProjectId(dbTimeProject.getProjectId());
+			}
+			
+			if(timeProject.getTimesheetRowId() == null) {
+				timeProject.setTimesheetRowId(dbTimeProject.getTimesheetRowId());
+			}
+			
+			if(timeProject.getValue() == null) {
+				timeProject.setValue(dbTimeProject.getValue());
+			}
+		}
+		
+		return timeProjectDao.save(timeProject);
+	}
+	
 	public void delete(TimeProject timeProject) {
 		timeProjectDao.delete(timeProject);
 	}

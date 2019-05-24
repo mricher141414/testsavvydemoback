@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.dto.TimesheetRowDto;
+import com.example.Timesheet.com.dto.TimesheetRowTimeProject;
 import com.example.Timesheet.com.mapper.TimesheetRowMapper;
 import com.example.Timesheet.com.model.TimesheetRow;
 import com.example.Timesheet.com.service.ProjectService;
@@ -43,6 +44,7 @@ public class TimesheetRowController {
 	@Autowired
 	private ProjectService projectService = new ProjectService();
 	
+	@Autowired
 	private TimesheetRowMapper timesheetRowMapper = new TimesheetRowMapper();
 	
 	@Autowired
@@ -62,12 +64,14 @@ public class TimesheetRowController {
 		
 		Optional<TimesheetRow> optionalRow = timesheetRowService.getById(id);
 		
-		if(optionalRow.isPresent()) {
-			return GlobalFunctions.createOkResponseFromObject(optionalRow.get());
-		}
-		else {
+		if(optionalRow.isPresent() == false) {
 			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetRowIdNotFound, "/timesheetRow/one");
 		}
+		
+		TimesheetRowDto rowDto = timesheetRowMapper.TimesheetRowToDTO(optionalRow.get());
+		TimesheetRowTimeProject returnRow = timesheetRowMapper.rowDtoToRowTimeProject(rowDto);
+		
+		return GlobalFunctions.createOkResponseFromObject(returnRow);
 	}
 	
 	@PostMapping("/timesheetRow")

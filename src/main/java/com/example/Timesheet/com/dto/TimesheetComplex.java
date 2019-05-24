@@ -23,19 +23,21 @@ public class TimesheetComplex {
 	@ApiModelProperty(notes = "<p>Notes of the timesheet.</p>", example = "Première timesheet", position = 2)
 	private String notes;
 	
-	@ApiModelProperty(notes = "<p>Date (year-month-date) at which the timesheet started.</p>", example = "2019-06-29", position = 3)
+	@ApiModelProperty(notes = "<p>Date (year-month-date) at which the timesheet started.</p>", example = "2019-06-30", position = 3)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date startDate;
 	
-	@ApiModelProperty(notes = "<p>Date (year-month-date) at which the timesheet ended.</p>", example = "2019-07-05", position = 4)
+	@ApiModelProperty(notes = "<p>Date (year-month-date) at which the timesheet ended.</p>", example = "2019-07-06", position = 4)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date endDate;
 	
 	@ApiModelProperty(notes = "<p>List of all timesheetRows that reference this timesheet.</p>", position = 5)
-	private List<TimesheetRow> timesheetRows;
+	private List<TimesheetRowTimeProject> timesheetRows;
 	
 	@ApiModelProperty(notes = "<p>Object of the timesheetStatus used by the timesheet.</p>", position = 6)
 	private TimesheetStatus timesheetStatus;
+	
+	//getters and setters
 	
 	public Integer getId() {
 		return id;
@@ -67,10 +69,10 @@ public class TimesheetComplex {
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
-	public List<TimesheetRow> getTimesheetRows() {
+	public List<TimesheetRowTimeProject> getTimesheetRows() {
 		return timesheetRows;
 	}
-	public void setTimesheetRows(List<TimesheetRow> timesheetRows) {
+	public void setTimesheetRows(List<TimesheetRowTimeProject> timesheetRows) {
 		this.timesheetRows = timesheetRows;
 	}
 	public TimesheetStatus getTimesheetStatus() {

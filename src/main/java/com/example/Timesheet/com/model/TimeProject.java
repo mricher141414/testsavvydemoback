@@ -14,7 +14,7 @@ public class TimeProject {
 
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	@ApiModelProperty(notes = "<p>Unique identifier of the timeProject. No two timeProject can have the same id.</p>", example = "6", position = 0)
-	private int id;
+	private Integer id;
 	
 	@ApiModelProperty(notes = "<p>Unique identifier of the project that the employee worked on. No two projects can have the same id. <br>"
 			+ "Can be null.</p>", example = "3", position = 1)
@@ -28,11 +28,11 @@ public class TimeProject {
 
 	//getters and setters
 	
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
