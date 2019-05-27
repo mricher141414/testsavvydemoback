@@ -11,4 +11,5 @@ public interface IProjectEmployeeDao extends CrudRepository<ProjectEmployee, Int
 
 	List<ProjectEmployee> findAllByProjectId(int id);
 	List<ProjectEmployee> findAllByEmployeeId(int id);
+	boolean existsByEmployeeIdAndProjectId(int employeeId, int projectId);
 }

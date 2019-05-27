@@ -19,7 +19,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
-@Table(name = "Employee")
 @ApiModel(description = "<p>Class representing a employee tracked by the application.</p>")
 public class Employee {
 	

@@ -24,7 +24,12 @@ public class ProjectEmployeeService {
 	}
 	
 	public ProjectEmployee save(ProjectEmployee projectEmployee) {
-		return projectEmployeeDao.save(projectEmployee);
+		if(projectEmployeeDao.existsByEmployeeIdAndProjectId(projectEmployee.getEmployeeId(), projectEmployee.getProjectId()) == false) {
+			return projectEmployeeDao.save(projectEmployee);
+		}
+		else {
+			return projectEmployee;
+		}
 	}
 	
 	public void delete(ProjectEmployee projectEmployee) {

@@ -1,6 +1,6 @@
 package cgi;
 
-public class HourProject {
+public class TimeProject {
 
 	  private int id;
 	  private int projectId;

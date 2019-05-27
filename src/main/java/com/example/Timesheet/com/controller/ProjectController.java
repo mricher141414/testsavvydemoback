@@ -156,4 +156,30 @@ public class ProjectController {
 		
 		return GlobalFunctions.createOkResponseFromObject(assignedEmployees);
 	}
+	
+	@PostMapping("/projectassignationadd")
+	@ApiOperation(value = "Create assignations to all the employees the project is not already assigned to, in those sent in the body.", notes = "404 if the project's identifier or if any of the employees' identifier cannot be found.")
+	public ResponseEntity<String> addEmployeeAssignations(@ApiParam(value = "List of employees")@RequestBody List<Employee> employees,
+															@ApiParam(value = "Id of the project")@RequestParam int id) {
+		
+		if(projectService.projectExists(id) == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ProjectIdNotFound, "/projectassignationadd");
+		}
+		
+		for (Employee employee : employees) {
+			
+			if(employeeService.employeeExists(employee.getId()) == false) {
+				return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdNotFound, "/projectassginationadd");
+			}
+			
+			ProjectEmployee projectEmployee = new ProjectEmployee();
+			
+			projectEmployee.setProjectId(id);
+			projectEmployee.setEmployeeId(employee.getId());
+			
+			projectEmployeeService.save(projectEmployee);
+		}
+		
+		return GlobalFunctions.createOkResponseFromObject(employees);
+	}
 }

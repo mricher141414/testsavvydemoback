@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.Timesheet.com.model.Timesheet;
 @Repository
-public interface ITimesheetDAO extends CrudRepository<Timesheet, Integer>{
+public interface ITimesheetDao extends CrudRepository<Timesheet, Integer>{
 
 	List<Timesheet> findByEmployeeId(int id);
 	List<Timesheet> findByEmployeeIdAndStartDate(int id, Date startDate);

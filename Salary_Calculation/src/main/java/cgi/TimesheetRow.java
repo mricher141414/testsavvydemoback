@@ -7,7 +7,7 @@ public class TimesheetRow {
 	private int id;
 	private Date date;
 	private int timeSheetId;
-	private HourProject[] hourProject;
+	private TimeProject[] hourProject;
 	
 	public int getId() {
 		return id;
@@ -27,10 +27,10 @@ public class TimesheetRow {
 	public void setTimeSheetId(int timeSheetId) {
 		this.timeSheetId = timeSheetId;
 	}
-	public HourProject[] getHourProject() {
+	public TimeProject[] getHourProject() {
 		return hourProject;
 	}
-	public void setHourProject(HourProject[] hourProject) {
+	public void setHourProject(TimeProject[] hourProject) {
 		this.hourProject = hourProject;
 	}
 

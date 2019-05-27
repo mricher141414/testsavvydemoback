@@ -9,49 +9,53 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.Timesheet.com.GlobalVars;
-import com.example.Timesheet.com.dao.ITimesheetDAO;
+import com.example.Timesheet.com.dao.ITimesheetDao;
 import com.example.Timesheet.com.model.Timesheet;
 
 @Service
 public class TimesheetService {
 
 	@Autowired
-	private ITimesheetDAO timesheetDAO;
+	private ITimesheetDao timesheetDao;
 
 	public void save(Timesheet timesheet) {
 		
-		timesheetDAO.save(timesheet);
+		timesheetDao.save(timesheet);
 
 	}
 
 	public List<Timesheet> getAll() {
-		return (List<Timesheet>) this.timesheetDAO.findAll();
+		return (List<Timesheet>) this.timesheetDao.findAll();
 	}
 
 	public Optional<Timesheet> getById(int id) {
 
-		return this.timesheetDAO.findById(id);
+		return this.timesheetDao.findById(id);
 
 	}
 	
 	public void delete(Timesheet timesheet) {
-		timesheetDAO.delete(timesheet);
+		timesheetDao.delete(timesheet);
 	}
 	
 	public List<Timesheet> getTimesheetByEmployeeId(int id) {
 
-		return this.timesheetDAO.findByEmployeeId(id);
+		return this.timesheetDao.findByEmployeeId(id);
 
 	}
 
 	public List<Timesheet> getTimesheetByEmployeeIdAndStartDate(int id, Date startDate) {
 
-		return this.timesheetDAO.findByEmployeeIdAndStartDate(id, startDate);
+		return this.timesheetDao.findByEmployeeIdAndStartDate(id, startDate);
 
 	}
 
 	public List<Timesheet> getByTimesheetStatusId(int id) {
-		return timesheetDAO.findByTimesheetStatusId(id);
+		return timesheetDao.findByTimesheetStatusId(id);
+	}
+	
+	public boolean timesheetExists(int id) {
+		return timesheetDao.existsById(id);
 	}
 	
 	public Timesheet createTimesheetFromDateAndEmployeeId(int employeeId, Date userDate) {
