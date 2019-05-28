@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.Timesheet.com.GlobalVars;
-import com.example.Timesheet.com.dao.ITimesheetRowDAO;
+import com.example.Timesheet.com.dao.ITimesheetRowDao;
 import com.example.Timesheet.com.model.TimeProject;
 import com.example.Timesheet.com.model.Timesheet;
 import com.example.Timesheet.com.model.TimesheetRow;
@@ -17,33 +17,37 @@ import com.example.Timesheet.com.model.TimesheetRow;
 public class TimesheetRowService {
 	
 	@Autowired
-	private ITimesheetRowDAO timesheetRowDAO;
+	private ITimesheetRowDao timesheetRowDao;
 	
 	@Autowired
 	private TimeProjectService timeProjectService;
 
 	public TimesheetRow save(TimesheetRow timesheetRow) {
-		return timesheetRowDAO.save(timesheetRow);
+		return timesheetRowDao.save(timesheetRow);
 	}
 	
 	public List<TimesheetRow> getTimesheetRows() {
-		return (List<TimesheetRow>) this.timesheetRowDAO.findAll();
+		return (List<TimesheetRow>) this.timesheetRowDao.findAll();
 	}
 	
 	public void deleteTimesheetRow(TimesheetRow timesheetRow) {
 		
-		this.timesheetRowDAO.delete(timesheetRow);
+		this.timesheetRowDao.delete(timesheetRow);
 		
 	}
 	
 	public Optional<TimesheetRow> getById(int id) {
 		
-		return this.timesheetRowDAO.findById(id);
+		return this.timesheetRowDao.findById(id);
 		
 	}
 	
 	public List<TimesheetRow> getByTimesheetId(int id) {
-		return this.timesheetRowDAO.findByTimesheetId(id);
+		return this.timesheetRowDao.findByTimesheetId(id);
+	}
+	
+	public List<TimesheetRow> getByDate(Date date) {
+		return this.timesheetRowDao.findByDate(date);
 	}
 	
 	public void createWeekFromTimesheet(Timesheet timesheet) {

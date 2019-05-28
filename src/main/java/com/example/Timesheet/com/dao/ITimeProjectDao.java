@@ -10,4 +10,6 @@ public interface ITimeProjectDao extends  CrudRepository<TimeProject, Integer> {
 
 	List<TimeProject> findByTimesheetRowId(int id);
 	List<TimeProject> findByProjectId(int id);
+	
+	List<TimeProject> findByTimesheetRowIdAndProjectId(int timesheetRowId, int projectId);
 }

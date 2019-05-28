@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalVars;
 import com.example.Timesheet.com.dao.ITimesheetDao;
 import com.example.Timesheet.com.model.Timesheet;
@@ -68,17 +69,7 @@ public class TimesheetService {
 		timesheet.setEmployeeId(employeeId);
 		timesheet.setTimesheetStatusId(1);
 		
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(userDate);
-		int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-		
-		if(dayOfWeek != Calendar.SUNDAY) {
-			int timeDifference = (dayOfWeek - Calendar.SUNDAY) * GlobalVars.MillisecondsPerDay;
-			startDate.setTime(userDate.getTime() - timeDifference);
-		}
-		else {
-			startDate.setTime(userDate.getTime());
-		}
+		startDate = GlobalFunctions.findLatestSunday(userDate);
 		
 		endDate.setTime(startDate.getTime() + 6 * GlobalVars.MillisecondsPerDay);
 		timesheet.setStartDate(startDate);

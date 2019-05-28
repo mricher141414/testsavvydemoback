@@ -1,5 +1,6 @@
 package com.example.Timesheet.com.controller;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,10 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalMessages;
+import com.example.Timesheet.com.GlobalVars;
 import com.example.Timesheet.com.dto.DepartmentDto;
 import com.example.Timesheet.com.dto.TimeProjectDto;
 import com.example.Timesheet.com.mapper.TimeProjectMapper;
 import com.example.Timesheet.com.model.Department;
+import com.example.Timesheet.com.model.Project;
 import com.example.Timesheet.com.model.TimeProject;
 import com.example.Timesheet.com.service.ProjectService;
 import com.example.Timesheet.com.service.TimeProjectService;
@@ -114,5 +117,39 @@ public class TimeProjectController {
 		
 		timeProjectService.delete(timeProject);
 		return GlobalFunctions.createOkResponseFromObject(timeProject);
+	}
+	
+	@GetMapping("/average")
+	@ApiOperation(value = "Returns the average amount of hours worked on a project per day in the X weeks before the given date.", notes = "404 if project id cannot be found, 400 if the project was not started by the end of the first week, or if the project ended before the beginning of the last week")
+	public ResponseEntity<?> getAverageTimeWorked(@ApiParam(value = "Id of the project to calculate the averages for.", required = true)@RequestParam(value="id") int id, 
+													@ApiParam(value = "Date to end the calculation", required = true) @RequestParam(value = "date") Date date, 
+													@ApiParam(value = "Amount of weeks to go back from the sent date.", required = true) @RequestParam(value="weeks") int weeks) {
+		
+		Optional<Project> optionalProject = projectService.getById(id);
+		
+		if(optionalProject.isPresent() == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ProjectIdNotFound, "/average");
+		}
+		
+		Project project = optionalProject.get();
+		
+		Date latestSunday = GlobalFunctions.findLatestSunday(date);
+		Date firstSunday = new Date(0L);
+		Date firstSaturday = new Date(0L);
+		
+		firstSunday.setTime(latestSunday.getTime() - 7 * (weeks - 1) * GlobalVars.MillisecondsPerDay);
+		firstSaturday.setTime(firstSunday.getTime() + 6 * GlobalVars.MillisecondsPerDay);
+		
+		if(project.getStartDate().getTime() > firstSaturday.getTime()) {
+			return GlobalFunctions.createBadRequest(GlobalMessages.AverageDateParameterTooEarly, "/average");
+		}
+		
+		if(project.getEndDate().getTime() < latestSunday.getTime()) {
+			return GlobalFunctions.createBadRequest(GlobalMessages.AverageDateParameterTooLate, "/average");
+		}
+		
+		Float averageHoursPerDay = timeProjectService.calculateAverageTimeWorked(id, firstSunday, weeks);
+		
+		return GlobalFunctions.createOkResponseFromObject(averageHoursPerDay);
 	}
 }

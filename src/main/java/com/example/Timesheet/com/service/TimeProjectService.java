@@ -1,19 +1,25 @@
 package com.example.Timesheet.com.service;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.Timesheet.com.GlobalVars;
 import com.example.Timesheet.com.dao.ITimeProjectDao;
 import com.example.Timesheet.com.model.TimeProject;
+import com.example.Timesheet.com.model.TimesheetRow;
 
 @Service
 public class TimeProjectService {
 
 	@Autowired
 	private ITimeProjectDao timeProjectDao;
+	
+	@Autowired
+	private TimesheetRowService timesheetRowService;
 	
 	public List<TimeProject> getAll() {
 		return (List<TimeProject>) timeProjectDao.findAll();
@@ -60,5 +66,39 @@ public class TimeProjectService {
 	
 	public List<TimeProject> getByProjectId(int id) {
 		return timeProjectDao.findByProjectId(id);
+	}
+	
+	public Float calculateAverageTimeWorked (int projectId, Date firstSunday, int weeks) {
+		
+		Float totalHours = 0F;
+		int days = 7 * weeks;
+		
+		for (int currentWeek = 0; currentWeek < weeks; currentWeek++) {
+			for(int currentDay = 0; currentDay < 7; currentDay++) {
+				
+				float totalHoursToday = 0F;
+				List<TimesheetRow> rows = timesheetRowService.getByDate(firstSunday);
+				
+				for(TimesheetRow row : rows) {
+					List<TimeProject> timeProjects = timeProjectDao.findByTimesheetRowIdAndProjectId(row.getId(), projectId);
+					
+					for(TimeProject timeProject : timeProjects) {
+						totalHoursToday = totalHoursToday + timeProject.getValue();
+					}
+				}
+				
+				if(totalHoursToday == 0) {
+					days--;
+				}
+				
+				totalHours = totalHours + totalHoursToday;
+				
+				firstSunday.setTime(firstSunday.getTime() + GlobalVars.MillisecondsPerDay);
+			}
+		}
+		
+		Float average = totalHours / days;
+		
+		return average;
 	}
 }

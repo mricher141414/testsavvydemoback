@@ -72,6 +72,8 @@ public class GlobalMessages {
 	public static final String TimeProjectDeleteSuccessful = "The timeProject with the specified id was deleted";
 	public static final String TimeProjectPutSuccessful = "The timeProject with the specified id was modified sucessfully.";
 	public static final String TimeProjectIdCannotBeNull = "A timeProject was provided with no id parameter. Please use \"id\": 0 if you want to add the timeProject to the row.";
+	public static final String AverageDateParameterTooLate = "The project ends before the date you have specified.";
+	public static final String AverageDateParameterTooEarly = "The project wasn't even started on the first week.";
 	
 	//projectEmployee messages
 	public static final String ProjectEmployeeIdNotFound = "No ProjectEmployee was found with the specified id.";

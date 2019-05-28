@@ -56,4 +56,26 @@ public class GlobalFunctions {
 		
 		return new ResponseEntity<String>(json, HttpStatus.OK);
 	}
+	
+	public static java.sql.Date findLatestSunday (java.sql.Date userDate) {
+		
+
+		int dayOfWeek = getDayOfWeek(userDate);
+		
+		if(dayOfWeek != Calendar.SUNDAY) {
+			int timeDifference = (dayOfWeek - Calendar.SUNDAY) * GlobalVars.MillisecondsPerDay;
+			userDate.setTime(userDate.getTime() - timeDifference);
+		}
+		
+		return userDate;
+	}
+	
+	public static int getDayOfWeek(java.sql.Date userDate) {
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(userDate);
+		int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+		
+		return dayOfWeek;
+	}
 }
