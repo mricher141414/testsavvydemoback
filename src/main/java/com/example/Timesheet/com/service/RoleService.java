@@ -38,4 +38,8 @@ public class RoleService {
 	public Optional<Role> getById(int id) {
 		return this.roleDao.findById(id);
 	}
+	
+	public boolean roleExists(int id) {
+		return roleDao.existsById(id);
+	}
 }

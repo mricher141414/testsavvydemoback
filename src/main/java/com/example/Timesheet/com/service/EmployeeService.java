@@ -11,15 +11,19 @@ import com.example.Timesheet.com.model.Employee;
 
 @Service	
 public class EmployeeService {
+	
 	@Autowired
 	private IEmployeeDao employeeDao;
+	
+	@Autowired
+	private SalaryReportService salaryReportService;
 
-	public void saveEmployee(Employee employee) {
+	public Employee saveEmployee(Employee employee) {
 		if(employeeDao.existsById(employee.getId()) == false) {
 			employee.setVersion(0);
 		}
 		
-		this.employeeDao.save(employee);
+		return employeeDao.save(employee);
 		
 	}
 	
@@ -50,6 +54,7 @@ public class EmployeeService {
 	}
 	
 	public void delete(Employee employee) {
+		salaryReportService.deleteByEmployeeId(employee.getId());
 		this.employeeDao.delete(employee);
 	}
 	

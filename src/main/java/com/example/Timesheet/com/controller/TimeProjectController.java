@@ -49,7 +49,7 @@ public class TimeProjectController {
 	@Autowired
 	private TimesheetRowService timesheetRowService;
 	
-
+	
 	@GetMapping("/timeproject")
 	@ApiOperation("Returns a list of all timeProjects in the system.")
 	public List<TimeProject> getAll(){

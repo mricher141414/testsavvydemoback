@@ -68,6 +68,19 @@ public class EmployeeController {
 		 return employeeService.getAll();
 	 }
 	 
+	 @GetMapping("/employee/one")
+	 @ApiOperation(value = "Returns a single employee by their identifier.", notes = "404 if the employee's identifier cannot be found.")
+	 public ResponseEntity<String> getOne(@ApiParam(value = "Id of the employee to retrieve", required = true)@RequestParam(value = "id") int id) {
+		 
+		 Optional<Employee> optionalEmployee = employeeService.getById(id);
+		 
+		 if(optionalEmployee.isPresent() == false) {
+			 return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdNotFound, "/employee");
+		 }
+		 
+		 return GlobalFunctions.createOkResponseFromObject(optionalEmployee.get());
+	 }
+	 
 	 @PostMapping("/employee")
 	 @ApiOperation("Creates a new employee in the system.")
 	 public ResponseEntity<String> create(@ApiParam(value = "Employee information for the new employee to be created.", required = true) @RequestBody EmployeeDto employeeDto) {
@@ -92,7 +105,7 @@ public class EmployeeController {
 		 
 		 Employee employee = employeeMapper.dtoToEmployee(employeeDto, 0);
 		 
-		 employeeService.saveEmployee(employee);
+		 employee = employeeService.saveEmployee(employee);
 		 
 		 return GlobalFunctions.createOkResponseFromObject(employee);
 	 }
@@ -158,6 +171,8 @@ public class EmployeeController {
 			 return GlobalFunctions.createBadRequest(GlobalMessages.ProjectUsesEmployeeCannotDelete, "/employee");
 		 }
 		 
+		 
+		 
 		 this.employeeService.delete(employee);
 		 return GlobalFunctions.createOkResponseFromObject(employee);
 	 }
@@ -205,4 +220,17 @@ public class EmployeeController {
 		
 		return GlobalFunctions.createOkResponseFromObject(projects);
 	}
+	
+	 @GetMapping("/employee/managed")
+	 @ApiOperation(value = "Returns a list of all employees managed by this employee.", notes = "404 if the employee's identifier cannot be found.")
+	 public ResponseEntity<String> getManagedEmployees(@ApiParam(value = "Id of the employee that manages the others", required = true)@RequestParam(value = "id") int id) {
+		 
+		 if(employeeService.employeeExists(id) == false) {
+			 return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdNotFound, "/employee/managed");
+		 }
+		 
+		 List<Employee> employeesManaged = employeeService.getAllByManagerId(id);
+		 
+		 return GlobalFunctions.createOkResponseFromObject(employeesManaged);
+	 }
 }

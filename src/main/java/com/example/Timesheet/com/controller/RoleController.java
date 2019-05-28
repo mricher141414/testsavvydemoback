@@ -5,11 +5,7 @@ package com.example.Timesheet.com.controller;
 import java.util.List;
 import java.util.Optional;
 
-import com.example.Timesheet.com.GlobalFunctions;
-import com.example.Timesheet.com.GlobalMessages;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,8 +16,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.Timesheet.com.GlobalFunctions;
+import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.dto.RoleDto;
 import com.example.Timesheet.com.mapper.RoleMapper;
+import com.example.Timesheet.com.model.Employee;
 import com.example.Timesheet.com.model.Role;
 import com.example.Timesheet.com.service.EmployeeService;
 import com.example.Timesheet.com.service.RoleService;
@@ -42,7 +41,7 @@ public class RoleController {
 	RoleMapper roleMapper = new RoleMapper();
 
 	@Autowired
-	EmployeeService personService = new EmployeeService();
+	EmployeeService employeeService = new EmployeeService();
 	
 	@GetMapping("/role")
 	@ApiOperation("Returns a list of all roles in the system")
@@ -91,7 +90,7 @@ public class RoleController {
 		if(optionalRole.isPresent()) {
 			Role role = optionalRole.get();
 			
-			if(this.personService.getAllByRoleId(id).size() > 0) {
+			if(this.employeeService.getAllByRoleId(id).size() > 0) {
 				return GlobalFunctions.createBadRequest(GlobalMessages.EmployeeUsesRoleCannotDelete, "/role");
 			}
 			
@@ -104,4 +103,17 @@ public class RoleController {
 		}
 	}
 
+	@GetMapping("/role/employee")
+	@ApiOperation(value = "Returns a list of all employees in the system that have the role", notes = "404 if the role's identifier cannot be found.")
+	public ResponseEntity<String> getEmployeeRole(@ApiParam(value = "Id of the role to get the employees for.", required = true) @RequestParam(value="id") int id) {
+		
+		if(roleService.roleExists(id) == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.RoleIdNotFound, "/role/employee");
+		}
+		
+		List<Employee> employees = employeeService.getAllByRoleId(id);
+		
+		return GlobalFunctions.createOkResponseFromObject(employees);
+	}
+	
 }
