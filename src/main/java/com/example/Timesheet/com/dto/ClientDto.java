@@ -1,7 +1,5 @@
 package com.example.Timesheet.com.dto;
 
-import javax.persistence.Column;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 

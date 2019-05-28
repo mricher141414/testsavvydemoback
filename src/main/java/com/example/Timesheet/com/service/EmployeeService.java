@@ -1,6 +1,5 @@
 package com.example.Timesheet.com.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.example.Timesheet.com.dao.IEmployeeDao;
 import com.example.Timesheet.com.model.Employee;
-import com.example.Timesheet.com.model.Project;
 
 @Service	
 public class EmployeeService {
@@ -57,5 +55,22 @@ public class EmployeeService {
 	
 	public boolean employeeExists(int id) {
 		return employeeDao.existsById(id);
+	}
+	
+	public Float calculateAverageSalary(List<Employee> employees) {
+		
+		int employeesSize = employees.size();
+		Float totalSalary = 0F;
+		
+		for (Employee employee : employees) {
+			
+			Float salary = employee.getSalary();
+			
+			if(salary != null) {
+				totalSalary = totalSalary + salary;
+			}
+		}
+		
+		return totalSalary / employeesSize;
 	}
 }

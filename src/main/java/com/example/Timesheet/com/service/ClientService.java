@@ -34,4 +34,8 @@ public class ClientService {
 	public void delete(Client client) {
 		clientDao.delete(client);
 	}
+	
+	public boolean clientExists(int id) {
+		return clientDao.existsById(id);
+	}
 }

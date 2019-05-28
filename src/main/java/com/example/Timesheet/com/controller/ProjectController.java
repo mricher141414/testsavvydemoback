@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.dto.ProjectDto;
+import com.example.Timesheet.com.dto.ProjectStatsEmployee;
 import com.example.Timesheet.com.mapper.ProjectMapper;
 import com.example.Timesheet.com.model.Employee;
 import com.example.Timesheet.com.model.Project;
@@ -181,5 +182,30 @@ public class ProjectController {
 		}
 		
 		return GlobalFunctions.createOkResponseFromObject(employees);
+	}
+	
+	@GetMapping("/project/stats/employee")
+	@ApiOperation(value = "Gets the amount of employees working on the project and their average salary.", notes = "404 if the project's identifier cannot be found.", response = ProjectStatsEmployee.class)
+	public ResponseEntity<String> getProjectStats(@ApiParam(value = "Id of the project")@RequestParam(value = "id") int id) {
+		
+		if(projectService.projectExists(id) == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ProjectIdNotFound, "/projectstatsemployee");
+		}
+		
+		List<ProjectEmployee> assignations = projectEmployeeService.getByProjectId(id);
+		
+		List<Employee> employees = new ArrayList<Employee>();
+		
+		for (ProjectEmployee assignation : assignations) {
+			employees.add(employeeService.getById(assignation.getEmployeeId()).get());
+		}
+		
+		ProjectStatsEmployee projectStats = new ProjectStatsEmployee();
+
+		projectStats.setName(projectService.getById(id).get().getName());
+		projectStats.setNbEmployeeOnProject(employees.size());
+		projectStats.setAverageSalary(employeeService.calculateAverageSalary(employees));
+		
+		return GlobalFunctions.createOkResponseFromObject(projectStats);
 	}
 }
