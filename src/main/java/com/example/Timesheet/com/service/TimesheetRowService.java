@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.Timesheet.com.GlobalVars;
 import com.example.Timesheet.com.dao.ITimesheetRowDao;
-import com.example.Timesheet.com.model.TimeProject;
+import com.example.Timesheet.com.model.TimesheetRowProject;
 import com.example.Timesheet.com.model.Timesheet;
 import com.example.Timesheet.com.model.TimesheetRow;
 
@@ -19,10 +19,13 @@ public class TimesheetRowService {
 	@Autowired
 	private ITimesheetRowDao timesheetRowDao;
 	
-	@Autowired
-	private TimeProjectService timeProjectService;
-
 	public TimesheetRow save(TimesheetRow timesheetRow) {
+		
+		if(timesheetRowDao.existsById(timesheetRow.getId()) == false) {
+			timesheetRow.setVersion(0);
+		}
+		
+		timesheetRow.compensateTimezoneOnDates();
 		return timesheetRowDao.save(timesheetRow);
 	}
 	
@@ -62,12 +65,6 @@ public class TimesheetRowService {
 			timesheetRow.setTimesheetId(timesheet.getId());
 			
 			timesheetRow = this.save(timesheetRow);
-			
-			TimeProject timeProject = new TimeProject();
-			timeProject.setTimesheetRowId(timesheetRow.getId());
-			timeProject.setValue(0F);
-			
-			timeProjectService.save(timeProject);
 		}
 	}
 

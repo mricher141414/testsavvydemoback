@@ -4,6 +4,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.example.Timesheet.com.model.TimesheetStatus;
 
-public interface ITimesheetStatusDAO extends CrudRepository<TimesheetStatus, Integer>{
+public interface ITimesheetStatusDao extends CrudRepository<TimesheetStatus, Integer>{
 
 }

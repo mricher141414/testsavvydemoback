@@ -21,12 +21,12 @@ public class DepartementService {
 		
 	}
 	
-	public void save(Department department) {
+	public Department save(Department department) {
 		if(departmentDao.existsById(department.getId()) == false) {
 			department.setVersion(0);
 		}
 		
-		this.departmentDao.save(department);	
+		return departmentDao.save(department);	
 	}
 	
 	public void delete(Department department) {

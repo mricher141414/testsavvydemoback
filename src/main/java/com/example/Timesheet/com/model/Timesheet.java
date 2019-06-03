@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Version;
 
 import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.GlobalVars;
@@ -47,6 +48,9 @@ public class Timesheet {
 	@Column(name = "timesheet_status_id")
 	@ApiModelProperty(notes = "<p>Unique identifier of the timesheet status. No two timesheet statuses can have the same id.</p>", example = "1", position = 6)
 	private Integer timesheetStatusId;
+	
+	@Version
+	private Integer version;
 	
 	public void compensateTimezoneOnDates() {
 		Date startDate = this.getStartDate();
@@ -111,6 +115,9 @@ public class Timesheet {
 	}
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+	public void setVersion(int version) {
+		this.version = version;
 	}
 
 

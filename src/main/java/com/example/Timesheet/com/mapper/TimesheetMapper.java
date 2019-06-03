@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import com.example.Timesheet.com.dto.TimesheetComplex;
 import com.example.Timesheet.com.dto.TimesheetDto;
 import com.example.Timesheet.com.dto.TimesheetRowDto;
-import com.example.Timesheet.com.dto.TimesheetRowTimeProject;
+import com.example.Timesheet.com.dto.TimesheetRowWithProject;
 import com.example.Timesheet.com.model.Timesheet;
 import com.example.Timesheet.com.model.TimesheetRow;
 import com.example.Timesheet.com.service.TimesheetRowService;
@@ -42,42 +42,36 @@ public class TimesheetMapper implements ITimesheetMapper {
         Timesheet timesheet = new Timesheet();
 
         timesheet.setId( id );
-        timesheet.setTimesheetStatusId( source.getTimesheetStatusId() );
-        timesheet.setEmployeeId( source.getEmployeeId() );
-        timesheet.setTotal( source.getTotal() );
-        timesheet.setNotes( source.getNotes() );
-        timesheet.setStartDate( source.getStartDate() );
-        timesheet.setEndDate( source.getEndDate() );
         
         Optional<Timesheet> optionalTimesheet = this.timesheetService.getById(id);
         
         if(optionalTimesheet.isPresent()) {
-        	Timesheet dbTimesheet = optionalTimesheet.get();
-        	
-        	if(timesheet.getTimesheetStatusId() == null) {
-        		timesheet.setTimesheetStatusId(dbTimesheet.getTimesheetStatusId());
-        	}
-        	
-        	if(timesheet.getEmployeeId() == null) {
-        		timesheet.setEmployeeId(dbTimesheet.getEmployeeId());
-        	}
-        	
-        	if(timesheet.getTotal() == 0) {
-        		timesheet.setTotal(dbTimesheet.getTotal());
-        	}
-        	
-        	if(timesheet.getNotes() == null) {
-        		timesheet.setNotes(dbTimesheet.getNotes());
-        	}
-        	
-        	if(timesheet.getStartDate() == null) {
-        		timesheet.setStartDate(dbTimesheet.getStartDate());
-        	}
-        	
-        	if(timesheet.getEndDate() == null) {
-        		timesheet.setEndDate(dbTimesheet.getEndDate());
-        	}
+        	timesheet = optionalTimesheet.get();
         }
+        	
+    	if(source.getTimesheetStatusId() != null) {
+    		timesheet.setTimesheetStatusId(source.getTimesheetStatusId());
+    	}
+    	
+    	if(source.getEmployeeId() != null) {
+    		timesheet.setEmployeeId(source.getEmployeeId());
+    	}
+    	
+    	if(source.getTotal() != null) {
+    		timesheet.setTotal(source.getTotal());
+    	}
+    	
+    	if(source.getNotes() != null) {
+    		timesheet.setNotes(source.getNotes());
+    	}
+    	
+    	if(source.getStartDate() != null) {
+    		timesheet.setStartDate(source.getStartDate());
+    	}
+    	
+    	if(source.getEndDate() != null) {
+    		timesheet.setEndDate(source.getEndDate());
+    	}
         
         timesheet.compensateTimezoneOnDates();
         
@@ -108,7 +102,7 @@ public class TimesheetMapper implements ITimesheetMapper {
     public TimesheetComplex fromTimesheetToComplex(Timesheet timesheet) {
 
 		TimesheetComplex timesheetComplex = new TimesheetComplex();
-		List<TimesheetRowTimeProject> timesheetRowTimeProjects = new ArrayList<TimesheetRowTimeProject>();
+		List<TimesheetRowWithProject> timesheetRowTimeProjects = new ArrayList<TimesheetRowWithProject>();
 
 		timesheetComplex.setId(timesheet.getId());
 		timesheetComplex.setTotal(timesheet.getTotal());
@@ -120,7 +114,7 @@ public class TimesheetMapper implements ITimesheetMapper {
 		
 		for (TimesheetRow row : rows) {
 			TimesheetRowDto rowDto = timesheetRowMapper.TimesheetRowToDTO(row);
-			TimesheetRowTimeProject rowTimeProject = timesheetRowMapper.rowDtoToRowTimeProject(rowDto);
+			TimesheetRowWithProject rowTimeProject = timesheetRowMapper.rowDtoToRowTimeProject(rowDto);
 			
 			timesheetRowTimeProjects.add(rowTimeProject);
 		}

@@ -31,4 +31,8 @@ public class QueueService {
 		queueDao.delete(queueItem);
 	}
 	
+	public void deleteByTimesheetId(int timesheetId) {
+		queueDao.deleteByTimesheetId(timesheetId);
+	}
+	
 }

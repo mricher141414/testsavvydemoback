@@ -18,11 +18,17 @@ public class TimesheetService {
 
 	@Autowired
 	private ITimesheetDao timesheetDao;
+	
+	@Autowired
+	private QueueService queueService;
 
-	public void save(Timesheet timesheet) {
+	public Timesheet save(Timesheet timesheet) {
 		
-		timesheetDao.save(timesheet);
-
+		if(timesheetDao.existsById(timesheet.getId()) == false) {
+			timesheet.setVersion(0);
+		}
+		
+		return timesheetDao.save(timesheet);
 	}
 
 	public List<Timesheet> getAll() {
@@ -36,6 +42,8 @@ public class TimesheetService {
 	}
 	
 	public void delete(Timesheet timesheet) {
+		
+		queueService.deleteByTimesheetId(timesheet.getId());
 		timesheetDao.delete(timesheet);
 	}
 	

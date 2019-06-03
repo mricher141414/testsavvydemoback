@@ -18,7 +18,7 @@ public class TimesheetDto {
 	
 	@ApiModelProperty(notes = "<p>Total amount of hours of the timesheet. Use a dot (.) for decimals. <br>"
 			+ "Defaults to 0 if no value was given at creation.</p>", example = "40.5", position = 1)
-	private float total;
+	private Float total;
 	
 	@ApiModelProperty(notes = "<p>Notes of the timesheet.</p>", example = "Première timesheet", position = 2)
 	private String notes;
@@ -47,10 +47,10 @@ public class TimesheetDto {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public float getTotal() {
+	public Float getTotal() {
 		return total;
 	}
-	public void setTotal(float total) {
+	public void setTotal(Float total) {
 		this.total = total;
 	}
 	public String getNotes() {
@@ -71,7 +71,6 @@ public class TimesheetDto {
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
-
 	public Integer getEmployeeId() {
 		return employeeId;
 	}

@@ -16,31 +16,28 @@ public class RoleMapper implements IRoleMapper {
 	private RoleService roleService;
 	
 	@Override
-    public Role DTOtoRole(RoleDto roleDTO, int id) {
-        if ( roleDTO == null ) {
+    public Role DTOtoRole(RoleDto source, int id) {
+        if ( source == null ) {
             return null;
         }
 
         Role role = new Role();
-
-        role.setId( id );
-        role.setName( roleDTO.getName() );
-        role.setDescription(roleDTO.getDescription());
         
         Optional<Role> optionalRole = roleService.getById(id);
         
         if(optionalRole.isPresent()) {
-        	Role dbRole = optionalRole.get();
-        	role.setVersion(dbRole.getVersion());
-        	
-        	if(role.getName() == null) {
-        		role.setName(dbRole.getName());
-        	}
-        	
-        	if(role.getDescription() == null) {
-        		role.setDescription(roleDTO.getDescription());
-        	}
+        	role = optionalRole.get();
         }
+
+        role.setId( id );
+        	
+    	if(source.getName() != null) {
+    		role.setName(source.getName());
+    	}
+    	
+    	if(source.getDescription() != null) {
+    		role.setDescription(source.getDescription());
+    	}
 
         return role;
     }

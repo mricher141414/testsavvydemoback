@@ -22,45 +22,38 @@ public class ProjectMapper implements IProjectMapper {
         }
 
         Project project = new Project();
-
-        project.setId( id );
-        project.setName( source.getName() );
-        project.setDescription( source.getDescription() );
-        project.setStartDate( source.getStartDate() );
-        project.setEndDate( source.getEndDate() );
-        project.setClientId( source.getClientId() );
-        project.setProjectManagerId( source.getProjectManagerId() );
         
         Optional<Project> optionalProject = projectService.getById(id);
         
         if(optionalProject.isPresent()) {
-        	Project dbProject = optionalProject.get();
-        	project.setVersion(dbProject.getVersion());
-        	
-        	if(project.getName() == null) {
-        		project.setName(dbProject.getName());
-        	}
-        	
-        	if(project.getDescription() == null) {
-        		project.setDescription(dbProject.getDescription());
-        	}
-        	
-        	if(project.getStartDate() == null) {
-        		project.setStartDate(dbProject.getStartDate());
-        	}
-        	
-        	if(project.getEndDate() == null) {
-        		project.setEndDate(dbProject.getEndDate());
-        	}
-        	
-        	if(project.getClientId() == null) {
-        		project.setClientId(dbProject.getClientId());
-        	}
-        	
-        	if(project.getProjectManagerId() == null) {
-        		project.setProjectManagerId(dbProject.getProjectManagerId());
-        	}
+        	project = optionalProject.get();
         }
+
+        project.setId( id );
+        	
+    	if(source.getName() != null) {
+    		project.setName(source.getName());
+    	}
+    	
+    	if(source.getDescription() != null) {
+    		project.setDescription(source.getDescription());
+    	}
+    	
+    	if(source.getStartDate() != null) {
+    		project.setStartDate(source.getStartDate());
+    	}
+    	
+    	if(source.getEndDate() != null) {
+    		project.setEndDate(source.getEndDate());
+    	}
+    	
+    	if(source.getClientId() != null) {
+    		project.setClientId(source.getClientId());
+    	}
+    	
+    	if(source.getProjectManagerId() != null) {
+    		project.setProjectManagerId(source.getProjectManagerId());
+    	}
         return project;
 	}
 

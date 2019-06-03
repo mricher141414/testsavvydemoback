@@ -23,16 +23,16 @@ import com.example.Timesheet.com.dto.EmployeeComplex;
 import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.dto.TimesheetDto;
-import com.example.Timesheet.com.dto.TimesheetRowTimeProject;
+import com.example.Timesheet.com.dto.TimesheetRowWithProject;
 import com.example.Timesheet.com.mapper.EmployeeMapper;
 import com.example.Timesheet.com.mapper.TimesheetMapper;
 import com.example.Timesheet.com.mapper.TimesheetRowMapper;
 import com.example.Timesheet.com.model.Employee;
-import com.example.Timesheet.com.model.TimeProject;
+import com.example.Timesheet.com.model.TimesheetRowProject;
 import com.example.Timesheet.com.model.Timesheet;
 import com.example.Timesheet.com.model.TimesheetRow;
 import com.example.Timesheet.com.service.EmployeeService;
-import com.example.Timesheet.com.service.TimeProjectService;
+import com.example.Timesheet.com.service.TimesheetRowProjectService;
 import com.example.Timesheet.com.service.TimesheetService;
 import com.example.Timesheet.com.service.TimesheetRowService;
 import com.example.Timesheet.com.service.TimesheetStatusService;
@@ -70,7 +70,7 @@ public class TimesheetController {
 	private TimesheetRowMapper timesheetRowMapper;
 	
 	@Autowired
-	private TimeProjectService timeProjectService;
+	private TimesheetRowProjectService timeProjectService;
 	
 	@GetMapping("/timesheet/all")
 	@ApiOperation("Returns a list of all timesheets in the system.")
@@ -116,7 +116,7 @@ public class TimesheetController {
 		
 		Timesheet timesheet = this.timesheetMapper.DTOtoTimesheet(timesheetDto, 0);
 
-		this.timesheetService.save(timesheet);
+		timesheet = timesheetService.save(timesheet);
 
 		return GlobalFunctions.createOkResponseFromObject(timesheet);
 
@@ -144,7 +144,7 @@ public class TimesheetController {
 			
 			Timesheet timesheet = this.timesheetMapper.DTOtoTimesheet(timesheetDto, id);
 	
-			this.timesheetService.save(timesheet);
+			timesheet = timesheetService.save(timesheet);
 	
 			return GlobalFunctions.createOkResponseFromObject(timesheet);
 		}
@@ -228,7 +228,7 @@ public class TimesheetController {
 	
 	//functions that are used only by the frontend
 	
-	@GetMapping("/employeetimesheets")
+	@GetMapping("/timesheet/employee/all")
 	@ApiOperation(value = "Returns a list of all the timesheets of an employee.",  
 					notes = "404 if the employee's identifier cannot be found")
 	public ResponseEntity<?> getAllTimesheetFromEmployee (@ApiParam(value = "Id of the employee to list all timesheets from", required = true) @RequestParam(value = "id") int id) {
@@ -241,7 +241,7 @@ public class TimesheetController {
 	}
 	
 	
-	@PostMapping("/createtimesheet")
+	@PostMapping("/timesheet/create/rows")
 	@ApiOperation(value = "Creates a new timesheet in the system with 7 timesheet rows (one for each day).", 
 	notes = "404 if the id of the employee passed in the body cannot be found.")
 	public ResponseEntity<?> createTimesheetWithRows (@ApiParam(value = "Employee to who the timesheet belongs", required = true) @RequestBody Employee employee, 
@@ -263,7 +263,7 @@ public class TimesheetController {
 		return GlobalFunctions.createOkResponseFromObject(employee);
 	}
 	
-	@PutMapping("/edittimesheet")
+	@PutMapping("/timesheet/edit")
 	@ApiOperation(value = "Updates a timesheet in the system by their identifier and its timesheet rows.", 
 					notes = "404 if the timesheet's identifier cannot be found. <br>"
 							+ "400 if a timeProject does not have an id parameter.")
@@ -283,9 +283,9 @@ public class TimesheetController {
 		
 		Timesheet dbTimesheet = optionalTimesheet.get();
 		
-		List<TimesheetRowTimeProject> rowsTimeProject = timesheetComplex.getTimesheetRows();
+		List<TimesheetRowWithProject> rowsTimeProject = timesheetComplex.getTimesheetRows();
 		
-		for(TimesheetRowTimeProject rowTimeProject : rowsTimeProject) {
+		for(TimesheetRowWithProject rowTimeProject : rowsTimeProject) {
 			
 			TimesheetRow row = timesheetRowMapper.timesheetRowTimeProjectToTimesheetRow(rowTimeProject);
 			row.setTimesheetId(id);
@@ -294,12 +294,12 @@ public class TimesheetController {
 			
 			row = timesheetRowService.save(row);
 			
-			List<TimeProject> timeProjects = rowTimeProject.getTimeProjects();
+			List<TimesheetRowProject> timeProjects = rowTimeProject.getTimeProjects();
 			
-			for(TimeProject timeProject : timeProjects) {
+			for(TimesheetRowProject timeProject : timeProjects) {
 				
 				if(timeProject.getId() == null) {
-					return GlobalFunctions.createBadRequest(GlobalMessages.TimeProjectIdCannotBeNull, "/edittimesheet");
+					return GlobalFunctions.createBadRequest(GlobalMessages.TimesheetRowProjectIdCannotBeNull, "/edittimesheet");
 				}
 				
 				timeProject.setTimesheetRowId(row.getId());
@@ -317,7 +317,7 @@ public class TimesheetController {
 		return GlobalFunctions.createOkResponseFromObject(timesheetComplex);
 	}
 	
-	@DeleteMapping("/deletetimesheet")
+	@DeleteMapping("/timesheet/delete/rows")
 	@ApiOperation(value = "Deletes a timesheet in the system by their identifier along with all its timesheet rows", 
 	notes = "404 if the timeseet's identifier cannot be found.")
 	public ResponseEntity<?> deleteTimesheetWithRows(@ApiParam(value = "Id of the timesheet to be deleted", required = true) @RequestParam(value = "id") int id) {
@@ -332,9 +332,9 @@ public class TimesheetController {
 		
 		for(TimesheetRow row : timesheetRows) {
 			
-			List<TimeProject> timeProjects = timeProjectService.getByTimesheetRowId(row.getId());
+			List<TimesheetRowProject> timeProjects = timeProjectService.getByTimesheetRowId(row.getId());
 			
-			for(TimeProject timeProject : timeProjects) {
+			for(TimesheetRowProject timeProject : timeProjects) {
 				timeProjectService.delete(timeProject);
 			}
 			

@@ -57,7 +57,7 @@ public class RoleController {
 		
 		Role role = this.roleMapper.DTOtoRole(roleDto, 0);
 		
-		this.roleService.save(role);
+		role = roleService.save(role);
 		
 		return GlobalFunctions.createOkResponseFromObject(role);
 	}
@@ -71,7 +71,7 @@ public class RoleController {
 		if(this.roleService.getById(id).isPresent()) {
 		
 			Role role = roleMapper.DTOtoRole(roleDto, id);
-			roleService.save(role);
+			role = roleService.save(role);
 			
 			return GlobalFunctions.createOkResponseFromObject(role);
 		

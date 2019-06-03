@@ -115,9 +115,6 @@ public class Project {
 	public void setProjectManagerId(Integer projectManagerId) {
 		this.projectManagerId = projectManagerId;
 	}
-	public int getVersion() {
-		return version;
-	}
 	public void setVersion(int version) {
 		this.version = version;
 	}	

@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.dto.TimesheetRowDto;
-import com.example.Timesheet.com.dto.TimesheetRowTimeProject;
+import com.example.Timesheet.com.dto.TimesheetRowWithProject;
 import com.example.Timesheet.com.mapper.TimesheetRowMapper;
 import com.example.Timesheet.com.model.TimesheetRow;
 import com.example.Timesheet.com.service.ProjectService;
-import com.example.Timesheet.com.service.TimeProjectService;
+import com.example.Timesheet.com.service.TimesheetRowProjectService;
 import com.example.Timesheet.com.service.TimesheetRowService;
 import com.example.Timesheet.com.service.TimesheetService;
 
@@ -48,7 +48,7 @@ public class TimesheetRowController {
 	private TimesheetRowMapper timesheetRowMapper = new TimesheetRowMapper();
 	
 	@Autowired
-	private TimeProjectService timeProjectService;
+	private TimesheetRowProjectService timeProjectService;
 	
 	@GetMapping("/timesheetRow")
 	@ApiOperation("Returns a list of all timesheet rows in the system.")
@@ -69,7 +69,7 @@ public class TimesheetRowController {
 		}
 		
 		TimesheetRowDto rowDto = timesheetRowMapper.TimesheetRowToDTO(optionalRow.get());
-		TimesheetRowTimeProject returnRow = timesheetRowMapper.rowDtoToRowTimeProject(rowDto);
+		TimesheetRowWithProject returnRow = timesheetRowMapper.rowDtoToRowTimeProject(rowDto);
 		
 		return GlobalFunctions.createOkResponseFromObject(returnRow);
 	}
@@ -86,7 +86,7 @@ public class TimesheetRowController {
 		
 		TimesheetRow timesheetRow = this.timesheetRowMapper.DTOtoTimesheetRow(timesheetRowDto, 0);
 		
-		this.timesheetRowService.save(timesheetRow);
+		timesheetRow = timesheetRowService.save(timesheetRow);
 		
 		return GlobalFunctions.createOkResponseFromObject(timesheetRow);
 		
@@ -109,7 +109,7 @@ public class TimesheetRowController {
 		
 		TimesheetRow timesheetRow = timesheetRowMapper.DTOtoTimesheetRow(timesheetRowDto, id);
 		
-		timesheetRowService.save(timesheetRow);
+		timesheetRow = timesheetRowService.save(timesheetRow);
 		
 		return GlobalFunctions.createOkResponseFromObject(timesheetRow);
 	}

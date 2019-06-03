@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.example.Timesheet.com.dto.TimesheetRowDto;
-import com.example.Timesheet.com.dto.TimesheetRowTimeProject;
+import com.example.Timesheet.com.dto.TimesheetRowWithProject;
 import com.example.Timesheet.com.model.TimesheetRow;
-import com.example.Timesheet.com.service.TimeProjectService;
+import com.example.Timesheet.com.service.TimesheetRowProjectService;
 import com.example.Timesheet.com.service.TimesheetRowService;
 
 @Component
@@ -18,7 +18,7 @@ public class TimesheetRowMapper implements ITimesheetRowMapper {
     private TimesheetRowService timesheetRowService;
     
     @Autowired
-    private TimeProjectService timeProjectService;
+    private TimesheetRowProjectService timeProjectService;
 	
 	@Override
     public TimesheetRow DTOtoTimesheetRow(TimesheetRowDto source, int id) {
@@ -28,25 +28,21 @@ public class TimesheetRowMapper implements ITimesheetRowMapper {
 
         TimesheetRow timesheetRow = new TimesheetRow();
         
-        timesheetRow.setId( id );
-        timesheetRow.setDate( source.getDate() );
-        timesheetRow.setTimesheetId( source.getTimesheetId() );
-        
         Optional<TimesheetRow> optionalTimesheetRow = timesheetRowService.getById(id);
         
         if(optionalTimesheetRow.isPresent()) {
-        	TimesheetRow dbTimesheetRow = optionalTimesheetRow.get();
-        	
-        	if(timesheetRow.getDate() == null) {
-        		timesheetRow.setDate(dbTimesheetRow.getDate());
-        	}
-        	
-        	if(timesheetRow.getTimesheetId() == null) {
-        		timesheetRow.setTimesheetId(dbTimesheetRow.getTimesheetId());
-        	}
+        	timesheetRow = optionalTimesheetRow.get();
         }
         
-        timesheetRow.compensateTimezoneOnDates();
+        timesheetRow.setId( id );
+    
+    	if(source.getDate() != null) {
+    		timesheetRow.setDate(source.getDate());
+    	}
+    	
+    	if(source.getTimesheetId() != null) {
+    		timesheetRow.setTimesheetId(source.getTimesheetId());
+    	}
 
         return timesheetRow;
     }
@@ -66,9 +62,9 @@ public class TimesheetRowMapper implements ITimesheetRowMapper {
         return timesheetRowDTO;
     }
 
-    public TimesheetRowTimeProject rowDtoToRowTimeProject(TimesheetRowDto rowDto) {
+    public TimesheetRowWithProject rowDtoToRowTimeProject(TimesheetRowDto rowDto) {
     	
-    	TimesheetRowTimeProject rowTimeProject = new TimesheetRowTimeProject();
+    	TimesheetRowWithProject rowTimeProject = new TimesheetRowWithProject();
     	
     	rowTimeProject.setId(rowDto.getId());
     	rowTimeProject.setDate(rowDto.getDate());
@@ -79,7 +75,7 @@ public class TimesheetRowMapper implements ITimesheetRowMapper {
     	return rowTimeProject;
     }
     
-    public TimesheetRow timesheetRowTimeProjectToTimesheetRow(TimesheetRowTimeProject rowTimeProject) {
+    public TimesheetRow timesheetRowTimeProjectToTimesheetRow(TimesheetRowWithProject rowTimeProject) {
     	
     	TimesheetRow row = new TimesheetRow();
     	

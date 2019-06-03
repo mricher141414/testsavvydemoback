@@ -1,0 +1,121 @@
+package com.example.Timesheet.com.controller;
+
+import java.sql.Date;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.Timesheet.com.GlobalFunctions;
+import com.example.Timesheet.com.GlobalMessages;
+import com.example.Timesheet.com.GlobalVars;
+import com.example.Timesheet.com.dto.DepartmentDto;
+import com.example.Timesheet.com.dto.TimesheetRowProjectDto;
+import com.example.Timesheet.com.mapper.TimesheetRowProjectMapper;
+import com.example.Timesheet.com.model.Department;
+import com.example.Timesheet.com.model.Project;
+import com.example.Timesheet.com.model.TimesheetRowProject;
+import com.example.Timesheet.com.service.ProjectService;
+import com.example.Timesheet.com.service.TimesheetRowProjectService;
+import com.example.Timesheet.com.service.TimesheetRowService;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
+@RestController
+@CrossOrigin(origins = "http://localhost:4200")
+@Api(tags = "TimesheetRowProjectController")
+public class TimesheetRowProjectController {
+
+	@Autowired
+	private TimesheetRowProjectService timesheetRowProjectService;
+	
+	@Autowired
+	private TimesheetRowProjectMapper timesheetRowProjectMapper;
+	
+	@Autowired
+	private ProjectService projectService;
+	
+	@Autowired
+	private TimesheetRowService timesheetRowService;
+	
+	
+	@GetMapping("/timesheetrowproject")
+	@ApiOperation("Returns a list of all timesheetRowProjects in the system.")
+	public List<TimesheetRowProject> getAll(){
+		return timesheetRowProjectService.getAll();
+	}
+	
+	@PostMapping("/timesheetrowproject")
+	@ApiOperation(value = "Creates a new timesheetRowProject in the system.", notes = "404 if a projectId or timesheetRowId is provided and the entity it is referring to cannot be found.")
+	public ResponseEntity<String> create(@ApiParam(value = "TimesheetRowProject information for the new timesheetRowProject to be created.", required = true)@RequestBody TimesheetRowProjectDto timesheetRowProjectDto) {
+		
+		if(timesheetRowProjectDto.getProjectId() != null) {
+			if(projectService.getById(timesheetRowProjectDto.getProjectId()).isPresent() == false) {
+				return GlobalFunctions.createNotFoundResponse(GlobalMessages.ProjectIdParameterNotFound, "/timesheetrowproject");
+			}
+		}
+		
+		if(timesheetRowProjectDto.getTimesheetRowId() != null) {
+			if(timesheetRowService.getById(timesheetRowProjectDto.getTimesheetRowId()).isPresent() == false) {
+				return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetRowIdParameterNotFound, "/timesheetrowproject");
+			}
+		}
+		
+		TimesheetRowProject timesheetRowProject = timesheetRowProjectMapper.dtoToTimesheetRowProject(timesheetRowProjectDto, 0);
+		timesheetRowProject = timesheetRowProjectService.save(timesheetRowProject);
+		return GlobalFunctions.createOkResponseFromObject(timesheetRowProject);
+	}
+	
+	@PutMapping("/timesheetrowproject")
+	@ApiOperation(value = "Updates a timesheetRowProject in the system by their identifier.", notes = "404 if the timesheetRowProject's identifier, or the provided projectId or timesheetRowId cannot be found")
+	public ResponseEntity<?> edit(@ApiParam("timesheetRowProject information to be modified")@RequestBody TimesheetRowProjectDto timesheetRowProjectDto,
+										@ApiParam(value = "Id of the timesheetRowProject to be modified. Cannot be null", required = true)@RequestParam(value="id") int id) {
+		
+		if(timesheetRowProjectService.getById(id).isPresent() == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetRowProjectIdNotFound, "/timesheetrowproject");
+		}
+		
+		if(timesheetRowProjectDto.getProjectId() != null) {
+			if(projectService.getById(timesheetRowProjectDto.getProjectId()).isPresent() == false) {
+				return GlobalFunctions.createNotFoundResponse(GlobalMessages.ProjectIdParameterNotFound, "/timesheetrowproject");
+			}
+		}
+		
+		if(timesheetRowProjectDto.getTimesheetRowId() != null) {
+			if(timesheetRowService.getById(timesheetRowProjectDto.getTimesheetRowId()).isPresent() == false) {
+				return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetRowIdParameterNotFound, "/timesheetrowproject");
+			}
+		}
+		
+		TimesheetRowProject timesheetRowProject = timesheetRowProjectMapper.dtoToTimesheetRowProject(timesheetRowProjectDto, id);
+		timesheetRowProject = timesheetRowProjectService.save(timesheetRowProject);
+		return GlobalFunctions.createOkResponseFromObject(timesheetRowProject);
+	}
+	
+	@DeleteMapping("/timesheetrowproject")
+	@ApiOperation(value = "Deletes a timesheetRowProject from the system.", notes = "404 if the timeshhetRowProject's identifier cannot be found")
+	public ResponseEntity<?> delete(@ApiParam(value = "Id of the timesheetRowProject to be deleted. Cannot be null.", required = true)@RequestParam(value="id") int id) {
+
+		Optional<TimesheetRowProject> optionalTimesheetRowProject = timesheetRowProjectService.getById(id);
+		
+		if(optionalTimesheetRowProject.isPresent() == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetRowProjectIdNotFound, "/timesheetrowproject");
+		}
+		
+		TimesheetRowProject timesheetRowProject = optionalTimesheetRowProject.get();
+		
+		timesheetRowProjectService.delete(timesheetRowProject);
+		return GlobalFunctions.createOkResponseFromObject(timesheetRowProject);
+	}
+}

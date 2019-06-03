@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Version;
 
 import com.example.Timesheet.com.GlobalVars;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -30,6 +31,9 @@ public class TimesheetRow {
 	@Column(name = "timesheet_id")
 	@ApiModelProperty(notes = "<p>Unique identifier of the timesheet that the row is currently in. No two timesheets can have the same id.</p>", example = "1", position = 2)
 	private Integer timesheetId;
+	
+	@Version
+	private Integer version;
 	
 	public void compensateTimezoneOnDates() {
 		Date date = this.getDate();
@@ -66,5 +70,8 @@ public class TimesheetRow {
 	}
 	public void setTimesheetId(Integer timesheetId) {
 		this.timesheetId = timesheetId;
+	}
+	public void setVersion(int version) {
+		this.version = version;
 	}
 }

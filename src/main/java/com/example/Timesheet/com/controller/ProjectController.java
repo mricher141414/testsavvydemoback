@@ -1,5 +1,6 @@
 package com.example.Timesheet.com.controller;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalMessages;
+import com.example.Timesheet.com.GlobalVars;
 import com.example.Timesheet.com.dto.ProjectDto;
 import com.example.Timesheet.com.dto.ProjectStatsEmployee;
 import com.example.Timesheet.com.mapper.ProjectMapper;
@@ -29,7 +31,7 @@ import com.example.Timesheet.com.service.ClientService;
 import com.example.Timesheet.com.service.EmployeeService;
 import com.example.Timesheet.com.service.ProjectEmployeeService;
 import com.example.Timesheet.com.service.ProjectService;
-import com.example.Timesheet.com.service.TimeProjectService;
+import com.example.Timesheet.com.service.TimesheetRowProjectService;
 import com.example.Timesheet.com.service.TimesheetRowService;
 
 import io.swagger.annotations.Api;
@@ -54,7 +56,10 @@ public class ProjectController {
 	private EmployeeService employeeService = new EmployeeService();
 	
 	@Autowired
-	private TimeProjectService timeProjectService = new TimeProjectService();
+	private TimesheetRowProjectService timesheetRowProjectService;
+	
+	@Autowired
+	private TimesheetRowService timesheetRowService;
 	
 	@Autowired
 	private ProjectEmployeeService projectEmployeeService = new ProjectEmployeeService();
@@ -132,7 +137,7 @@ public class ProjectController {
 			return GlobalFunctions.createBadRequest(GlobalMessages.ProjectAssignedCannotDelete, "/project");
 		}
 		
-		if(timeProjectService.getByProjectId(id).size() > 0) {
+		if(timesheetRowProjectService.getByProjectId(id).size() > 0) {
 			return GlobalFunctions.createBadRequest(GlobalMessages.TimeProjectUsesProjectCannotDelete, "/project");
 		}
 		
@@ -140,7 +145,7 @@ public class ProjectController {
 		return GlobalFunctions.createOkResponseFromObject(project);
 	}
 	
-	@GetMapping("/assignationproject")
+	@GetMapping("/project/assignation")
 	@ApiOperation(value = "Returns all employees who are currently working on the project", notes = "404 if the project's identifier cannot be found.")
 	public ResponseEntity<String> getAllAssignationsOnProject(@ApiParam(value = "Id of the project to get the assignations from. Cannot be null.", required = true)@RequestParam int id) {
 		
@@ -158,7 +163,7 @@ public class ProjectController {
 		return GlobalFunctions.createOkResponseFromObject(assignedEmployees);
 	}
 	
-	@PostMapping("/projectassignationadd")
+	@PostMapping("/project/assignation")
 	@ApiOperation(value = "Create assignations to all the employees the project is not already assigned to, in those sent in the body.", notes = "404 if the project's identifier or if any of the employees' identifier cannot be found.")
 	public ResponseEntity<String> addEmployeeAssignations(@ApiParam(value = "List of employees")@RequestBody List<Employee> employees,
 															@ApiParam(value = "Id of the project")@RequestParam int id) {
@@ -179,6 +184,12 @@ public class ProjectController {
 			projectEmployee.setEmployeeId(employee.getId());
 			
 			projectEmployeeService.save(projectEmployee);
+		}
+		
+		List<ProjectEmployee> projectEmployees = projectEmployeeService.getByProjectId(id);
+		
+		for (ProjectEmployee assignation : projectEmployees) {
+			employees.add(employeeService.getById(assignation.getEmployeeId()).get());
 		}
 		
 		return GlobalFunctions.createOkResponseFromObject(employees);
@@ -207,5 +218,43 @@ public class ProjectController {
 		projectStats.setAverageSalary(employeeService.calculateAverageSalary(employees));
 		
 		return GlobalFunctions.createOkResponseFromObject(projectStats);
+	}
+	
+	@GetMapping("/project/stats/average/timeperday")
+	@ApiOperation(value = "Returns the average amount of hours worked on a project per day in the X weeks before the given date.", notes = "404 if project id cannot be found, 400 if the project was not started by the end of the first week, or if the project ended before the beginning of the last week")
+	public ResponseEntity<?> getAverageTimeWorked(@ApiParam(value = "Id of the project to calculate the averages for.", required = true)@RequestParam(value="id") int id, 
+													@ApiParam(value = "Date to end the calculation", required = true) @RequestParam(value = "date") Date date, 
+													@ApiParam(value = "Amount of weeks to go back from the sent date.", required = true) @RequestParam(value="weeks") int weeks) {
+		
+		if(weeks < 1) {
+			return GlobalFunctions.createBadRequest(GlobalMessages.ProjectAveragInvalidWeekNumber, "/project/stats/average/timeperday");
+		}
+		
+		Optional<Project> optionalProject = projectService.getById(id);
+		
+		if(optionalProject.isPresent() == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ProjectIdNotFound, "/project/stats/average/timeperday");
+		}
+		
+		Project project = optionalProject.get();
+		
+		Date latestSunday = GlobalFunctions.findLatestSunday(date);
+		Date firstSunday = new Date(0L);
+		Date firstSaturday = new Date(0L);
+		
+		firstSunday.setTime(latestSunday.getTime() - 7 * (weeks - 1) * GlobalVars.MillisecondsPerDay);
+		firstSaturday.setTime(firstSunday.getTime() + 6 * GlobalVars.MillisecondsPerDay);
+		
+		if(project.getStartDate().getTime() > firstSaturday.getTime()) {
+			return GlobalFunctions.createBadRequest(GlobalMessages.AverageDateParameterTooEarly, "/project/stats/average/timeperday");
+		}
+		
+		if(project.getEndDate().getTime() < latestSunday.getTime()) {
+			return GlobalFunctions.createBadRequest(GlobalMessages.AverageDateParameterTooLate, "/project/stats/average/timeperday");
+		}
+		
+		Float averageHoursPerDay = timesheetRowProjectService.calculateAverageTimeWorked(id, firstSunday, weeks);
+		
+		return GlobalFunctions.createOkResponseFromObject(averageHoursPerDay);
 	}
 }

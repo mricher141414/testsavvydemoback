@@ -21,12 +21,12 @@ public class RoleService {
 		return (List<Role>) this.roleDao.findAll();
 	}
 
-	public void save(Role role) {
+	public Role save(Role role) {
 		if(roleDao.existsById(role.getId()) == false) {
 			role.setVersion(0);
 		}
 		
-		this.roleDao.save(role);
+		return roleDao.save(role);
 
 	}
 

@@ -34,6 +34,8 @@ public class TimesheetStatusController {
 	
 	@Autowired
 	private TimesheetStatusService timesheetStatusService = new TimesheetStatusService();
+	
+	@Autowired
 	private TimesheetStatusMapper timesheetStatusMapper = new TimesheetStatusMapper();
 	
 	@Autowired
@@ -53,7 +55,7 @@ public class TimesheetStatusController {
 		
 		TimesheetStatus timesheetStatus = this.timesheetStatusMapper.DTOtoTimesheetStatus(timesheetStatusDto, 0);
 		
-		this.timesheetStatusService.save(timesheetStatus);
+		timesheetStatus = timesheetStatusService.save(timesheetStatus);
 		
 		return GlobalFunctions.createOkResponseFromObject(timesheetStatus);
 	}
@@ -69,7 +71,7 @@ public class TimesheetStatusController {
 		
 		TimesheetStatus timesheetStatus = timesheetStatusMapper.DTOtoTimesheetStatus(timesheetStatusDto, id);
 		
-		timesheetStatusService.save(timesheetStatus);
+		timesheetStatus = timesheetStatusService.save(timesheetStatus);
 		
 		return GlobalFunctions.createOkResponseFromObject(timesheetStatus);
 	}

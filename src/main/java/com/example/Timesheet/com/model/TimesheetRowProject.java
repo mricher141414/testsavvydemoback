@@ -4,13 +4,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Version;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
 @ApiModel(description = "<p>Class representing the amount of time worked on a project in a day tracked by the application.</p>")
-public class TimeProject {
+public class TimesheetRowProject {
 
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	@ApiModelProperty(notes = "<p>Unique identifier of the timeProject. No two timeProject can have the same id.</p>", example = "6", position = 0)
@@ -26,6 +27,9 @@ public class TimeProject {
 	@ApiModelProperty(notes = "<p>Unique identifier of the timesheet row that the timeProject is currently in. No two timesheets can have the same id.</p>", example = "4", position = 3)
 	private Integer timesheetRowId;
 
+	@Version
+	private Integer version;
+	
 	//getters and setters
 	
 	public Integer getId() {
@@ -58,5 +62,9 @@ public class TimeProject {
 
 	public void setTimesheetRowId(Integer timesheetRowId) {
 		this.timesheetRowId = timesheetRowId;
+	}
+	
+	public void setVersion(int version) {
+		this.version = version;
 	}
 }

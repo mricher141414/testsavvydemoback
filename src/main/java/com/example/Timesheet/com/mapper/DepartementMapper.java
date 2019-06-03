@@ -22,26 +22,20 @@ public class DepartementMapper implements IDepartementMapper {
         }
 
         Department department = new Department();
-
-        department.setId( id );
-        department.setName( source.getName() );
-        department.setDescription(source.getDescription());
         
-        Optional<Department> optionalDepartement = this.departementService.getById(id);
+        Optional<Department> optionalDepartment = this.departementService.getById(id);
         
-        if(optionalDepartement.isPresent()) {
-        	
-        	Department dbDepartment = optionalDepartement.get();
-        	department.setVersion(dbDepartment.getVersion());
-        	
-        	if(department.getName() == null) {
-        		department.setName(dbDepartment.getName());
-        	}
-        	
-        	if(department.getDescription() == null) {
-        		department.setDescription(dbDepartment.getDescription());
-        	}
+        if(optionalDepartment.isPresent()) {        	
+        	department = optionalDepartment.get();
         }
+        	
+    	if(source.getName() != null) {
+    		department.setName(source.getName());
+    	}
+    	
+    	if(source.getDescription() != null) {
+    		department.setDescription(source.getDescription());
+    	}
 
         return department;
     }

@@ -171,13 +171,11 @@ public class EmployeeController {
 			 return GlobalFunctions.createBadRequest(GlobalMessages.ProjectUsesEmployeeCannotDelete, "/employee");
 		 }
 		 
-		 
-		 
 		 this.employeeService.delete(employee);
 		 return GlobalFunctions.createOkResponseFromObject(employee);
 	 }
 
-	@GetMapping("/assignationemployee")
+	@GetMapping("/employee/assignation")
 	@ApiOperation(value = "Returns all projects who are currently assigned to the employee", notes = "404 if the employee's identifier cannot be found.")
 	public ResponseEntity<String> getAllAssignationsOnEmployee(@ApiParam(value = "Id of the employee to get the assignations from. Cannot be null.", required = true)@RequestParam int id) {
 		
@@ -195,7 +193,7 @@ public class EmployeeController {
 		return GlobalFunctions.createOkResponseFromObject(assignedProjects);
 	}
 	
-	@PostMapping("/employeeassignationadd")
+	@PostMapping("/employee/assignation")
 	@ApiOperation(value = "Create assignations to all the projects the employee is not already a part of, in those sent in the body.", notes = "404 if the employee's identifier or if any of the projects' identifier cannot be found.")
 	public ResponseEntity<String> addEmployeeAssignations(@ApiParam(value = "List of Projects")@RequestBody List<Project> projects,
 															@ApiParam(value = "Id of the employee")@RequestParam int id) {
@@ -216,6 +214,12 @@ public class EmployeeController {
 			projectEmployee.setProjectId(project.getId());
 			
 			projectEmployeeService.save(projectEmployee);
+		}
+		
+		List<ProjectEmployee> projectEmployees = projectEmployeeService.getByEmployeeId(id);
+		
+		for (ProjectEmployee assignation : projectEmployees) {
+			projects.add(projectService.getById(assignation.getProjectId()).get());
 		}
 		
 		return GlobalFunctions.createOkResponseFromObject(projects);

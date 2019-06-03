@@ -41,23 +41,23 @@ public class DepartmentController {
 	@Autowired
 	EmployeeService personService = new EmployeeService();
 	
-	@GetMapping("/departement")
+	@GetMapping("/department")
 	@ApiOperation("Returns a list of all departments in the system.")
 	public List<Department> getAll(){
 		return departementService.getAll();
 	}
 	
-	@PostMapping("/departement")
+	@PostMapping("/department")
 	@ApiOperation("Create a new department in the system.")
 	public ResponseEntity<String> create(@ApiParam(value = "Department information for the new department to be created.", required = true)@RequestBody DepartmentDto departementDto) {
 		Department department = departementMapper.DTOtoDepartement(departementDto, 0);
 		
-		departementService.save(department);
+		department = departementService.save(department);
 		
 		return GlobalFunctions.createOkResponseFromObject(department);
 	}
 	
-	@PutMapping("/departement")
+	@PutMapping("/department")
 	@ApiOperation(value = "Updates a department in the system by their identifier.", notes = "404 if the department's identifier is not found")
 	public ResponseEntity<?> edit(@ApiParam("department information to be modified")@RequestBody DepartmentDto departementDTO,
 										@ApiParam(value = "Id of the department to be modified. Cannot be null", required = true)@RequestParam(value="id") int id){
@@ -74,7 +74,7 @@ public class DepartmentController {
 		
 	}
 	
-	@DeleteMapping("/departement")
+	@DeleteMapping("/department")
 	@ApiOperation(value = "Deletes a department from the system.", notes = "404 if the department's identifier cannot be found")
 	public ResponseEntity<?> delete(@ApiParam(value = "Id of the department to be deleted. Cannot be null.", required = true)@RequestParam(value="id") int id){
 		

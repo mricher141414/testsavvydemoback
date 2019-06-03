@@ -66,7 +66,7 @@ public class ClientController {
 		
 		Client client = clientMapper.dtoToClient(clientDto, 0);
 		
-		clientService.save(client);
+		client = clientService.save(client);
 		
 		return GlobalFunctions.createOkResponseFromObject(client);
 	}

@@ -23,29 +23,24 @@ public class ClientMapper implements IClientMapper {
 		
 		Client client = new Client();
 		
-		client.setId(id);
-		client.setName(source.getName());
-		client.setAddress(source.getAddress());
-		client.setDescription(source.getDescription());
-		
 		Optional<Client> optionalClient = clientService.getById(id);
 		
 		if(optionalClient.isPresent()) {
+			client = optionalClient.get();
+		}
+		
+		client.setId(id);
 			
-			Client dbClient = optionalClient.get();
-			client.setVersion(dbClient.getVersion());
-			
-			if(client.getName() == null) {
-				client.setName(dbClient.getName());
-			}
-			
-			if(client.getAddress() == null) {
-				client.setAddress(dbClient.getAddress());
-			}
-			
-			if(client.getDescription() == null) {
-				client.setDescription(dbClient.getDescription());
-			}
+		if(source.getName() != null) {
+			client.setName(source.getName());
+		}
+		
+		if(source.getAddress() != null) {
+			client.setAddress(source.getAddress());
+		}
+		
+		if(source.getDescription() != null) {
+			client.setDescription(source.getDescription());
 		}
 		
 		return client;

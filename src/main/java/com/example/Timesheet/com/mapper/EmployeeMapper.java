@@ -45,65 +45,54 @@ public class EmployeeMapper implements IEmployeeMapper {
         }
 
         Employee employee = new Employee();
-
-        employee.setId( id );
-        employee.setDateOfBirth( source.getDateOfBirth() );
-        employee.setEmail( source.getEmail() );
-        employee.setLastName( source.getLastName() );
-        employee.setFirstName( source.getFirstName() );
-        employee.setPassword( source.getPassword() );
-        employee.setRoleId( source.getRoleId() );
-        employee.setDepartmentId( source.getDepartmentId() );
-        employee.setManagerId( source.getManagerId() );
-        employee.setAddress( source.getAddress() );
-        employee.setSalary(source.getSalary());
         
         Optional<Employee> optionalEmployee = this.employeeService.getById(id);
         
         if(optionalEmployee.isPresent()) {
-        	Employee dbEmployee = optionalEmployee.get();
-        	employee.setVersion(dbEmployee.getVersion());
-        	
-        	if(employee.getDateOfBirth() == null) {
-        		employee.setDateOfBirth(dbEmployee.getDateOfBirth());
-        	}
-        	
-        	if(employee.getEmail() == null) {
-        		employee.setEmail(dbEmployee.getEmail());
-        	}
-        	
-        	if(employee.getLastName() == null) {
-        		employee.setLastName(dbEmployee.getLastName());
-        	}
-        	
-        	if(employee.getFirstName() == null) {
-        		employee.setFirstName(dbEmployee.getFirstName());
-        	}
-        	
-        	if(employee.getPassword() == null) {
-        		employee.setPassword(dbEmployee.getPassword());
-        	}
-        	
-        	if(employee.getRoleId() == null) {
-        		employee.setRoleId(dbEmployee.getRoleId());
-        	}
-        	
-        	if(employee.getDepartmentId() == null) {
-        		employee.setDepartmentId(dbEmployee.getDepartmentId());
-        	}
-        	
-        	if(employee.getManagerId() == null) {
-        		employee.setManagerId(dbEmployee.getManagerId());
-        	}
-        	
-        	if(employee.getAddress() == null) {
-        		employee.setAddress(dbEmployee.getAddress());
-        	}
-        	
-        	if(employee.getSalary() == 0) {
-        		employee.setSalary(dbEmployee.getSalary());
-        	}
+        	employee = optionalEmployee.get();
         }
+        
+        employee.setId(id);
+    	
+    	if(source.getDateOfBirth() != null) {
+    		employee.setDateOfBirth(source.getDateOfBirth());
+    	}
+    	
+    	if(source.getEmail() != null) {
+    		employee.setEmail(source.getEmail());
+    	}
+    	
+    	if(source.getLastName() != null) {
+    		employee.setLastName(source.getLastName());
+    	}
+    	
+    	if(source.getFirstName() != null) {
+    		employee.setFirstName(source.getFirstName());
+    	}
+    	
+    	if(source.getPassword() != null) {
+    		employee.setPassword(source.getPassword());
+    	}
+    	
+    	if(source.getRoleId() != null) {
+    		employee.setRoleId(source.getRoleId());
+    	}
+    	
+    	if(source.getDepartmentId() != null) {
+    		employee.setDepartmentId(source.getDepartmentId());
+    	}
+    	
+    	if(source.getManagerId() != null) {
+    		employee.setManagerId(source.getManagerId());
+    	}
+    	
+    	if(source.getAddress() != null) {
+    		employee.setAddress(source.getAddress());
+    	}
+    	
+    	if(source.getSalary() != null) {
+    		employee.setSalary(source.getSalary());
+    	}
         
         employee.compensateTimezoneOnDates();
 

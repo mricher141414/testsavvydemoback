@@ -32,7 +32,7 @@ public class CalcSalary {
 		}
 	}
 	
-	public void getEmployeeSalary(int id) {
+	public Float getEmployeeSalary(int id) {
 		
 		URI geturl;
 		try {
@@ -45,11 +45,12 @@ public class CalcSalary {
 		    	CloseableHttpResponse response = client.execute(httpGet);
 			    ObjectMapper mapper = new ObjectMapper();
 		    	salary = mapper.readValue(response.getEntity().getContent()  ,  Employee.class).getSalary();
-		    			
 		    } catch (IOException e) {
 		    }
 		} catch (URISyntaxException e) {
 		}
+		
+		return salary;
 	}
 	
 	public void getSheets() {

@@ -32,7 +32,7 @@ public class TimesheetComplex {
 	private Date endDate;
 	
 	@ApiModelProperty(notes = "<p>List of all timesheetRows that reference this timesheet.</p>", position = 5)
-	private List<TimesheetRowTimeProject> timesheetRows;
+	private List<TimesheetRowWithProject> timesheetRows;
 	
 	@ApiModelProperty(notes = "<p>Object of the timesheetStatus used by the timesheet.</p>", position = 6)
 	private TimesheetStatus timesheetStatus;
@@ -69,10 +69,10 @@ public class TimesheetComplex {
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
-	public List<TimesheetRowTimeProject> getTimesheetRows() {
+	public List<TimesheetRowWithProject> getTimesheetRows() {
 		return timesheetRows;
 	}
-	public void setTimesheetRows(List<TimesheetRowTimeProject> timesheetRows) {
+	public void setTimesheetRows(List<TimesheetRowWithProject> timesheetRows) {
 		this.timesheetRows = timesheetRows;
 	}
 	public TimesheetStatus getTimesheetStatus() {
