@@ -38,7 +38,7 @@ public class TimesheetDto {
 	@ApiModelProperty(notes = "<p>Unique identifier of the timesheet status. <br>"
 			+ "Will cause an error if the timesheet status id specified does not belong to an existing timesheet status.</p>", example = "1", position = 6)
 	private Integer timesheetStatusId;
-	
+	 
 	//getters and setters
 	
 	public int getId() {
