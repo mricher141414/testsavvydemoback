@@ -21,7 +21,7 @@ import springfox.documentation.annotations.ApiIgnore;
 public class LoginController {
 	String url = "jdbc:sqlserver://localhost:1433;databaseName=timesheetdb;user=admin;password=Cgi12345*"; //local
 	//TODO refaire les couches pour le login
-	@PostMapping("/login") 
+	@PostMapping("/login")
 	
 	public boolean login(@RequestParam(value="username") String username, @RequestParam(value="password") String password) throws SQLException {
 				boolean boolReturn = false;
