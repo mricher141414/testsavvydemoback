@@ -55,11 +55,11 @@ public class TimesheetRowWithProject {
 		this.timesheetId = timesheetId;
 	}
 
-	public List<TimesheetRowProject> getTimeProjects() {
+	public List<TimesheetRowProject> getTimesheetRowProjects() {
 		return timesheetRowProjects;
 	}
 
-	public void setTimeProjects(List<TimesheetRowProject> timesheetRowProjects) {
+	public void setTimesheetRowProjects(List<TimesheetRowProject> timesheetRowProjects) {
 		this.timesheetRowProjects = timesheetRowProjects;
 	}
 	

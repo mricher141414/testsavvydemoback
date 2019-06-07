@@ -70,7 +70,7 @@ public class TimesheetRowMapper implements ITimesheetRowMapper {
     	rowTimeProject.setDate(rowDto.getDate());
     	rowTimeProject.setTimesheetId(rowDto.getTimesheetId());
     	
-    	rowTimeProject.setTimeProjects(timeProjectService.getByTimesheetRowId(rowDto.getId()));
+    	rowTimeProject.setTimesheetRowProjects(timeProjectService.getByTimesheetRowId(rowDto.getId()));
     	
     	return rowTimeProject;
     }

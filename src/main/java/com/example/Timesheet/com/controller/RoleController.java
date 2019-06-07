@@ -20,6 +20,7 @@ import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.dto.RoleDto;
 import com.example.Timesheet.com.mapper.RoleMapper;
+import com.example.Timesheet.com.model.Department;
 import com.example.Timesheet.com.model.Employee;
 import com.example.Timesheet.com.model.Role;
 import com.example.Timesheet.com.service.EmployeeService;
@@ -49,6 +50,19 @@ public class RoleController {
 
 		return roleService.getAll();
 
+	}
+	
+	@GetMapping("/role/one")
+	@ApiOperation(value = "Returns the role with the specified identifier.", notes = "404 if the role's identifier cannot be found.")
+	public ResponseEntity<?> getOne(@ApiParam(value = "Id of the role to be found.", required = true) @RequestParam(value="id") int id) {
+		
+		Optional<Role> optionalRole = roleService.getById(id);
+		
+		if(optionalRole.isPresent() == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.RoleIdNotFound, "/role/one");
+		}
+		
+		return GlobalFunctions.createOkResponseFromObject(optionalRole.get());
 	}
 	
 	@PostMapping("/role")

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Timesheet.com.dto.EmployeeComplexWithManager;
 import com.example.Timesheet.com.dto.TimesheetComplex;
+import com.example.Timesheet.com.dto.TimesheetComplexWithEmployee;
 import com.example.Timesheet.com.dto.EmployeeComplex;
 import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalMessages;
@@ -28,6 +29,7 @@ import com.example.Timesheet.com.mapper.EmployeeMapper;
 import com.example.Timesheet.com.mapper.TimesheetMapper;
 import com.example.Timesheet.com.mapper.TimesheetRowMapper;
 import com.example.Timesheet.com.model.Employee;
+import com.example.Timesheet.com.model.Project;
 import com.example.Timesheet.com.model.TimesheetRowProject;
 import com.example.Timesheet.com.model.Timesheet;
 import com.example.Timesheet.com.model.TimesheetRow;
@@ -240,6 +242,72 @@ public class TimesheetController {
 		return GlobalFunctions.createOkResponseFromObject(timesheetService.getTimesheetByEmployeeId(id));
 	}
 	
+	@GetMapping("/timesheet/employee/all/detailed")
+	@ApiOperation(value = "Returns a list of all the timesheets of an employee.",  
+					notes = "404 if the employee's identifier cannot be found")
+	public ResponseEntity<?> getAllTimesheetComplexFromEmployee (@ApiParam(value = "Id of the employee to list all timesheets from", required = true) @RequestParam(value = "id") int id) {
+		
+		if (employeeService.getById(id).isPresent() == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdNotFound, "/employeetimesheets");
+		}
+		
+		List<Timesheet> timesheetEmployee = timesheetService.getTimesheetByEmployeeId(id);
+		List<TimesheetComplex> timesheets = new ArrayList<TimesheetComplex>();
+		
+		for(Timesheet timesheet : timesheetEmployee) {
+			
+			TimesheetComplex timesheetComplex = new TimesheetComplex();
+			
+			timesheets.add(timesheetMapper.fromTimesheetToComplex(timesheet, timesheetComplex));
+		}
+		
+		return GlobalFunctions.createOkResponseFromObject(timesheets);
+	}
+	
+	@GetMapping("/timesheet/toverify")
+	@ApiOperation(value = "Returns a list of all the timesheets of the employees managed by someone that are waiting for approuval.",  
+					notes = "404 if the employee's identifier cannot be found")
+	public ResponseEntity<String> getAllTimesheetToApprouve(@ApiParam(value = "Id of the manager to list the timesheets from", required = true) @RequestParam(value = "id") int id) {
+		
+		if(employeeService.employeeExists(id) == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdNotFound, "/timesheet/toverify");
+		}
+		
+		List<Employee> managedEmployees = employeeService.getAllByManagerId(id);
+		
+		List<TimesheetComplexWithEmployee> timesheetToVerify = new ArrayList<TimesheetComplexWithEmployee>();
+		
+		for (Employee employee : managedEmployees) {
+		
+			List<Timesheet> employeeTimesheets = timesheetService.getAwaitingApprovalByEmployeeId(employee.getId());
+			
+			for(Timesheet timesheet : employeeTimesheets) {
+				TimesheetComplexWithEmployee timesheetWithEmployee = new TimesheetComplexWithEmployee(); 
+				timesheetMapper.fromTimesheetToComplex(timesheet, timesheetWithEmployee);
+				
+				TimesheetComplexWithEmployee timesheetComplexWithEmployee = (TimesheetComplexWithEmployee) timesheetWithEmployee;
+				timesheetComplexWithEmployee = timesheetMapper.addEmployeeToTimesheetComplexWiithManager(timesheetComplexWithEmployee, timesheet);
+				
+				timesheetToVerify.add(timesheetComplexWithEmployee);
+			}
+		}
+		
+		return GlobalFunctions.createOkResponseFromObject(timesheetToVerify);
+	}
+	
+	@GetMapping("/timesheet/projects")
+	@ApiOperation(value = "Returns a list of all the projects in the timesheetRowProjects in the timesheet",
+					notes = "404 if the timesheet's identifier cannot be found.")
+	public ResponseEntity<String> getTimesheetProjects (@ApiParam(value = "Id of the timesheet to list the projects from", required = true) @RequestParam(value = "id") int id) {
+		
+		if(timesheetService.timesheetExists(id) == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetIdNotFound, "/timesheet/projects");
+		}
+		
+		List<Project> projects = timesheetService.getAllProjectsOnTimesheet(id);
+		
+		return GlobalFunctions.createOkResponseFromObject(projects);
+	}
 	
 	@PostMapping("/timesheet/create/rows")
 	@ApiOperation(value = "Creates a new timesheet in the system with 7 timesheet rows (one for each day).", 
@@ -294,7 +362,7 @@ public class TimesheetController {
 			
 			row = timesheetRowService.save(row);
 			
-			List<TimesheetRowProject> timeProjects = rowTimeProject.getTimeProjects();
+			List<TimesheetRowProject> timeProjects = rowTimeProject.getTimesheetRowProjects();
 			
 			for(TimesheetRowProject timeProject : timeProjects) {
 				

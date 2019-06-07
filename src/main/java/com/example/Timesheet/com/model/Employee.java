@@ -66,6 +66,10 @@ public class Employee {
 	private Integer version;
 	
 	public void compensateTimezoneOnDates() {
+		if(dateOfBirth == null) {
+			return;
+		}
+		
 		Date dateOfBirth = this.getDateOfBirth();
         
         TimeZone timeZone = TimeZone.getTimeZone(GlobalVars.Timezone);

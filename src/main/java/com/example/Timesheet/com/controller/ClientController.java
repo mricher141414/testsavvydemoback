@@ -25,6 +25,7 @@ import com.example.Timesheet.com.model.Client;
 import com.example.Timesheet.com.model.Employee;
 import com.example.Timesheet.com.model.Project;
 import com.example.Timesheet.com.model.ProjectEmployee;
+import com.example.Timesheet.com.model.TimesheetRow;
 import com.example.Timesheet.com.service.ClientService;
 import com.example.Timesheet.com.service.EmployeeService;
 import com.example.Timesheet.com.service.ProjectEmployeeService;
@@ -58,6 +59,19 @@ public class ClientController {
 	@ApiOperation("Returns a list of all clients in the system.")
 	public List<Client> getAll(){
 		return clientService.getAll();
+	}
+	
+	@GetMapping("/client/one")
+	@ApiOperation(value = "Returns the client with the specified identifier.", notes = "404 if the client's identifier cannot be found.")
+	public ResponseEntity<?> getOne(@ApiParam(value = "Id of the client to be found.", required = true) @RequestParam(value="id") int id) {
+		
+		Optional<Client> optionalClient = clientService.getById(id);
+		
+		if(optionalClient.isPresent() == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ClientIdNotFound, "/client/one");
+		}
+		
+		return GlobalFunctions.createOkResponseFromObject(optionalClient.get());
 	}
 	
 	@PostMapping("/client")

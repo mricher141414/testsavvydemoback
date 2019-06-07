@@ -146,7 +146,8 @@ public class EmployeeMapper implements IEmployeeMapper {
 		List<Timesheet> timesheetsEmployee = timesheetService.getTimesheetByEmployeeIdAndStartDate(employee.getId(), startDate);
 		
 		for (Timesheet timesheet : timesheetsEmployee) {
-			TimesheetComplex timesheetComplex = timesheetMapper.fromTimesheetToComplex(timesheet);
+			TimesheetComplex timesheetComplex = new TimesheetComplex();
+			timesheetMapper.fromTimesheetToComplex(timesheet, timesheetComplex);
 			employee.addToTimesheets(timesheetComplex);
 		}
 	}

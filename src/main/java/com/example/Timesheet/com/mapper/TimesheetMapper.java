@@ -9,11 +9,13 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
 
 import com.example.Timesheet.com.dto.TimesheetComplex;
+import com.example.Timesheet.com.dto.TimesheetComplexWithEmployee;
 import com.example.Timesheet.com.dto.TimesheetDto;
 import com.example.Timesheet.com.dto.TimesheetRowDto;
 import com.example.Timesheet.com.dto.TimesheetRowWithProject;
 import com.example.Timesheet.com.model.Timesheet;
 import com.example.Timesheet.com.model.TimesheetRow;
+import com.example.Timesheet.com.service.EmployeeService;
 import com.example.Timesheet.com.service.TimesheetRowService;
 import com.example.Timesheet.com.service.TimesheetService;
 import com.example.Timesheet.com.service.TimesheetStatusService;
@@ -32,6 +34,9 @@ public class TimesheetMapper implements ITimesheetMapper {
 	
 	@Autowired
 	private TimesheetRowMapper timesheetRowMapper;
+	
+	@Autowired
+	private EmployeeService employeeService;
 	
     @Override
     public Timesheet DTOtoTimesheet(TimesheetDto source, int id) {
@@ -99,9 +104,8 @@ public class TimesheetMapper implements ITimesheetMapper {
         return timesheetDTO;
     }
     
-    public TimesheetComplex fromTimesheetToComplex(Timesheet timesheet) {
+    public TimesheetComplex fromTimesheetToComplex(Timesheet timesheet, TimesheetComplex timesheetComplex) {
 
-		TimesheetComplex timesheetComplex = new TimesheetComplex();
 		List<TimesheetRowWithProject> timesheetRowTimeProjects = new ArrayList<TimesheetRowWithProject>();
 
 		timesheetComplex.setId(timesheet.getId());
@@ -127,6 +131,11 @@ public class TimesheetMapper implements ITimesheetMapper {
 		}
 		return timesheetComplex;
 	}
+    
+    public TimesheetComplexWithEmployee addEmployeeToTimesheetComplexWiithManager(TimesheetComplexWithEmployee timesheetWithEmployee, Timesheet timesheet) {
+    	timesheetWithEmployee.setEmployee(employeeService.getById(timesheet.getEmployeeId()).get());
+    	return timesheetWithEmployee;
+    }
     
     public Timesheet fromComplexToTimesheet(TimesheetComplex timesheetComplex, int employeeId) {
     	Timesheet timesheet = new Timesheet();

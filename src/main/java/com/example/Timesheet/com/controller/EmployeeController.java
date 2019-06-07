@@ -87,7 +87,7 @@ public class EmployeeController {
 		 
 		 if (employeeDto.getDepartmentId() != null) {
 			  if(departementService.getById(employeeDto.getDepartmentId()).isPresent() == false) {
-				  return GlobalFunctions.createNotFoundResponse(GlobalMessages.DepartementIdNotFound, "/employee");
+				  return GlobalFunctions.createNotFoundResponse(GlobalMessages.DepartmentIdNotFound, "/employee");
 			  }
 		  }
 		  
@@ -121,7 +121,7 @@ public class EmployeeController {
 		  
 		  if (employeeDto.getDepartmentId() != null) {
 			  if(departementService.getById(employeeDto.getDepartmentId()).isPresent() == false) {
-				  return GlobalFunctions.createNotFoundResponse(GlobalMessages.DepartementIdNotFound, "/employee");
+				  return GlobalFunctions.createNotFoundResponse(GlobalMessages.DepartmentIdNotFound, "/employee");
 			  }
 		  }
 		  

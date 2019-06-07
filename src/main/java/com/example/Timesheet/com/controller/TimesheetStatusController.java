@@ -19,6 +19,7 @@ import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.dto.TimesheetStatusDto;
 import com.example.Timesheet.com.mapper.TimesheetStatusMapper;
+import com.example.Timesheet.com.model.Department;
 import com.example.Timesheet.com.model.TimesheetStatus;
 import com.example.Timesheet.com.service.TimesheetService;
 import com.example.Timesheet.com.service.TimesheetStatusService;
@@ -47,6 +48,19 @@ public class TimesheetStatusController {
 		
 		return timesheetStatusService.getAll();
 		
+	}
+	
+	@GetMapping("/timesheetStatus/one")
+	@ApiOperation(value = "Returns the timesheetStatus with the specified identifier.", notes = "404 if the status's identifier cannot be found.")
+	public ResponseEntity<?> getOne(@ApiParam(value = "Id of the timesheetStatus to be found.", required = true) @RequestParam(value="id") int id) {
+		
+		Optional<TimesheetStatus> optionalTimesheetStatus = timesheetStatusService.getById(id);
+		
+		if(optionalTimesheetStatus.isPresent() == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetStatusIdNotFound, "/timesheetStatus/one");
+		}
+		
+		return GlobalFunctions.createOkResponseFromObject(optionalTimesheetStatus.get());
 	}
 	
 	@PostMapping("/timesheetStatus")
