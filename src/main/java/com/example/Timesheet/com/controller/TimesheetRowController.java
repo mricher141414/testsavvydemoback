@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalMessages;
+import com.example.Timesheet.com.Paths;
 import com.example.Timesheet.com.dto.TimesheetRowDto;
 import com.example.Timesheet.com.dto.TimesheetRowWithProject;
 import com.example.Timesheet.com.mapper.TimesheetRowMapper;
@@ -50,7 +51,7 @@ public class TimesheetRowController {
 	@Autowired
 	private TimesheetRowProjectService timeProjectService;
 	
-	@GetMapping("/timesheetRow")
+	@GetMapping(Paths.TimesheetRowBasicPath)
 	@ApiOperation("Returns a list of all timesheet rows in the system.")
 	public List<TimesheetRow> getAll(){
 		
@@ -58,14 +59,14 @@ public class TimesheetRowController {
 		
 	}
 	
-	@GetMapping("/timesheetRow/one")
+	@GetMapping(Paths.TimesheetRowGetOne)
 	@ApiOperation(value = "Returns the timesheet row with the specified identifier.", notes = "404 if the row's identifier cannot be found.")
 	public ResponseEntity<?> getOne(@ApiParam(value = "Id of the timesheet row to be found.", required = true, defaultValue = "1") @RequestParam(value="id") int id){
 		
 		Optional<TimesheetRow> optionalRow = timesheetRowService.getById(id);
 		
 		if(optionalRow.isPresent() == false) {
-			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetRowIdNotFound, "/timesheetRow/one");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetRowIdNotFound, Paths.TimesheetRowGetOne);
 		}
 		
 		TimesheetRowDto rowDto = timesheetRowMapper.TimesheetRowToDTO(optionalRow.get());
@@ -74,13 +75,13 @@ public class TimesheetRowController {
 		return GlobalFunctions.createOkResponseFromObject(returnRow);
 	}
 	
-	@PostMapping("/timesheetRow")
+	@PostMapping(Paths.TimesheetRowBasicPath)
 	@ApiOperation(value = "Creates a new timesheet row in the system", notes = "404 if the project id or timesheet id in the body cannot be found.")
 	public ResponseEntity<String> create(@ApiParam(value = "Timesheet row information for the new row to be created.", required = true)@RequestBody TimesheetRowDto timesheetRowDto) {
 		
 		if(timesheetRowDto.getTimesheetId() != null) {
 			if(this.timesheetService.getById(timesheetRowDto.getTimesheetId()).isPresent() == false) {
-				return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetIdNotFound, "/timesheetRow");
+				return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetIdNotFound, Paths.TimesheetRowBasicPath);
 			}
 		}
 		
@@ -92,18 +93,18 @@ public class TimesheetRowController {
 		
 	}
 	
-	@PutMapping("/timesheetRow")
+	@PutMapping(Paths.TimesheetRowBasicPath)
 	@ApiOperation(value = "Updates a timesheet row in the system by their identifier.", notes = "404 if any of the row's identifier in the address, project id or timesheet id specified in the body is not found")
 	public ResponseEntity<String> edit(@ApiParam("Timesheet row information to be modified. There is no need to keep values that will not be modified.") @RequestBody TimesheetRowDto timesheetRowDto,
 										@ApiParam(value = "Id of the timesheet row to be modified. Cannot be null.", required = true) @RequestParam int id) {
 		
 		if(timesheetRowService.getById(id).isPresent() == false) {
-			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetRowIdNotFound, "/timesheetRow");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetRowIdNotFound, Paths.TimesheetRowBasicPath);
 		}
 		
 		if(timesheetRowDto.getTimesheetId() != null) {
 			if(this.timesheetService.getById(timesheetRowDto.getTimesheetId()).isPresent() == false) {
-				return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetIdNotFound, "/timesheetRow");
+				return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetIdNotFound, Paths.TimesheetRowBasicPath);
 			}
 		}
 		
@@ -114,20 +115,20 @@ public class TimesheetRowController {
 		return GlobalFunctions.createOkResponseFromObject(timesheetRow);
 	}
 	
-	@DeleteMapping("/timesheetRow")
+	@DeleteMapping(Paths.TimesheetRowBasicPath)
 	@ApiOperation(value = "Delete a timesheet row in the system by their identifier.", notes = "404 if the row's identifier cannot be found. <br> 400 if the row is still referenced by a timeProject.")
 	public ResponseEntity<String> delete(@ApiParam(value = "Id of the timesheet row to be deleted", required = true) @RequestParam(value="id") int id) {
 		
 		Optional<TimesheetRow> optionalRow = this.timesheetRowService.getById(id);
 		
 		if(optionalRow.isPresent() == false) {
-			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetRowIdNotFound, "/timesheetRow");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetRowIdNotFound, Paths.TimesheetRowBasicPath);
 		}
 		
 		TimesheetRow timesheetRow = optionalRow.get();
 		
 		if(timeProjectService.getByTimesheetRowId(id).size() > 0) {
-			return GlobalFunctions.createBadRequest(GlobalMessages.TimeProjectUsesTimesheetRowCannotDelete, "/timesheetRow");
+			return GlobalFunctions.createBadRequest(GlobalMessages.TimeProjectUsesTimesheetRowCannotDelete, Paths.TimesheetRowBasicPath);
 		}
 		
 		this.timesheetRowService.deleteTimesheetRow(timesheetRow);

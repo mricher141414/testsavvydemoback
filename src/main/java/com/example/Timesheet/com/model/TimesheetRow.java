@@ -70,7 +70,13 @@ public class TimesheetRow {
 	}
 	public void setTimesheetId(Integer timesheetId) {
 		this.timesheetId = timesheetId;
+	}	
+	
+	//getVersion, but with a different name so swagger won't pick it up
+	public Integer fetchVersion() {
+		return this.version;
 	}
+	
 	public void setVersion(int version) {
 		this.version = version;
 	}

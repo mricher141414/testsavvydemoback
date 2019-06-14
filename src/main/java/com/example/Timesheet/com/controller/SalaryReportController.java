@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalMessages;
+import com.example.Timesheet.com.Paths;
 import com.example.Timesheet.com.dto.SalaryReportDto;
 import com.example.Timesheet.com.mapper.SalaryReportMapper;
 import com.example.Timesheet.com.model.SalaryReport;
@@ -37,19 +38,19 @@ public class SalaryReportController {
 	@Autowired
 	private EmployeeService employeeService;
 	
-	@GetMapping("/salaryreport")
+	@GetMapping(Paths.SalaryReportBasicPath)
 	@ApiOperation("Returns a list of all salary reports in the system.")
 	public List<SalaryReport> getAll() {
 		return salaryReportService.getAll();
 	}
 	
-	@PostMapping("/salaryreport")
+	@PostMapping(Paths.SalaryReportBasicPath)
 	@ApiOperation(value = "Creates a new salary report in the system.", notes = "404 if employee id in the body is not null, but the employee it's referencing cannot be found.")
 	public ResponseEntity<String> create(@ApiParam(value = "Salary report information for the new one to be created", required = true)@RequestBody SalaryReportDto salaryReportDto) {
 		
 		if(salaryReportDto.getEmployeeId() != null) {
 			if(employeeService.employeeExists(salaryReportDto.getEmployeeId()) == false) {
-				return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdParameterNotFound, "/salaryreport");
+				return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdParameterNotFound, Paths.SalaryReportBasicPath);
 			}
 		}
 		
@@ -59,7 +60,7 @@ public class SalaryReportController {
 		return GlobalFunctions.createOkResponseFromObject(salaryReport);
 	}
 	
-	@DeleteMapping("/salaryreport/all")
+	@DeleteMapping(Paths.SalaryReportDeleteAll)
 	@ApiOperation(value = "Deletes all salary reports from the system")
 	public void deleteAll() {
 		salaryReportService.deleteAll();

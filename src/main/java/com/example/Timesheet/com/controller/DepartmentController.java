@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalMessages;
+import com.example.Timesheet.com.Paths;
 import com.example.Timesheet.com.dto.DepartmentDto;
 import com.example.Timesheet.com.mapper.DepartementMapper;
 import com.example.Timesheet.com.model.Client;
@@ -42,26 +43,26 @@ public class DepartmentController {
 	@Autowired
 	EmployeeService personService = new EmployeeService();
 	
-	@GetMapping("/department")
+	@GetMapping(Paths.DepartmentBasicPath)
 	@ApiOperation("Returns a list of all departments in the system.")
 	public List<Department> getAll(){
 		return departmentService.getAll();
 	}
 	
-	@GetMapping("/department/one")
+	@GetMapping(Paths.DepartmentGetOne)
 	@ApiOperation(value = "Returns the department with the specified identifier.", notes = "404 if the department's identifier cannot be found.")
 	public ResponseEntity<?> getOne(@ApiParam(value = "Id of the department to be found.", required = true) @RequestParam(value="id") int id) {
 		
 		Optional<Department> optionalDepartment = departmentService.getById(id);
 		
 		if(optionalDepartment.isPresent() == false) {
-			return GlobalFunctions.createNotFoundResponse(GlobalMessages.DepartmentIdNotFound, "/department/one");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.DepartmentIdNotFound, Paths.DepartmentGetOne);
 		}
 		
 		return GlobalFunctions.createOkResponseFromObject(optionalDepartment.get());
 	}
 	
-	@PostMapping("/department")
+	@PostMapping(Paths.DepartmentBasicPath)
 	@ApiOperation("Create a new department in the system.")
 	public ResponseEntity<String> create(@ApiParam(value = "Department information for the new department to be created.", required = true)@RequestBody DepartmentDto departementDto) {
 		Department department = departementMapper.DTOtoDepartement(departementDto, 0);
@@ -71,7 +72,7 @@ public class DepartmentController {
 		return GlobalFunctions.createOkResponseFromObject(department);
 	}
 	
-	@PutMapping("/department")
+	@PutMapping(Paths.DepartmentBasicPath)
 	@ApiOperation(value = "Updates a department in the system by their identifier.", notes = "404 if the department's identifier is not found")
 	public ResponseEntity<?> edit(@ApiParam("department information to be modified")@RequestBody DepartmentDto departementDTO,
 										@ApiParam(value = "Id of the department to be modified. Cannot be null", required = true)@RequestParam(value="id") int id){
@@ -83,12 +84,12 @@ public class DepartmentController {
 				return GlobalFunctions.createOkResponseFromObject(department);
 		}
 		else {
-			return GlobalFunctions.createNotFoundResponse(GlobalMessages.DepartmentIdNotFound, "/department");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.DepartmentIdNotFound, Paths.DepartmentBasicPath);
 		}
 		
 	}
 	
-	@DeleteMapping("/department")
+	@DeleteMapping(Paths.DepartmentBasicPath)
 	@ApiOperation(value = "Deletes a department from the system.", notes = "404 if the department's identifier cannot be found")
 	public ResponseEntity<?> delete(@ApiParam(value = "Id of the department to be deleted. Cannot be null.", required = true)@RequestParam(value="id") int id){
 		
@@ -99,14 +100,14 @@ public class DepartmentController {
 			Department department = optionalDepartment.get();
 			
 			if(this.personService.getAllByDepartementId(id).size() > 0) {
-				return GlobalFunctions.createBadRequest(GlobalMessages.EmployeeUsesDepartementCannotDelete, "/department");
+				return GlobalFunctions.createBadRequest(GlobalMessages.EmployeeUsesDepartementCannotDelete, Paths.DepartmentBasicPath);
 			}
 			
 			this.departmentService.delete(department);
 			return GlobalFunctions.createOkResponseFromObject(department);
 		}
 		else {
-			return GlobalFunctions.createNotFoundResponse(GlobalMessages.DepartmentIdNotFound, "/department");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.DepartmentIdNotFound, Paths.DepartmentBasicPath);
 		}
 	}
 

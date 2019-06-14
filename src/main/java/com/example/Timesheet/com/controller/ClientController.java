@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalMessages;
+import com.example.Timesheet.com.Paths;
 import com.example.Timesheet.com.dto.ClientDto;
 import com.example.Timesheet.com.dto.ClientStatsEmployee;
 import com.example.Timesheet.com.dto.ProjectStatsEmployee;
@@ -55,26 +56,26 @@ public class ClientController {
 	@Autowired
 	private EmployeeService employeeService;
 	
-	@GetMapping("/client")
+	@GetMapping(Paths.ClientBasicPath)
 	@ApiOperation("Returns a list of all clients in the system.")
 	public List<Client> getAll(){
 		return clientService.getAll();
 	}
 	
-	@GetMapping("/client/one")
+	@GetMapping(Paths.ClientGetOne)
 	@ApiOperation(value = "Returns the client with the specified identifier.", notes = "404 if the client's identifier cannot be found.")
 	public ResponseEntity<?> getOne(@ApiParam(value = "Id of the client to be found.", required = true) @RequestParam(value="id") int id) {
 		
 		Optional<Client> optionalClient = clientService.getById(id);
 		
 		if(optionalClient.isPresent() == false) {
-			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ClientIdNotFound, "/client/one");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ClientIdNotFound, Paths.ClientGetOne);
 		}
 		
 		return GlobalFunctions.createOkResponseFromObject(optionalClient.get());
 	}
 	
-	@PostMapping("/client")
+	@PostMapping(Paths.ClientBasicPath)
 	@ApiOperation("Creates a new client in the system.")
 	public ResponseEntity<String> create(@ApiParam(value = "Client information for the new client to be created.", required = true)@RequestBody ClientDto clientDto) {
 		
@@ -85,13 +86,13 @@ public class ClientController {
 		return GlobalFunctions.createOkResponseFromObject(client);
 	}
 	
-	@PutMapping("/client")
+	@PutMapping(Paths.ClientBasicPath)
 	@ApiOperation(value = "Updates a client in the system by their identifier.", notes = "404 if the client's identifier is not found")
 	public ResponseEntity<?> edit(@ApiParam("client information to be modified")@RequestBody ClientDto clientDto,
 										@ApiParam(value = "Id of the client to be modified. Cannot be null", required = true)@RequestParam(value="id") int id){
 		
 		if(clientService.getById(id).isPresent() == false) {
-			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ClientIdNotFound, "/client");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ClientIdNotFound, Paths.ClientBasicPath);
 		}
 		
 		Client client = clientMapper.dtoToClient(clientDto, id);
@@ -101,18 +102,18 @@ public class ClientController {
 		return GlobalFunctions.createOkResponseFromObject(client);
 }
 	
-	@DeleteMapping("/client")
+	@DeleteMapping(Paths.ClientBasicPath)
 	@ApiOperation(value = "Deletes a client from the system.", notes = "404 if the client's identifier cannot be found")
 	public ResponseEntity<?> delete(@ApiParam(value = "Id of the client to be deleted. Cannot be null.", required = true)@RequestParam(value="id") int id){
 		
 		Optional<Client> optionalClient = clientService.getById(id);
 		
 		if(optionalClient.isPresent() == false) {
-			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ClientIdNotFound, "/client");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ClientIdNotFound, Paths.ClientBasicPath);
 		}
 		
 		if(projectService.getByClientId(id).size() > 0) {
-			return GlobalFunctions.createBadRequest(GlobalMessages.ProjectUsesClientCannotDelete, "/client");
+			return GlobalFunctions.createBadRequest(GlobalMessages.ProjectUsesClientCannotDelete, Paths.ClientBasicPath);
 		}
 		
 		Client client = optionalClient.get();
@@ -121,12 +122,12 @@ public class ClientController {
 		return GlobalFunctions.createOkResponseFromObject(client);
 	}
 	
-	@GetMapping("/client/stats/employee")
+	@GetMapping(Paths.ClientGetStatsEmployee)
 	@ApiOperation(value = "Gets the amount of employees working on projects of the client and their average salary of those employees.", notes = "404 if the client's identifier cannot be found.", response = ClientStatsEmployee.class)
-	public ResponseEntity<String> getProjectStats(@ApiParam(value = "Id of the project")@RequestParam(value = "id") int id) {
+	public ResponseEntity<String> getClientEmployeeStats(@ApiParam(value = "Id of the project")@RequestParam(value = "id") int id) {
 		
 		if(clientService.clientExists(id) == false) {
-			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ClientIdNotFound, "/client/stats/employee");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ClientIdNotFound, Paths.ClientGetStatsEmployee);
 		}
 		
 		List<Integer> employeeIds = new ArrayList<Integer>();

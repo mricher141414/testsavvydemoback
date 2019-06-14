@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalMessages;
+import com.example.Timesheet.com.Paths;
 import com.example.Timesheet.com.dto.ProjectEmployeeDto;
 import com.example.Timesheet.com.mapper.ProjectEmployeeMapper;
 import com.example.Timesheet.com.model.ProjectEmployee;
@@ -43,22 +44,22 @@ public class ProjectEmployeeController {
 	@Autowired
 	private EmployeeService employeeService;
 	
-	@GetMapping("/assignation")
+	@GetMapping(Paths.ProjectEmployeeBasicPath)
 	@ApiOperation("Returns a list of all employee-project assignations in the system.")
 	public List<ProjectEmployee> getAll() {
 		return projectEmployeeService.getAll();
 	}
 	
-	@PostMapping("/assignation")
+	@PostMapping(Paths.ProjectEmployeeBasicPath)
 	@ApiOperation(value = "Create a new employee-project assignation in the system.", notes = "404 if either the project's or the employee's identifier cannot be found")
 	public ResponseEntity<String> create(@ApiParam(value = "information about the assignation for it to be created", required = true)@RequestBody ProjectEmployeeDto projectEmployeeDto) {
 		
 		if(projectService.projectExists(projectEmployeeDto.getProjectId()) == false) {
-			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ProjectIdParameterNotFound, "/assignation");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ProjectIdParameterNotFound, Paths.ProjectEmployeeBasicPath);
 		}
 		
 		if(employeeService.employeeExists(projectEmployeeDto.getEmployeeId()) == false) {
-			return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdParameterNotFound, "/assignation");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdParameterNotFound, Paths.ProjectEmployeeBasicPath);
 		}
 		
 		ProjectEmployee projectEmployee = projectEmployeeMapper.DtoToProjectEmployee(projectEmployeeDto, 0);
@@ -73,7 +74,7 @@ public class ProjectEmployeeController {
 		Optional<ProjectEmployee> optionalProjectEmployee = projectEmployeeService.getById(id);
 		
 		if(optionalProjectEmployee.isPresent() == false) {
-			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ProjectEmployeeIdNotFound, "/assignation");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ProjectEmployeeIdNotFound, Paths.ProjectEmployeeBasicPath);
 		}
 		
 		ProjectEmployee projectEmployee = optionalProjectEmployee.get();

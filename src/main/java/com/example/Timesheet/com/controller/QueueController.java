@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalMessages;
+import com.example.Timesheet.com.Paths;
 import com.example.Timesheet.com.dto.TimesheetDto;
 import com.example.Timesheet.com.model.QueueItem;
 import com.example.Timesheet.com.service.QueueService;
@@ -33,18 +34,18 @@ public class QueueController {
 	@Autowired
 	private TimesheetService timesheetService;
 	
-	@GetMapping("/queue")
+	@GetMapping(Paths.QueueBasicPath)
 	@ApiOperation("Returns a list of all the items in the queue")
 	public List<QueueItem> getAll() {
 		return queueService.getAll();
 	}
 	
-	@PostMapping("/queue")
+	@PostMapping(Paths.QueueBasicPath)
 	@ApiOperation("Create an entry in the queue based on the timesheet received in body")
 	public ResponseEntity<String> create(@ApiParam(value = "Timesheet to add to the queue.", required = true)@RequestBody TimesheetDto timesheetDto) {
 		
 		if(timesheetService.timesheetExists(timesheetDto.getId()) == false) {
-			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetIdNotFound, "/queue");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetIdNotFound, Paths.QueueBasicPath);
 		}
 		
 		QueueItem queueItem = new QueueItem();
@@ -55,7 +56,7 @@ public class QueueController {
 		return GlobalFunctions.createOkResponseFromObject(timesheetDto);
 	}
 	
-	@GetMapping("/bat")
+	@GetMapping(Paths.ApiCallToBatFile)
 	public boolean callBat() {
 		try {
 			Runtime.getRuntime().exec("cmd /c start \"\" Calculation.bat");

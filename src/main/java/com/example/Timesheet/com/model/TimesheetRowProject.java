@@ -64,6 +64,11 @@ public class TimesheetRowProject {
 		this.timesheetRowId = timesheetRowId;
 	}
 	
+	//getVersion, but with a different name so swagger won't pick it up
+	public Integer fetchVersion() {
+		return this.version;
+	}
+	
 	public void setVersion(int version) {
 		this.version = version;
 	}

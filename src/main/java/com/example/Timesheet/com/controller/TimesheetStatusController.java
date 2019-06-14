@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalMessages;
+import com.example.Timesheet.com.Paths;
 import com.example.Timesheet.com.dto.TimesheetStatusDto;
 import com.example.Timesheet.com.mapper.TimesheetStatusMapper;
 import com.example.Timesheet.com.model.Department;
@@ -42,7 +43,7 @@ public class TimesheetStatusController {
 	@Autowired
 	private TimesheetService timesheetService = new TimesheetService();
 	
-	@GetMapping("/timesheetStatus")
+	@GetMapping(Paths.TimesheetStatusBasicPath)
 	@ApiOperation("Returns a list of all timesheet statuses in the system.")
 	public List<TimesheetStatus> getAll(){
 		
@@ -50,20 +51,20 @@ public class TimesheetStatusController {
 		
 	}
 	
-	@GetMapping("/timesheetStatus/one")
+	@GetMapping(Paths.TimesheetStatusGetOne)
 	@ApiOperation(value = "Returns the timesheetStatus with the specified identifier.", notes = "404 if the status's identifier cannot be found.")
 	public ResponseEntity<?> getOne(@ApiParam(value = "Id of the timesheetStatus to be found.", required = true) @RequestParam(value="id") int id) {
 		
 		Optional<TimesheetStatus> optionalTimesheetStatus = timesheetStatusService.getById(id);
 		
 		if(optionalTimesheetStatus.isPresent() == false) {
-			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetStatusIdNotFound, "/timesheetStatus/one");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetStatusIdNotFound, Paths.TimesheetStatusGetOne);
 		}
 		
 		return GlobalFunctions.createOkResponseFromObject(optionalTimesheetStatus.get());
 	}
 	
-	@PostMapping("/timesheetStatus")
+	@PostMapping(Paths.TimesheetStatusBasicPath)
 	@ApiOperation("Creates a new timesheet status in the system")
 	public ResponseEntity<String> create(@ApiParam(value = "Timesheet status information for the new status to be created", required = true)@RequestBody TimesheetStatusDto timesheetStatusDto) {
 		
@@ -74,13 +75,13 @@ public class TimesheetStatusController {
 		return GlobalFunctions.createOkResponseFromObject(timesheetStatus);
 	}
 	
-	@PutMapping("/timesheetStatus")
+	@PutMapping(Paths.TimesheetStatusBasicPath)
 	@ApiOperation(value = "Updates a timesheet status in the system by their identifier.", notes = "404 if the status's identifier cannot be found.")
 	public ResponseEntity<String> edit(@ApiParam(value = "Timesheet status information to be modified. There is no need to keep values that will not be modified.")@RequestBody TimesheetStatusDto timesheetStatusDto,
 										@ApiParam(value = "Id of the timesheet status to be modified. Cannot be null.", required = true) @RequestParam int id) {
 		
 		if(timesheetStatusService.getById(id).isPresent() == false) {
-			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetStatusIdNotFound, "/timesheetStatus");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetStatusIdNotFound, Paths.TimesheetStatusBasicPath);
 		}
 		
 		TimesheetStatus timesheetStatus = timesheetStatusMapper.DTOtoTimesheetStatus(timesheetStatusDto, id);
@@ -90,20 +91,20 @@ public class TimesheetStatusController {
 		return GlobalFunctions.createOkResponseFromObject(timesheetStatus);
 	}
 	
-	@DeleteMapping("/timesheetStatus")
+	@DeleteMapping(Paths.TimesheetStatusBasicPath)
 	@ApiOperation(value = "Delets a timesheet status in the system by their identifier.", notes = "404 of the status's identifier cannot be found. 400 if timesheets still use the status.")
 	public ResponseEntity<String> delete(@ApiParam(value = "Id of the timesheet status to be deleted. Cannot be null.", required = true) @RequestParam int id) {
 		
 		Optional<TimesheetStatus> optionalStatus = timesheetStatusService.getById(id);
 		
 		if (optionalStatus.isPresent() == false) {
-			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetStatusIdNotFound, "/timesheetStatus");
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetStatusIdNotFound, Paths.TimesheetStatusBasicPath);
 		}
 		
 		TimesheetStatus timesheetStatus = optionalStatus.get();
 		
 		if(timesheetService.getByTimesheetStatusId(id).size() > 0) {
-			return GlobalFunctions.createBadRequest(GlobalMessages.TimesheetUsesTimesheetStatusCannotDelete, "/timesheetStatus");
+			return GlobalFunctions.createBadRequest(GlobalMessages.TimesheetUsesTimesheetStatusCannotDelete, Paths.TimesheetStatusBasicPath);
 		}
 		
 		timesheetStatusService.delete(timesheetStatus);
