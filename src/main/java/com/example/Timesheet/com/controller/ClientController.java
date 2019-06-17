@@ -1,9 +1,12 @@
 package com.example.Timesheet.com.controller;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -39,7 +42,10 @@ import io.swagger.annotations.ApiParam;
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @Api(tags = "ClientController")
-public class ClientController {
+public class ClientController implements Serializable {
+
+	private static final long serialVersionUID = -1393042468260877317L;
+	private static final Logger log = LogManager.getLogger("ClientController log");
 
 	@Autowired
 	private ClientService clientService = new ClientService();
@@ -59,12 +65,15 @@ public class ClientController {
 	@GetMapping(Paths.ClientBasicPath)
 	@ApiOperation("Returns a list of all clients in the system.")
 	public List<Client> getAll(){
+		log.debug("Entering getAll()");
 		return clientService.getAll();
 	}
 	
 	@GetMapping(Paths.ClientGetOne)
 	@ApiOperation(value = "Returns the client with the specified identifier.", notes = "404 if the client's identifier cannot be found.")
 	public ResponseEntity<?> getOne(@ApiParam(value = "Id of the client to be found.", required = true) @RequestParam(value="id") int id) {
+		
+		log.debug("Entering getOne with id parameter of value" + id);
 		
 		Optional<Client> optionalClient = clientService.getById(id);
 		
