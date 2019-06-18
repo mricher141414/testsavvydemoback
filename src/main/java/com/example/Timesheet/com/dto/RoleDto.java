@@ -1,11 +1,15 @@
 package com.example.Timesheet.com.dto;
 
+import java.io.Serializable;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(description = "<p>Class sent by the user to modify an existing role.</p>")
-public class RoleDto {
+public class RoleDto implements Serializable {
 	
+	private static final long serialVersionUID = 5243296473367011238L;
+
 	@ApiModelProperty(notes = "<p>Unique identifier of the role. No two roles can have the same id. <br>"
 			+ "The id is not required, but it is part of the object to facilitate a copy and paste from an existing object.</p>", example = "1", position = 0)
 	private int id;

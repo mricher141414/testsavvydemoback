@@ -1,7 +1,10 @@
 package com.example.Timesheet.com.mapper;
 
+import java.io.Serializable;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,14 +13,19 @@ import com.example.Timesheet.com.model.TimesheetStatus;
 import com.example.Timesheet.com.service.TimesheetStatusService;
 
 @Component
-public class TimesheetStatusMapper implements ITimesheetStatusMapper {
+public class TimesheetStatusMapper implements ITimesheetStatusMapper, Serializable {
+
+	private static final long serialVersionUID = 7560521620023703172L;
+	private static final Logger log = LogManager.getLogger(TimesheetStatusMapper.class);
 	
 	@Autowired
 	private TimesheetStatusService timesheetStatusService;
 	
 	@Override
-    public TimesheetStatus DTOtoTimesheetStatus(TimesheetStatusDto source, int id) {
-        if ( source == null ) {
+    public TimesheetStatus dtoToTimesheetStatus(TimesheetStatusDto source, int id) {
+		log.debug("Entering dtoToTimesheetStatus with id parameter of " + id);
+		
+		if ( source == null ) {
             return null;
         }
 
@@ -39,8 +47,10 @@ public class TimesheetStatusMapper implements ITimesheetStatusMapper {
     }
 
     @Override
-    public TimesheetStatusDto TimesheetStatusToDTO(TimesheetStatus destination) {
-        if ( destination == null ) {
+    public TimesheetStatusDto timesheetStatusToDto(TimesheetStatus destination) {
+    	log.debug("Entering timesheetStatusToDto");
+    	
+    	if ( destination == null ) {
             return null;
         }
 

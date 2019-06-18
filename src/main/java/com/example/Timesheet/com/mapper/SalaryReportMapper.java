@@ -1,7 +1,10 @@
 package com.example.Timesheet.com.mapper;
 
+import java.io.Serializable;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,13 +13,18 @@ import com.example.Timesheet.com.model.SalaryReport;
 import com.example.Timesheet.com.service.SalaryReportService;
 
 @Component
-public class SalaryReportMapper implements ISalaryReportMapper {
+public class SalaryReportMapper implements ISalaryReportMapper, Serializable {
 
+	private static final long serialVersionUID = 6160108558823109697L;
+	private static final Logger log = LogManager.getLogger(SalaryReportMapper.class);
+	
 	@Autowired
 	private SalaryReportService salaryReportService;
 	
 	@Override
 	public SalaryReport dtoToSalaryReport(SalaryReportDto source, int id) {
+		log.debug("Entering dtoToSalaryReport with id parameter of " + id);
+		
 		if(source == null) {
 			return null;
 		}
@@ -45,7 +53,9 @@ public class SalaryReportMapper implements ISalaryReportMapper {
 	}
 
 	@Override
-	public SalaryReportDto SalaryReportToDto(SalaryReport destination) {
+	public SalaryReportDto salaryReportToDto(SalaryReport destination) {
+		log.debug("Entering salaryReportToDto");
+		
 		if(destination == null) {
 			return null;
 		}

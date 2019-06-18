@@ -1,10 +1,14 @@
 package com.example.Timesheet.com.dto;
 
+import java.io.Serializable;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(description = "<p>Class received by the user by the endpoint project/stats/employee</p>")
-public class ProjectStatsEmployee {
+public class ProjectStatsEmployee implements Serializable {
+
+	private static final long serialVersionUID = -4937664584232631572L;
 
 	@ApiModelProperty(notes = "<p>Name of the project.</p>", example = "Abénaquis", position = 0)
 	private String name;

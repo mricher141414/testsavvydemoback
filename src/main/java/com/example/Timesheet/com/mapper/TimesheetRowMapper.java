@@ -1,7 +1,10 @@
 package com.example.Timesheet.com.mapper;
 
+import java.io.Serializable;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,17 +15,22 @@ import com.example.Timesheet.com.service.TimesheetRowProjectService;
 import com.example.Timesheet.com.service.TimesheetRowService;
 
 @Component
-public class TimesheetRowMapper implements ITimesheetRowMapper {
+public class TimesheetRowMapper implements ITimesheetRowMapper, Serializable {
 
-    @Autowired
+	private static final long serialVersionUID = -8868832302221973805L;
+	private static final Logger log = LogManager.getLogger(TimesheetRowMapper.class);
+
+	@Autowired
     private TimesheetRowService timesheetRowService;
     
     @Autowired
     private TimesheetRowProjectService timeProjectService;
 	
 	@Override
-    public TimesheetRow DTOtoTimesheetRow(TimesheetRowDto source, int id) {
-        if ( source == null ) {
+    public TimesheetRow dtoToTimesheetRow(TimesheetRowDto source, int id) {
+		log.debug("Entering dtoToTimesheetRow with id parameter of " + id);
+		
+		if ( source == null ) {
             return null;
         }
 
@@ -48,8 +56,10 @@ public class TimesheetRowMapper implements ITimesheetRowMapper {
     }
 
     @Override
-    public TimesheetRowDto TimesheetRowToDTO(TimesheetRow destination) {
-        if ( destination == null ) {
+    public TimesheetRowDto timesheetRowToDto(TimesheetRow destination) {
+    	log.debug("Entering timesheetRowToDto");
+    	
+    	if ( destination == null ) {
             return null;
         }
 
@@ -62,7 +72,8 @@ public class TimesheetRowMapper implements ITimesheetRowMapper {
         return timesheetRowDTO;
     }
 
-    public TimesheetRowWithProject rowDtoToRowTimeProject(TimesheetRowDto rowDto) {
+    public TimesheetRowWithProject rowDtoToRowWithProject(TimesheetRowDto rowDto) {
+    	log.debug("Entering rowDtoToRowWithProject");
     	
     	TimesheetRowWithProject rowTimeProject = new TimesheetRowWithProject();
     	
@@ -75,7 +86,8 @@ public class TimesheetRowMapper implements ITimesheetRowMapper {
     	return rowTimeProject;
     }
     
-    public TimesheetRow timesheetRowTimeProjectToTimesheetRow(TimesheetRowWithProject rowTimeProject) {
+    public TimesheetRow timesheetRowWithProjectToTimesheetRow(TimesheetRowWithProject rowTimeProject) {
+    	log.debug("Entering timesheetRowWithProjectToTimesheetRow");
     	
     	TimesheetRow row = new TimesheetRow();
     	

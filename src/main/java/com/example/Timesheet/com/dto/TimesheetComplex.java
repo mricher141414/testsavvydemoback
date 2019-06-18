@@ -1,10 +1,9 @@
 package com.example.Timesheet.com.dto;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
 
-import com.example.Timesheet.com.model.Employee;
-import com.example.Timesheet.com.model.TimesheetRow;
 import com.example.Timesheet.com.model.TimesheetStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -12,8 +11,10 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(description = "<p>Class used by PersonComplex. Is a more detailed version of the Timesheet model.</p>")
-public class TimesheetComplex {
+public class TimesheetComplex implements Serializable {
 	
+	private static final long serialVersionUID = 3160899944356843605L;
+
 	@ApiModelProperty(notes = "<p>Unique identifier of the timesheet. No two timesheets can have the same id.</p>", example = "1", position = 0)
 	private int id;
 	

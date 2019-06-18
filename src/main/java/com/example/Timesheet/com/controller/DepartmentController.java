@@ -1,10 +1,12 @@
 package com.example.Timesheet.com.controller;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,10 +21,9 @@ import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.Paths;
 import com.example.Timesheet.com.dto.DepartmentDto;
-import com.example.Timesheet.com.mapper.DepartementMapper;
-import com.example.Timesheet.com.model.Client;
+import com.example.Timesheet.com.mapper.DepartmentMapper;
 import com.example.Timesheet.com.model.Department;
-import com.example.Timesheet.com.service.DepartementService;
+import com.example.Timesheet.com.service.DepartmentService;
 import com.example.Timesheet.com.service.EmployeeService;
 
 import io.swagger.annotations.Api;
@@ -32,13 +33,16 @@ import io.swagger.annotations.ApiParam;
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @Api(tags = "DepartmentController")
-public class DepartmentController {
+public class DepartmentController implements Serializable {
+	
+	private static final long serialVersionUID = -5630346546935719604L;
+	private static final Logger log = LogManager.getLogger(DepartmentController.class);
+
+	@Autowired
+	DepartmentService departmentService = new DepartmentService();
 	
 	@Autowired
-	DepartementService departmentService = new DepartementService();
-	
-	@Autowired
-	DepartementMapper departementMapper = new DepartementMapper();
+	DepartmentMapper departementMapper = new DepartmentMapper();
 	
 	@Autowired
 	EmployeeService personService = new EmployeeService();
@@ -46,12 +50,14 @@ public class DepartmentController {
 	@GetMapping(Paths.DepartmentBasicPath)
 	@ApiOperation("Returns a list of all departments in the system.")
 	public List<Department> getAll(){
+		log.debug("Entering getAll");
 		return departmentService.getAll();
 	}
 	
 	@GetMapping(Paths.DepartmentGetOne)
 	@ApiOperation(value = "Returns the department with the specified identifier.", notes = "404 if the department's identifier cannot be found.")
 	public ResponseEntity<?> getOne(@ApiParam(value = "Id of the department to be found.", required = true) @RequestParam(value="id") int id) {
+		log.debug("Entering getOne with id parameter of " + id);
 		
 		Optional<Department> optionalDepartment = departmentService.getById(id);
 		
@@ -65,7 +71,9 @@ public class DepartmentController {
 	@PostMapping(Paths.DepartmentBasicPath)
 	@ApiOperation("Create a new department in the system.")
 	public ResponseEntity<String> create(@ApiParam(value = "Department information for the new department to be created.", required = true)@RequestBody DepartmentDto departementDto) {
-		Department department = departementMapper.DTOtoDepartement(departementDto, 0);
+		log.debug("Entering create");
+		
+		Department department = departementMapper.dtoToDepartment(departementDto, 0);
 		
 		department = departmentService.save(department);
 		
@@ -76,10 +84,11 @@ public class DepartmentController {
 	@ApiOperation(value = "Updates a department in the system by their identifier.", notes = "404 if the department's identifier is not found")
 	public ResponseEntity<?> edit(@ApiParam("department information to be modified")@RequestBody DepartmentDto departementDTO,
 										@ApiParam(value = "Id of the department to be modified. Cannot be null", required = true)@RequestParam(value="id") int id){
+		log.debug("Entering edit with id parameter of " + id);
 		
 		if(this.departmentService.getById(id).isPresent()) {
 		
-				Department department = departementMapper.DTOtoDepartement(departementDTO, id);
+				Department department = departementMapper.dtoToDepartment(departementDTO, id);
 				departmentService.save(department);
 				return GlobalFunctions.createOkResponseFromObject(department);
 		}
@@ -92,6 +101,7 @@ public class DepartmentController {
 	@DeleteMapping(Paths.DepartmentBasicPath)
 	@ApiOperation(value = "Deletes a department from the system.", notes = "404 if the department's identifier cannot be found")
 	public ResponseEntity<?> delete(@ApiParam(value = "Id of the department to be deleted. Cannot be null.", required = true)@RequestParam(value="id") int id){
+		log.debug("Entering delete with id parameter of " + id);
 		
 		Optional<Department> optionalDepartment = this.departmentService.getById(id);
 		
@@ -99,7 +109,7 @@ public class DepartmentController {
 		
 			Department department = optionalDepartment.get();
 			
-			if(this.personService.getAllByDepartementId(id).size() > 0) {
+			if(this.personService.getByDepartementId(id).size() > 0) {
 				return GlobalFunctions.createBadRequest(GlobalMessages.EmployeeUsesDepartementCannotDelete, Paths.DepartmentBasicPath);
 			}
 			

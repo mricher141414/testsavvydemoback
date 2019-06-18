@@ -1,13 +1,16 @@
 package com.example.Timesheet.com.service;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalVars;
@@ -18,7 +21,10 @@ import com.example.Timesheet.com.model.TimesheetRow;
 import com.example.Timesheet.com.model.TimesheetRowProject;
 
 @Service
-public class TimesheetService {
+public class TimesheetService implements Serializable {
+
+	private static final long serialVersionUID = 315770201263719197L;
+	private static final Logger log = LogManager.getLogger(TimesheetService.class);
 
 	@Autowired
 	private ITimesheetDao timesheetDao;
@@ -36,6 +42,8 @@ public class TimesheetService {
 	private ProjectService projectService;
 
 	public Timesheet save(Timesheet timesheet) {
+		Assert.notNull(timesheet, "Parameter timesheet must not be null");
+		log.debug("Entering save");
 		
 		if(timesheetDao.existsById(timesheet.getId()) == false) {
 			timesheet.setVersion(0);
@@ -45,45 +53,54 @@ public class TimesheetService {
 	}
 
 	public List<Timesheet> getAll() {
+		log.debug("Entering getAll");
 		return (List<Timesheet>) this.timesheetDao.findAll();
 	}
 
 	public Optional<Timesheet> getById(int id) {
+		log.debug("Entering getById with id parameter of " + id);
 		return this.timesheetDao.findById(id);
 	}
 	
 	public List<Timesheet> getAwaitingApprovalByEmployeeId(int employeeId) {
-		
+		log.debug("Entering getAwaitingApprovalByEmployeeId with employeeId parameter of " + employeeId);
 		return timesheetDao.findByEmployeeIdAndTimesheetStatusId(employeeId, GlobalVars.TimesheetStatusIdForWaitingApproval);
 	}
 	
 	public void delete(Timesheet timesheet) {
+		Assert.notNull(timesheet, "Parameter timesheet must not be null");
+		log.debug("Entering delete");
 		
 		queueService.deleteByTimesheetId(timesheet.getId());
 		timesheetDao.delete(timesheet);
 	}
 	
-	public List<Timesheet> getTimesheetByEmployeeId(int id) {
-
+	public List<Timesheet> getByEmployeeId(int id) {
+		log.debug("Entering getByEmployeeId with id parameter of " + id);
 		return this.timesheetDao.findByEmployeeId(id);
 
 	}
 
-	public List<Timesheet> getTimesheetByEmployeeIdAndStartDate(int id, Date startDate) {
-
+	public List<Timesheet> getByEmployeeIdAndStartDate(int id, Date startDate) {
+		Assert.notNull(startDate, "Parameter startDate must not be null");
+		log.debug("Entering getByEmployeeIdAndStartDate");
+		
 		return this.timesheetDao.findByEmployeeIdAndStartDate(id, startDate);
 
 	}
 
 	public List<Timesheet> getByTimesheetStatusId(int id) {
+		log.debug("Entering getByTimesheetStatusId with id parameter of " + id);
 		return timesheetDao.findByTimesheetStatusId(id);
 	}
 	
 	public boolean timesheetExists(int id) {
+		log.debug("Entering timesheetExists with id parameter of " + id);
 		return timesheetDao.existsById(id);
 	}
 	
-	public List<Project> getAllProjectsOnTimesheet(int id) {
+	public List<Project> getProjectsOnTimesheet(int id) {
+		log.debug("Entering getProjectOnTimesheet with id parameter of " + id);
 		
 		List<TimesheetRow> rows = timesheetRowService.getByTimesheetId(id);
 		List<Integer> projectIds = new ArrayList<Integer>();
@@ -110,7 +127,10 @@ public class TimesheetService {
 		return projects;
 	}
 	
-	public Timesheet createTimesheetFromDateAndEmployeeId(int employeeId, Date userDate) {
+	public Timesheet createFromDateAndEmployeeId(int employeeId, Date userDate) {
+		Assert.notNull(userDate, "Parameter userDate must not be null");
+		log.debug("Entering createFromDateAndEmployeeId");
+		
 		Timesheet timesheet = new Timesheet();
 		Date startDate = new Date(0L);
 		Date endDate = new Date(0L);

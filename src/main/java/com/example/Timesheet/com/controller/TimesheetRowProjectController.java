@@ -1,8 +1,11 @@
 package com.example.Timesheet.com.controller;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -31,7 +34,10 @@ import io.swagger.annotations.ApiParam;
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @Api(tags = "TimesheetRowProjectController")
-public class TimesheetRowProjectController {
+public class TimesheetRowProjectController implements Serializable {
+
+	private static final long serialVersionUID = 4971158221323338282L;
+	private static final Logger log = LogManager.getLogger(TimesheetRowProjectController.class);
 
 	@Autowired
 	private TimesheetRowProjectService timesheetRowProjectService;
@@ -49,12 +55,14 @@ public class TimesheetRowProjectController {
 	@GetMapping(Paths.TimesheetRowProjectBasicPath)
 	@ApiOperation("Returns a list of all timesheetRowProjects in the system.")
 	public List<TimesheetRowProject> getAll(){
+		log.debug("Entering getAll");
 		return timesheetRowProjectService.getAll();
 	}
 	
 	@PostMapping(Paths.TimesheetRowProjectBasicPath)
 	@ApiOperation(value = "Creates a new timesheetRowProject in the system.", notes = "404 if a projectId or timesheetRowId is provided and the entity it is referring to cannot be found.")
 	public ResponseEntity<String> create(@ApiParam(value = "TimesheetRowProject information for the new timesheetRowProject to be created.", required = true)@RequestBody TimesheetRowProjectDto timesheetRowProjectDto) {
+		log.debug("Entering create");
 		
 		if(timesheetRowProjectDto.getProjectId() != null) {
 			if(projectService.getById(timesheetRowProjectDto.getProjectId()).isPresent() == false) {
@@ -77,6 +85,7 @@ public class TimesheetRowProjectController {
 	@ApiOperation(value = "Updates a timesheetRowProject in the system by their identifier.", notes = "404 if the timesheetRowProject's identifier, or the provided projectId or timesheetRowId cannot be found")
 	public ResponseEntity<?> edit(@ApiParam("timesheetRowProject information to be modified")@RequestBody TimesheetRowProjectDto timesheetRowProjectDto,
 										@ApiParam(value = "Id of the timesheetRowProject to be modified. Cannot be null", required = true)@RequestParam(value="id") int id) {
+		log.debug("Entering edit with id parameter of " + id);
 		
 		if(timesheetRowProjectService.getById(id).isPresent() == false) {
 			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetRowProjectIdNotFound, Paths.TimesheetRowProjectBasicPath);
@@ -102,7 +111,8 @@ public class TimesheetRowProjectController {
 	@DeleteMapping(Paths.TimesheetRowProjectBasicPath)
 	@ApiOperation(value = "Deletes a timesheetRowProject from the system.", notes = "404 if the timeshhetRowProject's identifier cannot be found")
 	public ResponseEntity<?> delete(@ApiParam(value = "Id of the timesheetRowProject to be deleted. Cannot be null.", required = true)@RequestParam(value="id") int id) {
-
+		log.debug("Entering delete with id parameter of " + id);
+		
 		Optional<TimesheetRowProject> optionalTimesheetRowProject = timesheetRowProjectService.getById(id);
 		
 		if(optionalTimesheetRowProject.isPresent() == false) {

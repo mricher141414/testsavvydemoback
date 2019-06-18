@@ -1,5 +1,6 @@
 package com.example.Timesheet.com.dto;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +14,10 @@ import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(description = "<p>Class received by the user by the endpoint timesheet/manager. Is a more detailed version of the Employee model.</p>"
 			)
-public class EmployeeComplex {
+public class EmployeeComplex implements Serializable {
 	
+	private static final long serialVersionUID = -519983020682074327L;
+
 	@ApiModelProperty(notes = "<p>Unique identifier of the employee. No two employees can have the same id.</p>", example = "1", position = 0)
 	protected int id;
 	

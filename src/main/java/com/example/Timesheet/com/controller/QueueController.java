@@ -1,8 +1,11 @@
 package com.example.Timesheet.com.controller;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -26,7 +29,10 @@ import io.swagger.annotations.ApiParam;
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @Api(tags = "QueueController")
-public class QueueController {
+public class QueueController implements Serializable {
+
+	private static final long serialVersionUID = 434988359096145233L;
+	private static final Logger log = LogManager.getLogger(QueueController.class);
 
 	@Autowired
 	private QueueService queueService;
@@ -37,12 +43,14 @@ public class QueueController {
 	@GetMapping(Paths.QueueBasicPath)
 	@ApiOperation("Returns a list of all the items in the queue")
 	public List<QueueItem> getAll() {
+		log.debug("Entering getAll");
 		return queueService.getAll();
 	}
 	
 	@PostMapping(Paths.QueueBasicPath)
 	@ApiOperation("Create an entry in the queue based on the timesheet received in body")
 	public ResponseEntity<String> create(@ApiParam(value = "Timesheet to add to the queue.", required = true)@RequestBody TimesheetDto timesheetDto) {
+		log.debug("Entering create");
 		
 		if(timesheetService.timesheetExists(timesheetDto.getId()) == false) {
 			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetIdNotFound, Paths.QueueBasicPath);
@@ -58,6 +66,8 @@ public class QueueController {
 	
 	@GetMapping(Paths.ApiCallToBatFile)
 	public boolean callBat() {
+		log.debug("Entering callBat");	
+		
 		try {
 			Runtime.getRuntime().exec("cmd /c start \"\" Calculation.bat");
 		} catch (IOException e) {

@@ -1,5 +1,7 @@
 package com.example.Timesheet.com.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,8 +15,10 @@ import io.swagger.annotations.ApiModelProperty;
 @Entity
 @Table(name = "Client")
 @ApiModel(description = "<p>Class representing a client tracked by the application.</p>")
-public class Client {
+public class Client implements Serializable {
 	
+	private static final long serialVersionUID = -8221194631656856476L;
+
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	@ApiModelProperty(notes = "<p>Unique identifier of the client. No two clients can have the same id.</p>", example = "1", position = 0)
 	private int id;
@@ -60,5 +64,4 @@ public class Client {
 	public void setVersion(Integer version) {
 		this.version = version;
 	}
-	
 }

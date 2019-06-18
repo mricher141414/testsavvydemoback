@@ -5,7 +5,7 @@ import com.example.Timesheet.com.model.ProjectEmployee;
 
 public interface IProjectEmployeeMapper {
 
-	ProjectEmployee DtoToProjectEmployee(ProjectEmployeeDto source, int id);
+	ProjectEmployee dtoToProjectEmployee(ProjectEmployeeDto source, int id);
 
 	ProjectEmployeeDto ProjectEmployeeToDto(ProjectEmployee destination);
 	

@@ -1,5 +1,7 @@
 package com.example.Timesheet.com.dto;
 
+import java.io.Serializable;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -8,8 +10,10 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(description = "<p>Class sent by the user to create a new salary report.</p>")
-public class SalaryReportDto {
+public class SalaryReportDto implements Serializable {
 	
+	private static final long serialVersionUID = -3691327450963614788L;
+
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	@ApiModelProperty(notes = "<p>Unique identifier of the client. No two clients can have the same id.</p>", example = "1", position = 0)
 	private int id;

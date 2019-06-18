@@ -1,28 +1,32 @@
 package com.example.Timesheet.com.mapper;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.TimeZone;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.dto.EmployeeComplex;
 import com.example.Timesheet.com.dto.EmployeeComplexWithManager;
 import com.example.Timesheet.com.dto.EmployeeDto;
 import com.example.Timesheet.com.dto.TimesheetComplex;
 import com.example.Timesheet.com.model.Employee;
 import com.example.Timesheet.com.model.Timesheet;
-import com.example.Timesheet.com.service.DepartementService;
+import com.example.Timesheet.com.service.DepartmentService;
 import com.example.Timesheet.com.service.EmployeeService;
 import com.example.Timesheet.com.service.RoleService;
 import com.example.Timesheet.com.service.TimesheetService;
 
 @Component
-public class EmployeeMapper implements IEmployeeMapper {
+public class EmployeeMapper implements IEmployeeMapper, Serializable {
 	
+	private static final long serialVersionUID = -1499901430978397355L;
+	private static final Logger log = LogManager.getLogger(EmployeeMapper.class);
+
 	@Autowired
 	private EmployeeService employeeService;
 	
@@ -30,7 +34,7 @@ public class EmployeeMapper implements IEmployeeMapper {
 	private RoleService roleService;
 	
 	@Autowired
-	private DepartementService departementService;
+	private DepartmentService departementService;
 	
 	@Autowired
 	private TimesheetMapper timesheetMapper;
@@ -40,7 +44,9 @@ public class EmployeeMapper implements IEmployeeMapper {
 	
 	@Override
     public Employee dtoToEmployee(EmployeeDto source, int id) {
-        if ( source == null ) {
+		log.debug("Entering dtoToEmployee with id parameter of " + id);
+		
+		if ( source == null ) {
             return null;
         }
 
@@ -101,7 +107,9 @@ public class EmployeeMapper implements IEmployeeMapper {
 
     @Override
     public EmployeeDto employeeToDto(Employee destination) {
-        if ( destination == null ) {
+    	log.debug("Entering employeeToDto");
+    	
+    	if ( destination == null ) {
             return null;
         }
 
@@ -143,7 +151,7 @@ public class EmployeeMapper implements IEmployeeMapper {
 	}
 	
 	public void addTimesheetsToEmployeeComplexByStartDate(EmployeeComplex employee, Date startDate) {
-		List<Timesheet> timesheetsEmployee = timesheetService.getTimesheetByEmployeeIdAndStartDate(employee.getId(), startDate);
+		List<Timesheet> timesheetsEmployee = timesheetService.getByEmployeeIdAndStartDate(employee.getId(), startDate);
 		
 		for (Timesheet timesheet : timesheetsEmployee) {
 			TimesheetComplex timesheetComplex = new TimesheetComplex();

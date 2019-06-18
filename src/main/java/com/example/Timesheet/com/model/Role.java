@@ -1,6 +1,7 @@
 package com.example.Timesheet.com.model;
 
-import javax.persistence.Column;
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,7 +14,9 @@ import io.swagger.annotations.ApiModelProperty;
 
 @Entity
 @ApiModel(description = "<p>Class representing a role tracked by the application.</p>")
-public class Role {
+public class Role implements Serializable {
+
+	private static final long serialVersionUID = 8105007794261613176L;
 
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	@ApiModelProperty(notes = "<p>Unique identifier of the role. No two roles can have the same id</p>", example = "1", position = 0)

@@ -1,7 +1,10 @@
 package com.example.Timesheet.com.controller;
 
+import java.io.Serializable;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -27,8 +30,11 @@ import io.swagger.annotations.ApiParam;
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @Api(tags = "SalaryReportController")
-public class SalaryReportController {
+public class SalaryReportController implements Serializable {
 
+	private static final long serialVersionUID = 2397879932845739576L;
+	private static final Logger log = LogManager.getLogger(SalaryReportController.class);
+	
 	@Autowired
 	private SalaryReportService salaryReportService;
 	
@@ -41,12 +47,14 @@ public class SalaryReportController {
 	@GetMapping(Paths.SalaryReportBasicPath)
 	@ApiOperation("Returns a list of all salary reports in the system.")
 	public List<SalaryReport> getAll() {
+		log.debug("Entering getAll");
 		return salaryReportService.getAll();
 	}
 	
 	@PostMapping(Paths.SalaryReportBasicPath)
 	@ApiOperation(value = "Creates a new salary report in the system.", notes = "404 if employee id in the body is not null, but the employee it's referencing cannot be found.")
 	public ResponseEntity<String> create(@ApiParam(value = "Salary report information for the new one to be created", required = true)@RequestBody SalaryReportDto salaryReportDto) {
+		log.debug("Entering create");
 		
 		if(salaryReportDto.getEmployeeId() != null) {
 			if(employeeService.employeeExists(salaryReportDto.getEmployeeId()) == false) {
@@ -63,6 +71,8 @@ public class SalaryReportController {
 	@DeleteMapping(Paths.SalaryReportDeleteAll)
 	@ApiOperation(value = "Deletes all salary reports from the system")
 	public void deleteAll() {
+		log.debug("Entering deleteAll");
+		
 		salaryReportService.deleteAll();
 	}
 }

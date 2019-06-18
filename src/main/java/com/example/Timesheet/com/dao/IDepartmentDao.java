@@ -4,7 +4,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.example.Timesheet.com.model.Department;
 
-public interface IDepartementDao extends CrudRepository<Department, Integer>{
+public interface IDepartmentDao extends CrudRepository<Department, Integer>{
 	
 	
 }

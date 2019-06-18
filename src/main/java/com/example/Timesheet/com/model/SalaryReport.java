@@ -1,5 +1,7 @@
 package com.example.Timesheet.com.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,7 +12,9 @@ import io.swagger.annotations.ApiModelProperty;
 
 @Entity
 @ApiModel(description = "<p>Class representing a salary report from the table with the same name.</p>")
-public class SalaryReport {
+public class SalaryReport implements Serializable {
+
+	private static final long serialVersionUID = 8256836841240875261L;
 
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	@ApiModelProperty(notes = "<p>Unique identifier of the client. No two clients can have the same id.</p>", example = "1", position = 0)

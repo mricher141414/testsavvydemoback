@@ -23,13 +23,11 @@ import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.Paths;
 import com.example.Timesheet.com.dto.ClientDto;
 import com.example.Timesheet.com.dto.ClientStatsEmployee;
-import com.example.Timesheet.com.dto.ProjectStatsEmployee;
 import com.example.Timesheet.com.mapper.ClientMapper;
 import com.example.Timesheet.com.model.Client;
 import com.example.Timesheet.com.model.Employee;
 import com.example.Timesheet.com.model.Project;
 import com.example.Timesheet.com.model.ProjectEmployee;
-import com.example.Timesheet.com.model.TimesheetRow;
 import com.example.Timesheet.com.service.ClientService;
 import com.example.Timesheet.com.service.EmployeeService;
 import com.example.Timesheet.com.service.ProjectEmployeeService;
@@ -45,7 +43,7 @@ import io.swagger.annotations.ApiParam;
 public class ClientController implements Serializable {
 
 	private static final long serialVersionUID = -1393042468260877317L;
-	private static final Logger log = LogManager.getLogger("ClientController log");
+	private static final Logger log = LogManager.getLogger(ClientController.class);
 
 	@Autowired
 	private ClientService clientService = new ClientService();
@@ -64,16 +62,15 @@ public class ClientController implements Serializable {
 	
 	@GetMapping(Paths.ClientBasicPath)
 	@ApiOperation("Returns a list of all clients in the system.")
-	public List<Client> getAll(){
-		log.debug("Entering getAll()");
+	public List<Client> getAll(){		
+		log.debug("Entering getAll");
 		return clientService.getAll();
 	}
 	
 	@GetMapping(Paths.ClientGetOne)
 	@ApiOperation(value = "Returns the client with the specified identifier.", notes = "404 if the client's identifier cannot be found.")
 	public ResponseEntity<?> getOne(@ApiParam(value = "Id of the client to be found.", required = true) @RequestParam(value="id") int id) {
-		
-		log.debug("Entering getOne with id parameter of value" + id);
+		log.debug("Entering getOne with id parameter of " + id);
 		
 		Optional<Client> optionalClient = clientService.getById(id);
 		
@@ -87,6 +84,7 @@ public class ClientController implements Serializable {
 	@PostMapping(Paths.ClientBasicPath)
 	@ApiOperation("Creates a new client in the system.")
 	public ResponseEntity<String> create(@ApiParam(value = "Client information for the new client to be created.", required = true)@RequestBody ClientDto clientDto) {
+		log.debug("Entering create");
 		
 		Client client = clientMapper.dtoToClient(clientDto, 0);
 		
@@ -99,6 +97,7 @@ public class ClientController implements Serializable {
 	@ApiOperation(value = "Updates a client in the system by their identifier.", notes = "404 if the client's identifier is not found")
 	public ResponseEntity<?> edit(@ApiParam("client information to be modified")@RequestBody ClientDto clientDto,
 										@ApiParam(value = "Id of the client to be modified. Cannot be null", required = true)@RequestParam(value="id") int id){
+		log.debug("Entering edit with id parameter of " + id);
 		
 		if(clientService.getById(id).isPresent() == false) {
 			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ClientIdNotFound, Paths.ClientBasicPath);
@@ -114,6 +113,7 @@ public class ClientController implements Serializable {
 	@DeleteMapping(Paths.ClientBasicPath)
 	@ApiOperation(value = "Deletes a client from the system.", notes = "404 if the client's identifier cannot be found")
 	public ResponseEntity<?> delete(@ApiParam(value = "Id of the client to be deleted. Cannot be null.", required = true)@RequestParam(value="id") int id){
+		log.debug("Entering delete with id parameter of " + id);
 		
 		Optional<Client> optionalClient = clientService.getById(id);
 		
@@ -134,6 +134,8 @@ public class ClientController implements Serializable {
 	@GetMapping(Paths.ClientGetStatsEmployee)
 	@ApiOperation(value = "Gets the amount of employees working on projects of the client and their average salary of those employees.", notes = "404 if the client's identifier cannot be found.", response = ClientStatsEmployee.class)
 	public ResponseEntity<String> getClientEmployeeStats(@ApiParam(value = "Id of the project")@RequestParam(value = "id") int id) {
+		
+		log.debug("Entering getClientEmployeeStats with id parameter of " + id);
 		
 		if(clientService.clientExists(id) == false) {
 			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ClientIdNotFound, Paths.ClientGetStatsEmployee);

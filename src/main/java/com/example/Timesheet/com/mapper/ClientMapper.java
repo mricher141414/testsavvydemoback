@@ -1,7 +1,10 @@
 package com.example.Timesheet.com.mapper;
 
+import java.io.Serializable;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,13 +13,18 @@ import com.example.Timesheet.com.model.Client;
 import com.example.Timesheet.com.service.ClientService;
 
 @Component
-public class ClientMapper implements IClientMapper {
+public class ClientMapper implements IClientMapper, Serializable {
 
+	private static final long serialVersionUID = -3892381025398670565L;
+	private static final Logger log = LogManager.getLogger(ClientMapper.class);
+	
 	@Autowired
 	private ClientService clientService;
 	
 	@Override
 	public Client dtoToClient(ClientDto source, int id) {
+		log.debug("Entering dtoToClient with id parameter of " + id);
+		
 		if ( source == null ) {
 			return null;
 		}
@@ -48,6 +56,8 @@ public class ClientMapper implements IClientMapper {
 
 	@Override
 	public ClientDto clientToDto(Client destination) {
+		log.debug("Entering clientToDto");
+		
 		if ( destination == null ) {
 			return null;
 		}

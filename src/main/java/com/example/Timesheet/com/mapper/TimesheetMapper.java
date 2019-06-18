@@ -1,11 +1,13 @@
 package com.example.Timesheet.com.mapper;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
 
 import com.example.Timesheet.com.dto.TimesheetComplex;
@@ -21,8 +23,10 @@ import com.example.Timesheet.com.service.TimesheetService;
 import com.example.Timesheet.com.service.TimesheetStatusService;
 
 @Component
-public class TimesheetMapper implements ITimesheetMapper {
+public class TimesheetMapper implements ITimesheetMapper, Serializable {
 	
+	private static final long serialVersionUID = 4403383706852682929L;
+	private static final Logger log = LogManager.getLogger(TimesheetMapper.class);
 	@Autowired
 	private TimesheetService timesheetService;
 	
@@ -39,8 +43,10 @@ public class TimesheetMapper implements ITimesheetMapper {
 	private EmployeeService employeeService;
 	
     @Override
-    public Timesheet DTOtoTimesheet(TimesheetDto source, int id) {
-        if ( source == null ) {
+    public Timesheet dtoToTimesheet(TimesheetDto source, int id) {
+    	log.debug("Entering getOne with id parameter of " + id);
+    	
+    	if ( source == null ) {
             return null;
         }
 
@@ -84,29 +90,32 @@ public class TimesheetMapper implements ITimesheetMapper {
     }
 
     @Override
-    public TimesheetDto timesheetToDTO(Timesheet destination) {
-        if ( destination == null ) {
+    public TimesheetDto timesheetToDto(Timesheet destination) {
+    	log.debug("Entering timesheetToDto");
+    	
+    	if ( destination == null ) {
             return null;
         }
 
-        TimesheetDto timesheetDTO = new TimesheetDto();
+        TimesheetDto timesheetDto = new TimesheetDto();
 
-        timesheetDTO.setId( destination.getId() );
-        timesheetDTO.setTotal( destination.getTotal() );
-        timesheetDTO.setNotes( destination.getNotes() );
-        timesheetDTO.setStartDate( destination.getStartDate() );
-        timesheetDTO.setEndDate( destination.getEndDate() );
-        timesheetDTO.setEmployeeId( destination.getEmployeeId() );
+        timesheetDto.setId( destination.getId() );
+        timesheetDto.setTotal( destination.getTotal() );
+        timesheetDto.setNotes( destination.getNotes() );
+        timesheetDto.setStartDate( destination.getStartDate() );
+        timesheetDto.setEndDate( destination.getEndDate() );
+        timesheetDto.setEmployeeId( destination.getEmployeeId() );
         if ( destination.getTimesheetStatusId() != null ) {
-            timesheetDTO.setTimesheetStatusId( destination.getTimesheetStatusId() );
+            timesheetDto.setTimesheetStatusId( destination.getTimesheetStatusId() );
         }
 
-        return timesheetDTO;
+        return timesheetDto;
     }
     
     public TimesheetComplex fromTimesheetToComplex(Timesheet timesheet, TimesheetComplex timesheetComplex) {
-
-		List<TimesheetRowWithProject> timesheetRowTimeProjects = new ArrayList<TimesheetRowWithProject>();
+    	log.debug("Entering fromTimesheetToComplex");
+		
+    	List<TimesheetRowWithProject> timesheetRowTimeProjects = new ArrayList<TimesheetRowWithProject>();
 
 		timesheetComplex.setId(timesheet.getId());
 		timesheetComplex.setTotal(timesheet.getTotal());
@@ -117,8 +126,8 @@ public class TimesheetMapper implements ITimesheetMapper {
 		List<TimesheetRow> rows = timesheetRowService.getByTimesheetId(timesheet.getId());
 		
 		for (TimesheetRow row : rows) {
-			TimesheetRowDto rowDto = timesheetRowMapper.TimesheetRowToDTO(row);
-			TimesheetRowWithProject rowTimeProject = timesheetRowMapper.rowDtoToRowTimeProject(rowDto);
+			TimesheetRowDto rowDto = timesheetRowMapper.timesheetRowToDto(row);
+			TimesheetRowWithProject rowTimeProject = timesheetRowMapper.rowDtoToRowWithProject(rowDto);
 			
 			timesheetRowTimeProjects.add(rowTimeProject);
 		}
@@ -132,12 +141,16 @@ public class TimesheetMapper implements ITimesheetMapper {
 		return timesheetComplex;
 	}
     
-    public TimesheetComplexWithEmployee addEmployeeToTimesheetComplexWiithManager(TimesheetComplexWithEmployee timesheetWithEmployee, Timesheet timesheet) {
+    public TimesheetComplexWithEmployee addEmployeeToTimesheetComplex(TimesheetComplexWithEmployee timesheetWithEmployee, Timesheet timesheet) {
+    	log.debug("Entering addEmployeeToTimesheetComplex");
+    	
     	timesheetWithEmployee.setEmployee(employeeService.getById(timesheet.getEmployeeId()).get());
     	return timesheetWithEmployee;
     }
     
     public Timesheet fromComplexToTimesheet(TimesheetComplex timesheetComplex, int employeeId) {
+    	log.debug("Entering fromComplexToTimesheet with employeeId parameter of " + employeeId);
+    	
     	Timesheet timesheet = new Timesheet();
     	
     	timesheet.setId(timesheetComplex.getId());

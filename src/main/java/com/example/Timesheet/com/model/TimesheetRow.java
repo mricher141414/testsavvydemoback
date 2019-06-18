@@ -1,5 +1,6 @@
 package com.example.Timesheet.com.model;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.TimeZone;
 
@@ -10,6 +11,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Version;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.example.Timesheet.com.GlobalVars;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -18,8 +22,11 @@ import io.swagger.annotations.ApiModelProperty;
 
 @Entity
 @ApiModel(description = "<p>Class representing a row of a timesheet tracked by the application.</p>")
-public class TimesheetRow {
+public class TimesheetRow implements Serializable {
 	
+	private static final long serialVersionUID = -3696726093325275568L;
+	private static final Logger log = LogManager.getLogger(TimesheetRow.class);
+
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	@ApiModelProperty(notes = "<p>Unique identifier of the row. No two rows can have the same id.</p>", example = "1", position = 0)
 	private int id;
@@ -36,6 +43,8 @@ public class TimesheetRow {
 	private Integer version;
 	
 	public void compensateTimezoneOnDates() {
+		log.debug("Entering compensateTimezoneOnDates");
+		
 		Date date = this.getDate();
 		
 		if(date == null) {

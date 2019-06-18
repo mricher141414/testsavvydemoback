@@ -1,5 +1,6 @@
 package com.example.Timesheet.com.dto;
 
+import java.io.Serializable;
 import java.sql.Date;
 
 import io.swagger.annotations.ApiModel;
@@ -7,7 +8,9 @@ import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(description = "<p>Class sent by the user to create a new timesheet row. <br>"
 		+ "All properties except id are recommanded when creating a new timesheet row.</p>")
-public class TimesheetRowDto {
+public class TimesheetRowDto implements Serializable {
+
+	private static final long serialVersionUID = 6110434749907485688L;
 
 	@ApiModelProperty(notes = "<p>Unique identifier of the timesheet. No two timesheets can have the same id. <br>"
 			+ "The id is not required, but it is part of the object to facilitate a copy and paste from an existing object</p>", example = "1", position = 0)

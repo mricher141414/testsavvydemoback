@@ -1,5 +1,6 @@
 package com.example.Timesheet.com.dto;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
 
@@ -12,7 +13,9 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(description = "<p>Class sent by the front-end to modify a timesheetRow and its timesheetRowProjects. <br>"
 		+ "Also, the class the user receives when checking a specific timesheetRow, and it is used by TimesheetComplex <br>"
 		+ "All properties except id are recommanded when creating a new timesheet row.</p>")
-public class TimesheetRowWithProject {
+public class TimesheetRowWithProject implements Serializable {
+
+	private static final long serialVersionUID = 7356986511719672935L;
 
 	@ApiModelProperty(notes = "<p>Unique identifier of the timesheet row. No two timesheet rows can have the same id. <br>"
 			+ "The id is not required, but it is part of the object to facilitate a copy and paste from an existing object</p>", example = "1", position = 0)

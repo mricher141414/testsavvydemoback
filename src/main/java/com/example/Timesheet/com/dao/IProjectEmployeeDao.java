@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 
-import com.example.Timesheet.com.model.Project;
 import com.example.Timesheet.com.model.ProjectEmployee;
 
 public interface IProjectEmployeeDao extends CrudRepository<ProjectEmployee, Integer> {

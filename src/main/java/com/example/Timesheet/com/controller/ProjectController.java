@@ -1,14 +1,16 @@
 package com.example.Timesheet.com.controller;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,8 +35,6 @@ import com.example.Timesheet.com.service.EmployeeService;
 import com.example.Timesheet.com.service.ProjectEmployeeService;
 import com.example.Timesheet.com.service.ProjectService;
 import com.example.Timesheet.com.service.TimesheetRowProjectService;
-import com.example.Timesheet.com.service.TimesheetRowService;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -42,8 +42,11 @@ import io.swagger.annotations.ApiParam;
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @Api(tags = "ProjectController")
-public class ProjectController {
+public class ProjectController implements Serializable {
 	
+	private static final long serialVersionUID = 8440772259456508103L;
+	private static final Logger log = LogManager.getLogger(ProjectController.class);
+
 	@Autowired
 	private ProjectService projectService = new ProjectService();
 	
@@ -60,54 +63,54 @@ public class ProjectController {
 	private TimesheetRowProjectService timesheetRowProjectService;
 	
 	@Autowired
-	private TimesheetRowService timesheetRowService;
-	
-	@Autowired
 	private ProjectEmployeeService projectEmployeeService = new ProjectEmployeeService();
 	
 	@GetMapping(Paths.ProjectBasicPath)
 	@ApiOperation("Returns a list of all projects in the system.")
 	public List<Project> getAll() {
+		log.debug("Entering getAll");
 		return projectService.getAll();
 	}
 	
 	@PostMapping(Paths.ProjectBasicPath)
 	@ApiOperation("Creates a new project in the system.")
 	public ResponseEntity<String> create(@ApiParam(value = "Project information for the new project to be created.", required = true)@RequestBody ProjectDto projectDto) {
+		log.debug("Entering create");
 		
 		if (projectDto.getProjectManagerId() != null) {
-			  if(employeeService.getById(projectDto.getProjectManagerId()).isPresent() == false) {
-				  return GlobalFunctions.createNotFoundResponse(GlobalMessages.ManagerIdNotFound, Paths.ProjectBasicPath);
-			  }
-		  }
+			if(employeeService.getById(projectDto.getProjectManagerId()).isPresent() == false) {
+				return GlobalFunctions.createNotFoundResponse(GlobalMessages.ManagerIdNotFound, Paths.ProjectBasicPath);
+			}
+		}
 		  
-		  if (projectDto.getClientId() != null) {
-			  if(clientService.getById(projectDto.getClientId()).isPresent() == false) {
-				  return GlobalFunctions.createNotFoundResponse(GlobalMessages.ClientIdParameterNotFound, Paths.ProjectBasicPath);
-				  }
-			  }
+		if (projectDto.getClientId() != null) {
+			if(clientService.getById(projectDto.getClientId()).isPresent() == false) {
+				return GlobalFunctions.createNotFoundResponse(GlobalMessages.ClientIdParameterNotFound, Paths.ProjectBasicPath);
+			}
+		}
 		 
-		 Project project = projectMapper.dtoToProject(projectDto, 0);
+		Project project = projectMapper.dtoToProject(projectDto, 0);
 		 
-		 project = projectService.save(project);
+		project = projectService.save(project);
 		 
-		 return GlobalFunctions.createOkResponseFromObject(project);
+		return GlobalFunctions.createOkResponseFromObject(project);
 	}
 	
 	@PutMapping(Paths.ProjectBasicPath)
 	@ApiOperation(value = "Updates a project in the system by their identifier.", notes = "404 if any of the project's identifier specified in the address, project manager id or client id specified in the body is not found.")
 	public ResponseEntity<String> edit(@ApiParam("Project information to be modified. There is no need to keep values that will not be modified.")@RequestBody ProjectDto projectDto, 
 										@ApiParam(value = "Id of the project to be modified. Cannot be null.", required = true)@RequestParam int id) {
+		log.debug("Entering edit with id parameter of " + id);
 		
 		if(projectService.getById(id).isPresent() == false) {
 			  return GlobalFunctions.createNotFoundResponse(GlobalMessages.ProjectIdNotFound, Paths.ProjectBasicPath);
 		}
 		
 		if (projectDto.getProjectManagerId() != null) {
-			  if(employeeService.getById(projectDto.getProjectManagerId()).isPresent() == false) {
-				  return GlobalFunctions.createNotFoundResponse(GlobalMessages.ManagerIdNotFound, Paths.ProjectBasicPath);
-			  }
-		  }
+			if(employeeService.getById(projectDto.getProjectManagerId()).isPresent() == false) {
+				return GlobalFunctions.createNotFoundResponse(GlobalMessages.ManagerIdNotFound, Paths.ProjectBasicPath);
+			}
+		}
 		  
 		if (projectDto.getClientId() != null) {
 			if(clientService.getById(projectDto.getClientId()).isPresent() == false) {
@@ -125,6 +128,7 @@ public class ProjectController {
 	@DeleteMapping(Paths.ProjectBasicPath)
 	@ApiOperation(value = "Deletes a project in the system by their identifier.", notes = "404 if the project's identifier cannot be found.<br> 400 if the project is still assigned to some employees or is still referenced by a timeProject.")
 	public ResponseEntity<String> delete(@ApiParam(value = "Id of the project to be deleted. Cannot be null.", required = true)@RequestParam int id) {
+		log.debug("Entering delete with id parameter of " + id);
 		
 		Optional<Project> optionalProject = projectService.getById(id);
 		
@@ -149,6 +153,7 @@ public class ProjectController {
 	@GetMapping(Paths.ProjectAssignations)
 	@ApiOperation(value = "Returns all employees who are currently working on the project", notes = "404 if the project's identifier cannot be found.")
 	public ResponseEntity<String> getAllAssignationsOnProject(@ApiParam(value = "Id of the project to get the assignations from. Cannot be null.", required = true)@RequestParam int id) {
+		log.debug("Entering getOne with id parameter of " + id);
 		
 		if(projectService.projectExists(id) == false) {
 			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ProjectIdNotFound, Paths.ProjectAssignations);
@@ -168,6 +173,7 @@ public class ProjectController {
 	@ApiOperation(value = "Create assignations to all the employees the project is not already assigned to, in those sent in the body.", notes = "404 if the project's identifier or if any of the employees' identifier cannot be found.")
 	public ResponseEntity<String> addEmployeeAssignations(@ApiParam(value = "List of employees")@RequestBody List<Employee> employees,
 															@ApiParam(value = "Id of the project")@RequestParam int id) {
+		log.debug("Entering addEmployeeAssignations with id parameter of " + id);
 		
 		if(projectService.projectExists(id) == false) {
 			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ProjectIdNotFound, Paths.ProjectAssignations);
@@ -199,6 +205,7 @@ public class ProjectController {
 	@GetMapping(Paths.ProjectGetStatsEmployee)
 	@ApiOperation(value = "Gets the amount of employees working on the project and their average salary.", notes = "404 if the project's identifier cannot be found.", response = ProjectStatsEmployee.class)
 	public ResponseEntity<String> getProjectStats(@ApiParam(value = "Id of the project")@RequestParam(value = "id") int id) {
+		log.debug("Entering getProjectStats with id parameter of " + id);
 		
 		if(projectService.projectExists(id) == false) {
 			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ProjectIdNotFound, Paths.ProjectGetStatsEmployee);
@@ -226,6 +233,8 @@ public class ProjectController {
 	public ResponseEntity<?> getAverageTimeWorked(@ApiParam(value = "Id of the project to calculate the averages for.", required = true)@RequestParam(value="id") int id, 
 													@ApiParam(value = "Date to end the calculation", required = true) @RequestParam(value = "date") Date date, 
 													@ApiParam(value = "Amount of weeks to go back from the sent date.", required = true) @RequestParam(value="weeks") int weeks) {
+		Assert.notNull(date, "parameter date must not be null");
+		log.debug("Entering getAverageTimeWorked with id parameter of " + id + ", date parameter of " + date + " and weeks parameter of " + weeks);
 		
 		if(weeks < 1) {
 			return GlobalFunctions.createBadRequest(GlobalMessages.ProjectAveragInvalidWeekNumber, Paths.ProjectGetStatsTimePerDay);

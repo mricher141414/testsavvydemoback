@@ -6,9 +6,9 @@ import com.example.Timesheet.com.dto.DepartmentDto;
 import com.example.Timesheet.com.model.Department;
 
 @Mapper
-public interface IDepartementMapper {
+public interface IDepartmentMapper {
 	
-	Department DTOtoDepartement(DepartmentDto source, int id);
-	DepartmentDto DepartementToDTO(Department destination);
+	Department dtoToDepartment(DepartmentDto source, int id);
+	DepartmentDto departmentToDto(Department destination);
 
 }
