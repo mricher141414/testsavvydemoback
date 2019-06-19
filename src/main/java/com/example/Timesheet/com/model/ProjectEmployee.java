@@ -17,10 +17,10 @@ public class ProjectEmployee implements Serializable {
 	private static final long serialVersionUID = -4373978997505082157L;
 
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
-	@ApiModelProperty(notes = "<p>Unique identifier of the assignation. No two assignations can have the same id</p>", example = "1", position = 0)
+	@ApiModelProperty(notes = "<p>Unique identifier of the assignation. No two assignations can have the same id</p>", example = "11", position = 0)
 	private int id;
 	
-	@ApiModelProperty(notes = "<p>Unique identifier of the employee that is part of the assignation. No two employees can have the same id</p>", example = "1", position = 1)
+	@ApiModelProperty(notes = "<p>Unique identifier of the employee that is part of the assignation. No two employees can have the same id</p>", example = "6", position = 1)
 	private Integer employeeId;
 	
 	@ApiModelProperty(notes = "<p>Unique identifier of the project that is part of the assignation. No two projects can have the same id</p>", example = "2", position = 2)

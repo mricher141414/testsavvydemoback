@@ -24,6 +24,7 @@ import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.dto.RoleDto;
 import com.example.Timesheet.com.mapper.RoleMapper;
 import com.example.Timesheet.com.model.Employee;
+import com.example.Timesheet.com.model.ProjectEmployee;
 import com.example.Timesheet.com.model.Role;
 import com.example.Timesheet.com.service.EmployeeService;
 import com.example.Timesheet.com.service.RoleService;
@@ -50,14 +51,16 @@ public class RoleController implements Serializable {
 	EmployeeService employeeService = new EmployeeService();
 	
 	@GetMapping("/role")
-	@ApiOperation("Returns a list of all roles in the system")
+	@ApiOperation(value = "Returns a list of all roles in the system", 
+					response = Role.class, responseContainer = "List")
 	public List<Role> getAll(){
 		log.debug("Entering getAll");
 		return roleService.getAll();
 	}
 	
 	@GetMapping("/role/one")
-	@ApiOperation(value = "Returns the role with the specified identifier.", notes = "404 if the role's identifier cannot be found.")
+	@ApiOperation(value = "Returns the role with the specified identifier.", notes = "404 if the role's identifier cannot be found.", 
+					response = Role.class)
 	public ResponseEntity<?> getOne(@ApiParam(value = "Id of the role to be found.", required = true) @RequestParam(value="id") int id) {
 		log.debug("Entering getOne with id parameter of " + id);
 		
@@ -71,7 +74,8 @@ public class RoleController implements Serializable {
 	}
 	
 	@PostMapping("/role")
-	@ApiOperation("Creates a new role in the system.")
+	@ApiOperation(value = "Creates a new role in the system.", 
+					response = Role.class)
 	public ResponseEntity<String> create(@ApiParam(value = "Role information for the new status to be created.", required = true)@RequestBody RoleDto roleDto) {
 		log.debug("Entering create");
 		
@@ -83,8 +87,8 @@ public class RoleController implements Serializable {
 	}
 
 	@PutMapping("/role")
-	@ApiOperation(value = "Updates a role in the system by their identifier.", notes = "404 if the role's identifier cannot be found. \n"
-																						+ "400 if name is null or empty")
+	@ApiOperation(value = "Updates a role in the system by their identifier.", notes = "404 if the role's identifier cannot be found.<br> 400 if name is null or empty",
+					response = Role.class)
 	public ResponseEntity<String> edit(@ApiParam("Role information to be modified.")@RequestBody RoleDto roleDto,
 											@ApiParam(value = "Id of the role to be modified. Cannot be null.", required = true) @RequestParam int id){
 		log.debug("Entering edit with id parameter of " + id);
@@ -103,7 +107,8 @@ public class RoleController implements Serializable {
 	}
 
 	@DeleteMapping("/role")
-	@ApiOperation(value = "Deletes a role in the system by their identifier.", notes = "404 if the role's identifier cannot be found.")
+	@ApiOperation(value = "Deletes a role in the system by their identifier.", notes = "404 if the role's identifier cannot be found.",
+					response = Role.class)
 	public ResponseEntity<String> delete(@ApiParam(value = "Id of the role to be deleted.", required = true) @RequestParam(value="id") int id) {
 		log.debug("Entering delete with id parameter of " + id);
 		
@@ -126,7 +131,8 @@ public class RoleController implements Serializable {
 	}
 
 	@GetMapping("/role/employee")
-	@ApiOperation(value = "Returns a list of all employees in the system that have the role", notes = "404 if the role's identifier cannot be found.")
+	@ApiOperation(value = "Returns a list of all employees in the system that have the role", notes = "404 if the role's identifier cannot be found.",
+					response = Employee.class, responseContainer = "List")
 	public ResponseEntity<String> getEmployeeRole(@ApiParam(value = "Id of the role to get the employees for.", required = true) @RequestParam(value="id") int id) {
 		log.debug("Entering getEmployeeRole with id parameter of " + id);
 		

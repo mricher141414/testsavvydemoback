@@ -66,14 +66,16 @@ public class ProjectController implements Serializable {
 	private ProjectEmployeeService projectEmployeeService = new ProjectEmployeeService();
 	
 	@GetMapping(Paths.ProjectBasicPath)
-	@ApiOperation("Returns a list of all projects in the system.")
+	@ApiOperation(value = "Returns a list of all projects in the system.", 
+					response = Project.class, responseContainer = "List")
 	public List<Project> getAll() {
 		log.debug("Entering getAll");
 		return projectService.getAll();
 	}
 	
 	@PostMapping(Paths.ProjectBasicPath)
-	@ApiOperation("Creates a new project in the system.")
+	@ApiOperation(value = "Creates a new project in the system.",
+					response = Project.class)
 	public ResponseEntity<String> create(@ApiParam(value = "Project information for the new project to be created.", required = true)@RequestBody ProjectDto projectDto) {
 		log.debug("Entering create");
 		
@@ -97,7 +99,8 @@ public class ProjectController implements Serializable {
 	}
 	
 	@PutMapping(Paths.ProjectBasicPath)
-	@ApiOperation(value = "Updates a project in the system by their identifier.", notes = "404 if any of the project's identifier specified in the address, project manager id or client id specified in the body is not found.")
+	@ApiOperation(value = "Updates a project in the system by their identifier.", notes = "404 if any of the project's identifier specified in the address, project manager id or client id specified in the body is not found.",
+					response = Project.class)
 	public ResponseEntity<String> edit(@ApiParam("Project information to be modified. There is no need to keep values that will not be modified.")@RequestBody ProjectDto projectDto, 
 										@ApiParam(value = "Id of the project to be modified. Cannot be null.", required = true)@RequestParam int id) {
 		log.debug("Entering edit with id parameter of " + id);
@@ -126,7 +129,8 @@ public class ProjectController implements Serializable {
 }
 	
 	@DeleteMapping(Paths.ProjectBasicPath)
-	@ApiOperation(value = "Deletes a project in the system by their identifier.", notes = "404 if the project's identifier cannot be found.<br> 400 if the project is still assigned to some employees or is still referenced by a timeProject.")
+	@ApiOperation(value = "Deletes a project in the system by their identifier.", notes = "404 if the project's identifier cannot be found.<br> 400 if the project is still assigned to some employees or is still referenced by a timesheetRowProject.",
+					response = Project.class)
 	public ResponseEntity<String> delete(@ApiParam(value = "Id of the project to be deleted. Cannot be null.", required = true)@RequestParam int id) {
 		log.debug("Entering delete with id parameter of " + id);
 		
@@ -151,7 +155,8 @@ public class ProjectController implements Serializable {
 	}
 	
 	@GetMapping(Paths.ProjectAssignations)
-	@ApiOperation(value = "Returns all employees who are currently working on the project", notes = "404 if the project's identifier cannot be found.")
+	@ApiOperation(value = "Returns all employees who are currently working on the project", notes = "404 if the project's identifier cannot be found.",
+					response = Employee.class, responseContainer = "List")
 	public ResponseEntity<String> getAllAssignationsOnProject(@ApiParam(value = "Id of the project to get the assignations from. Cannot be null.", required = true)@RequestParam int id) {
 		log.debug("Entering getOne with id parameter of " + id);
 		
@@ -170,7 +175,8 @@ public class ProjectController implements Serializable {
 	}
 	
 	@PostMapping(Paths.ProjectAssignations)
-	@ApiOperation(value = "Create assignations to all the employees the project is not already assigned to, in those sent in the body.", notes = "404 if the project's identifier or if any of the employees' identifier cannot be found.")
+	@ApiOperation(value = "Create assignations to all the employees the project is not already assigned to, in those sent in the body.", notes = "404 if the project's identifier or if any of the employees' identifier cannot be found.",
+					response = Employee.class, responseContainer = "List")
 	public ResponseEntity<String> addEmployeeAssignations(@ApiParam(value = "List of employees")@RequestBody List<Employee> employees,
 															@ApiParam(value = "Id of the project")@RequestParam int id) {
 		log.debug("Entering addEmployeeAssignations with id parameter of " + id);
@@ -203,7 +209,8 @@ public class ProjectController implements Serializable {
 	}
 	
 	@GetMapping(Paths.ProjectGetStatsEmployee)
-	@ApiOperation(value = "Gets the amount of employees working on the project and their average salary.", notes = "404 if the project's identifier cannot be found.", response = ProjectStatsEmployee.class)
+	@ApiOperation(value = "Gets the amount of employees working on the project and their average salary.", notes = "404 if the project's identifier cannot be found.", 
+					response = ProjectStatsEmployee.class)
 	public ResponseEntity<String> getProjectStats(@ApiParam(value = "Id of the project")@RequestParam(value = "id") int id) {
 		log.debug("Entering getProjectStats with id parameter of " + id);
 		
@@ -229,7 +236,8 @@ public class ProjectController implements Serializable {
 	}
 	
 	@GetMapping(Paths.ProjectGetStatsTimePerDay)
-	@ApiOperation(value = "Returns the average amount of hours worked on a project per day in the X weeks before the given date.", notes = "404 if project id cannot be found, 400 if the project was not started by the end of the first week, or if the project ended before the beginning of the last week")
+	@ApiOperation(value = "Returns the average amount of hours worked on a project per day in the X weeks before the given date.", notes = "404 if project id cannot be found, 400 if the project was not started by the end of the first week, or if the project ended before the beginning of the last week",
+					response = Float.class)
 	public ResponseEntity<?> getAverageTimeWorked(@ApiParam(value = "Id of the project to calculate the averages for.", required = true)@RequestParam(value="id") int id, 
 													@ApiParam(value = "Date to end the calculation", required = true) @RequestParam(value = "date") Date date, 
 													@ApiParam(value = "Amount of weeks to go back from the sent date.", required = true) @RequestParam(value="weeks") int weeks) {

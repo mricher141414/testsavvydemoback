@@ -51,14 +51,16 @@ public class ProjectEmployeeController implements Serializable {
 	private EmployeeService employeeService;
 	
 	@GetMapping(Paths.ProjectEmployeeBasicPath)
-	@ApiOperation("Returns a list of all employee-project assignations in the system.")
+	@ApiOperation(value = "Returns a list of all employee-project assignations in the system.", 
+					response = ProjectEmployee.class, responseContainer = "List")
 	public List<ProjectEmployee> getAll() {
 		log.debug("Entering getAll");
 		return projectEmployeeService.getAll();
 	}
 	
 	@PostMapping(Paths.ProjectEmployeeBasicPath)
-	@ApiOperation(value = "Create a new employee-project assignation in the system.", notes = "404 if either the project's or the employee's identifier cannot be found")
+	@ApiOperation(value = "Create a new employee-project assignation in the system.", notes = "404 if either the project's or the employee's identifier cannot be found",
+					response = ProjectEmployee.class)
 	public ResponseEntity<String> create(@ApiParam(value = "information about the assignation for it to be created", required = true)@RequestBody ProjectEmployeeDto projectEmployeeDto) {
 		log.debug("Entering create");
 		
@@ -76,7 +78,8 @@ public class ProjectEmployeeController implements Serializable {
 	}
 	
 	@DeleteMapping("/assignation")
-	@ApiOperation(value = "Deletes an employee-project assignation from the system.", notes = "404 if the projectEmployee's id cannot be found")
+	@ApiOperation(value = "Deletes an employee-project assignation from the system.", notes = "404 if the projectEmployee's id cannot be found",
+					response = ProjectEmployee.class)
 	public ResponseEntity<String> delete(@ApiParam(value = "Id of the employee-project assignation to be deleted", required = true)@RequestParam(value="id")int id) {
 		log.debug("Entering delete with id parameter of " + id);
 		

@@ -19,6 +19,7 @@ import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.Paths;
 import com.example.Timesheet.com.dto.SalaryReportDto;
 import com.example.Timesheet.com.mapper.SalaryReportMapper;
+import com.example.Timesheet.com.model.Role;
 import com.example.Timesheet.com.model.SalaryReport;
 import com.example.Timesheet.com.service.EmployeeService;
 import com.example.Timesheet.com.service.SalaryReportService;
@@ -45,14 +46,16 @@ public class SalaryReportController implements Serializable {
 	private EmployeeService employeeService;
 	
 	@GetMapping(Paths.SalaryReportBasicPath)
-	@ApiOperation("Returns a list of all salary reports in the system.")
+	@ApiOperation(value = "Returns a list of all salary reports in the system.", 
+					response = SalaryReport.class, responseContainer = "List")
 	public List<SalaryReport> getAll() {
 		log.debug("Entering getAll");
 		return salaryReportService.getAll();
 	}
 	
 	@PostMapping(Paths.SalaryReportBasicPath)
-	@ApiOperation(value = "Creates a new salary report in the system.", notes = "404 if employee id in the body is not null, but the employee it's referencing cannot be found.")
+	@ApiOperation(value = "Creates a new salary report in the system.", notes = "404 if employee id in the body is not null, but the employee it's referencing cannot be found.",
+					response = SalaryReport.class)
 	public ResponseEntity<String> create(@ApiParam(value = "Salary report information for the new one to be created", required = true)@RequestBody SalaryReportDto salaryReportDto) {
 		log.debug("Entering create");
 		

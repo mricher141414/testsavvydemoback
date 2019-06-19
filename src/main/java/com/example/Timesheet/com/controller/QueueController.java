@@ -18,6 +18,7 @@ import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.Paths;
 import com.example.Timesheet.com.dto.TimesheetDto;
+import com.example.Timesheet.com.model.ProjectEmployee;
 import com.example.Timesheet.com.model.QueueItem;
 import com.example.Timesheet.com.service.QueueService;
 import com.example.Timesheet.com.service.TimesheetService;
@@ -25,6 +26,7 @@ import com.example.Timesheet.com.service.TimesheetService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -41,14 +43,16 @@ public class QueueController implements Serializable {
 	private TimesheetService timesheetService;
 	
 	@GetMapping(Paths.QueueBasicPath)
-	@ApiOperation("Returns a list of all the items in the queue")
+	@ApiOperation(value = "Returns a list of all the items in the queue",
+					response = QueueItem.class, responseContainer = "List")
 	public List<QueueItem> getAll() {
 		log.debug("Entering getAll");
 		return queueService.getAll();
 	}
 	
 	@PostMapping(Paths.QueueBasicPath)
-	@ApiOperation("Create an entry in the queue based on the timesheet received in body")
+	@ApiOperation(value = "Create an entry in the queue based on the timesheet received in body", 
+					response = QueueItem.class)
 	public ResponseEntity<String> create(@ApiParam(value = "Timesheet to add to the queue.", required = true)@RequestBody TimesheetDto timesheetDto) {
 		log.debug("Entering create");
 		
@@ -65,6 +69,7 @@ public class QueueController implements Serializable {
 	}
 	
 	@GetMapping(Paths.ApiCallToBatFile)
+	@ApiIgnore
 	public boolean callBat() {
 		log.debug("Entering callBat");	
 		

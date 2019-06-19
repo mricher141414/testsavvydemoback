@@ -22,6 +22,7 @@ import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.Paths;
 import com.example.Timesheet.com.dto.TimesheetRowProjectDto;
 import com.example.Timesheet.com.mapper.TimesheetRowProjectMapper;
+import com.example.Timesheet.com.model.TimesheetRow;
 import com.example.Timesheet.com.model.TimesheetRowProject;
 import com.example.Timesheet.com.service.ProjectService;
 import com.example.Timesheet.com.service.TimesheetRowProjectService;
@@ -53,14 +54,16 @@ public class TimesheetRowProjectController implements Serializable {
 	
 	
 	@GetMapping(Paths.TimesheetRowProjectBasicPath)
-	@ApiOperation("Returns a list of all timesheetRowProjects in the system.")
+	@ApiOperation(value = "Returns a list of all timesheetRowProjects in the system.",
+					response = TimesheetRowProject.class, responseContainer = "List")
 	public List<TimesheetRowProject> getAll(){
 		log.debug("Entering getAll");
 		return timesheetRowProjectService.getAll();
 	}
 	
 	@PostMapping(Paths.TimesheetRowProjectBasicPath)
-	@ApiOperation(value = "Creates a new timesheetRowProject in the system.", notes = "404 if a projectId or timesheetRowId is provided and the entity it is referring to cannot be found.")
+	@ApiOperation(value = "Creates a new timesheetRowProject in the system.", notes = "404 if a projectId or timesheetRowId is provided and the entity it is referring to cannot be found.",
+					response = TimesheetRowProject.class)
 	public ResponseEntity<String> create(@ApiParam(value = "TimesheetRowProject information for the new timesheetRowProject to be created.", required = true)@RequestBody TimesheetRowProjectDto timesheetRowProjectDto) {
 		log.debug("Entering create");
 		
@@ -82,7 +85,8 @@ public class TimesheetRowProjectController implements Serializable {
 	}
 	
 	@PutMapping(Paths.TimesheetRowProjectBasicPath)
-	@ApiOperation(value = "Updates a timesheetRowProject in the system by their identifier.", notes = "404 if the timesheetRowProject's identifier, or the provided projectId or timesheetRowId cannot be found")
+	@ApiOperation(value = "Updates a timesheetRowProject in the system by their identifier.", notes = "404 if the timesheetRowProject's identifier, or the provided projectId or timesheetRowId cannot be found",
+					response = TimesheetRowProject.class)
 	public ResponseEntity<?> edit(@ApiParam("timesheetRowProject information to be modified")@RequestBody TimesheetRowProjectDto timesheetRowProjectDto,
 										@ApiParam(value = "Id of the timesheetRowProject to be modified. Cannot be null", required = true)@RequestParam(value="id") int id) {
 		log.debug("Entering edit with id parameter of " + id);
@@ -109,7 +113,8 @@ public class TimesheetRowProjectController implements Serializable {
 	}
 	
 	@DeleteMapping(Paths.TimesheetRowProjectBasicPath)
-	@ApiOperation(value = "Deletes a timesheetRowProject from the system.", notes = "404 if the timeshhetRowProject's identifier cannot be found")
+	@ApiOperation(value = "Deletes a timesheetRowProject from the system.", notes = "404 if the timeshhetRowProject's identifier cannot be found", 
+					response = TimesheetRowProject.class)
 	public ResponseEntity<?> delete(@ApiParam(value = "Id of the timesheetRowProject to be deleted. Cannot be null.", required = true)@RequestParam(value="id") int id) {
 		log.debug("Entering delete with id parameter of " + id);
 		

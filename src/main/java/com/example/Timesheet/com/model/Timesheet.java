@@ -37,13 +37,13 @@ public class Timesheet implements Serializable {
 	@ApiModelProperty(notes = "<p>Notes of the timesheet.</p>", example = "Première timesheet", position = 2)
 	private String notes;
 	
-	@ApiModelProperty(notes = "<p>Date (year-month-date) at which the timesheet started.</p>", example = "2019-06-29", position = 3)
+	@ApiModelProperty(notes = "<p>Date (year-month-date) at which the timesheet started.</p>", example = "2019-06-30", position = 3)
 	@Column(name = "start_date")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date startDate;
 	
 	@Column(name = "end_date")
-	@ApiModelProperty(notes = "<p>Date (year-month-date) at which the timesheet ended.</p>", example = "2019-07-05", position = 4)
+	@ApiModelProperty(notes = "<p>Date (year-month-date) at which the timesheet ended.</p>", example = "2019-07-06", position = 4)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date endDate;
 	

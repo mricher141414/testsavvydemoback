@@ -79,15 +79,16 @@ public class TimesheetController implements Serializable {
 	private TimesheetRowProjectService timesheetRowProjectService;
 	
 	@GetMapping(Paths.TimesheetBasicPath)
-	@ApiOperation("Returns a list of all timesheets in the system.")
+	@ApiOperation(value = "Returns a list of all timesheets in the system.",
+					response = Timesheet.class, responseContainer = "List")
 	public List<Timesheet> getAll(){
 		log.debug("Entering getAll");
 		return timesheetService.getAll();
 	}
 
 	@GetMapping(Paths.TimesheetGetOne)
-	@ApiOperation(value = "Returns the timesheet with the specified identifier.", 
-					notes = "404 if the timesheet's identifier cannot be found.")
+	@ApiOperation(value = "Returns the timesheet with the specified identifier.", notes = "404 if the timesheet's identifier cannot be found.", 
+					response = Timesheet.class)
 	public ResponseEntity<?> getOne(@ApiParam(value = "Id of the timesheet to retrieve", required = true) @RequestParam(value="id") int id) throws Exception{
 		log.debug("Entering getOne with id parameter of " + id);
 		
@@ -102,8 +103,8 @@ public class TimesheetController implements Serializable {
 	}
 
 	@PostMapping(Paths.TimesheetBasicPath)
-	@ApiOperation(value = "Creates a new timesheet in the system.", 
-					notes = "404 if the manager id or timesheet status id in the body cannot be found.")
+	@ApiOperation(value = "Creates a new timesheet in the system.", notes = "404 if the manager id or timesheet status id in the body cannot be found.",
+					response = Timesheet.class)
 	public ResponseEntity<String> create(@ApiParam(value = "Timesheet information for the new timesheet to be created.", required = true) @RequestBody TimesheetDto timesheetDto) {
 		log.debug("Entering create");
 		
@@ -128,8 +129,8 @@ public class TimesheetController implements Serializable {
 	}
 
 	@PutMapping(Paths.TimesheetBasicPath)
-	@ApiOperation(value = "Updates a timesheet in the system by their identifier.", 
-					notes = "404 if the timesheet's identifier or any of the manager id and timesheet status id in the body cannot be found.")
+	@ApiOperation(value = "Updates a timesheet in the system by their identifier.", notes = "404 if the timesheet's identifier or any of the manager id and timesheet status id in the body cannot be found.",
+					response = Timesheet.class)
 	public ResponseEntity<String> edit(@ApiParam("Timesheet information to be modified. There is no need to keep values that will not be modified.")@RequestBody TimesheetDto timesheetDto,
 										@ApiParam(value = "Id of the timesheet to be modified.", required = true) @RequestParam(value="id") int id) {
 		log.debug("Entering edit with id parameter of " + id);
@@ -160,7 +161,8 @@ public class TimesheetController implements Serializable {
 	}
 	
 	@DeleteMapping(Paths.TimesheetBasicPath)
-	@ApiOperation(value = "Deletes a timesheet in the system by their identifier.", notes = "404 if the timeseet's identifier cannot be found. 400 if it is still referenced by a timesheetRow")
+	@ApiOperation(value = "Deletes a timesheet in the system by their identifier.", notes = "404 if the timeseet's identifier cannot be found. 400 if it is still referenced by a timesheetRow",
+					response = Timesheet.class)
 	public ResponseEntity<String> delete(@ApiParam(value = "Id of the timesheet to be deleted", required = true) @RequestParam(value = "id") int id) {
 		log.debug("Entering delete with id parameter of " + id);
 		
@@ -181,9 +183,8 @@ public class TimesheetController implements Serializable {
 	}
 	
 	@GetMapping(Paths.TimesheetGetByEmployeeAndStartDate)
-	@ApiOperation(value = "Returns a detailed list of all the person's information with all information of all timesheets with the specified startDate.", 
-					response = EmployeeComplexWithManager.class, 
-					notes = "404 if the employee's identifier cannot be found")
+	@ApiOperation(value = "Returns a detailed list of all the person's information with all information of all timesheets with the specified startDate.", notes = "404 if the employee's identifier cannot be found",
+					response = EmployeeComplexWithManager.class)
 	public ResponseEntity<?> findByEmployeeId(@ApiParam(value = "Id of the employee to get the information from", required = true) @RequestParam(value="id") int id, 
 												@ApiParam(value =  "Start date of the timesheets to get along with the person.", required = true) @RequestParam(value="startDate") Date startDate){
 		log.debug("Entering findByEmployeeId with id parameter of " + id + " and startDate parameter of " + startDate);
@@ -206,9 +207,8 @@ public class TimesheetController implements Serializable {
 	}
 
 	@GetMapping(Paths.TimesheetGetByEmployeeManagerAndStartDate)
-	@ApiOperation(value = "Returns a detailed list of all the persons managed by the person along with all the information of all timesheets with the specified startDate.", 
-					response = EmployeeComplex.class, 
-					notes = "404 if the manager's identifier cannot be found among the persons")
+	@ApiOperation(value = "Returns a detailed list of all the persons managed by the person along with all the information of all timesheets with the specified startDate.", notes = "404 if the manager's identifier cannot be found among the persons",
+					response = EmployeeComplexWithManager.class)
 	public ResponseEntity<?> findByManagerId(@ApiParam(value = "Id of the employee to get the information from.", required = true) @RequestParam(value="id") int id, 
 												@ApiParam(value = "Start date of the timesheets to get along with the person's managed persons.", required = true) @RequestParam(value="startDate") Date startDate) {
 		log.debug("Entering findByManager with id parameter of " + id + " and startDate parameter of " + startDate);
@@ -238,8 +238,8 @@ public class TimesheetController implements Serializable {
 	//functions that are used only by the frontend
 	
 	@GetMapping(Paths.TimesheetGetAllFromEmployee)
-	@ApiOperation(value = "Returns a list of all the timesheets of an employee.",  
-					notes = "404 if the employee's identifier cannot be found")
+	@ApiOperation(value = "Returns a list of all the timesheets of an employee.", notes = "404 if the employee's identifier cannot be found",
+					response = Timesheet.class, responseContainer = "List")
 	public ResponseEntity<?> getAllTimesheetFromEmployee (@ApiParam(value = "Id of the employee to list all timesheets from", required = true) @RequestParam(value = "id") int id) {
 		log.debug("Entering getAllTimesheetFromEmployee with id parameter of " + id);
 		
@@ -251,8 +251,8 @@ public class TimesheetController implements Serializable {
 	}
 	
 	@GetMapping(Paths.TimesheetGetAllComplexFromEmployee)
-	@ApiOperation(value = "Returns a list of all the timesheets of an employee.",  
-					notes = "404 if the employee's identifier cannot be found")
+	@ApiOperation(value = "Returns a list of all the timesheets of an employee.", notes = "404 if the employee's identifier cannot be found",
+					response = TimesheetComplexWithEmployee.class, responseContainer = "List")
 	public ResponseEntity<?> getAllTimesheetComplexFromEmployee (@ApiParam(value = "Id of the employee to list all timesheets from", required = true) @RequestParam(value = "id") int id) {
 		log.debug("Entering getAllTimesheetComplexFromEmployee with id parameter of " + id);
 		
@@ -277,8 +277,8 @@ public class TimesheetController implements Serializable {
 	}
 	
 	@GetMapping(Paths.TimesheetGetAllToVerify)
-	@ApiOperation(value = "Returns a list of all the timesheets of the employees managed by someone that are waiting for approuval.",  
-					notes = "404 if the employee's identifier cannot be found")
+	@ApiOperation(value = "Returns a list of all the timesheets of the employees managed by someone that are waiting for approuval.", notes = "404 if the employee's identifier cannot be found",
+					response = Timesheet.class, responseContainer = "List")
 	public ResponseEntity<String> getAllTimesheetsToApprove(@ApiParam(value = "Id of the manager to list the timesheets from", required = true) @RequestParam(value = "id") int id) {
 		log.debug("Entering getAllTimesheetsToApprove with id parameter of " + id);
 		
@@ -309,8 +309,8 @@ public class TimesheetController implements Serializable {
 	}
 	
 	@GetMapping(Paths.TimesheetGetAllProjects)
-	@ApiOperation(value = "Returns a list of all the projects in the timesheetRowProjects in the timesheet",
-					notes = "404 if the timesheet's identifier cannot be found.")
+	@ApiOperation(value = "Returns a list of all the projects in the timesheetRowProjects in the timesheet", notes = "404 if the timesheet's identifier cannot be found.",
+					response = Project.class, responseContainer = "List")
 	public ResponseEntity<String> getTimesheetProjects (@ApiParam(value = "Id of the timesheet to list the projects from", required = true) @RequestParam(value = "id") int id) {
 		log.debug("Entering getTimesheetProjects with id parameter of " + id);
 		
@@ -324,8 +324,8 @@ public class TimesheetController implements Serializable {
 	}
 	
 	@PostMapping(Paths.TimesheetCreateWithRows)
-	@ApiOperation(value = "Creates a new timesheet in the system with 7 timesheet rows (one for each day).", 
-	notes = "404 if the id of the employee passed in the body cannot be found.")
+	@ApiOperation(value = "Creates a new timesheet in the system with 7 timesheet rows (one for each day).", notes = "404 if the id of the employee passed in the body cannot be found.",
+					response = Employee.class)
 	public ResponseEntity<?> createTimesheetWithRows (@ApiParam(value = "Employee to who the timesheet belongs", required = true) @RequestBody Employee employee, 
 														@ApiParam(value = "Date that the timesheet is using. Can be any day of the week", required = true) @RequestParam(value = "date") Date date) {
 		Assert.notNull(date, "parameter date must not be null");
@@ -348,9 +348,8 @@ public class TimesheetController implements Serializable {
 	}
 	
 	@PutMapping(Paths.TimesheetEditWithTimesheetComplex)
-	@ApiOperation(value = "Updates a timesheet in the system by their identifier and its timesheet rows.", 
-					notes = "404 if the timesheet's identifier cannot be found. <br>"
-							+ "400 if a timesheetRowProject does not have an id parameter.")
+	@ApiOperation(value = "Updates a timesheet in the system by their identifier and its timesheet rows.", notes = "404 if the timesheet's identifier cannot be found. <br>400 if a timesheetRowProject does not have an id parameter.",
+					response = TimesheetComplexWithEmployee.class)
 	public ResponseEntity<String> editTimesheetWithTimesheetComplex(@ApiParam(value = "Object containing the timesheet info and its timesheet rows", required = true) @RequestBody TimesheetComplexWithEmployee timesheetComplex) {
 		log.debug("Entering editTimesheetWithTimesheetComplex");
 		
@@ -434,8 +433,8 @@ public class TimesheetController implements Serializable {
 	}
 	
 	@DeleteMapping(Paths.TimesheetDeleteWithRows)
-	@ApiOperation(value = "Deletes a timesheet in the system by their identifier along with all its timesheet rows", 
-	notes = "404 if the timeseet's identifier cannot be found.")
+	@ApiOperation(value = "Deletes a timesheet in the system by their identifier along with all its timesheet rows", notes = "404 if the timeseet's identifier cannot be found.",
+					response = Timesheet.class)
 	public ResponseEntity<?> deleteTimesheetWithRows(@ApiParam(value = "Id of the timesheet to be deleted", required = true) @RequestParam(value = "id") int id) {
 		log.debug("Entering deleteTimesheetWithRows with id parameter of " + id);
 		

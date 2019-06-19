@@ -22,6 +22,7 @@ import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.Paths;
 import com.example.Timesheet.com.dto.TimesheetStatusDto;
 import com.example.Timesheet.com.mapper.TimesheetStatusMapper;
+import com.example.Timesheet.com.model.TimesheetRow;
 import com.example.Timesheet.com.model.TimesheetStatus;
 import com.example.Timesheet.com.service.TimesheetService;
 import com.example.Timesheet.com.service.TimesheetStatusService;
@@ -48,14 +49,16 @@ public class TimesheetStatusController implements Serializable {
 	private TimesheetService timesheetService = new TimesheetService();
 	
 	@GetMapping(Paths.TimesheetStatusBasicPath)
-	@ApiOperation("Returns a list of all timesheet statuses in the system.")
+	@ApiOperation(value = "Returns a list of all timesheet statuses in the system.",
+					response = TimesheetStatus.class, responseContainer = "List")
 	public List<TimesheetStatus> getAll(){
 		log.debug("Entering getAll");
 		return timesheetStatusService.getAll();
 	}
 	
 	@GetMapping(Paths.TimesheetStatusGetOne)
-	@ApiOperation(value = "Returns the timesheetStatus with the specified identifier.", notes = "404 if the status's identifier cannot be found.")
+	@ApiOperation(value = "Returns the timesheetStatus with the specified identifier.", notes = "404 if the status's identifier cannot be found.",
+					response = TimesheetStatus.class)
 	public ResponseEntity<?> getOne(@ApiParam(value = "Id of the timesheetStatus to be found.", required = true) @RequestParam(value="id") int id) {
 		log.debug("Entering getOne with id parameter of " + id);
 		
@@ -69,7 +72,8 @@ public class TimesheetStatusController implements Serializable {
 	}
 	
 	@PostMapping(Paths.TimesheetStatusBasicPath)
-	@ApiOperation("Creates a new timesheet status in the system")
+	@ApiOperation(value = "Creates a new timesheet status in the system",
+					response = TimesheetStatus.class)
 	public ResponseEntity<String> create(@ApiParam(value = "Timesheet status information for the new status to be created", required = true)@RequestBody TimesheetStatusDto timesheetStatusDto) {
 		log.debug("Entering create");
 		
@@ -81,7 +85,8 @@ public class TimesheetStatusController implements Serializable {
 	}
 	
 	@PutMapping(Paths.TimesheetStatusBasicPath)
-	@ApiOperation(value = "Updates a timesheet status in the system by their identifier.", notes = "404 if the status's identifier cannot be found.")
+	@ApiOperation(value = "Updates a timesheet status in the system by their identifier.", notes = "404 if the status's identifier cannot be found.",
+					response = TimesheetStatus.class)
 	public ResponseEntity<String> edit(@ApiParam(value = "Timesheet status information to be modified. There is no need to keep values that will not be modified.")@RequestBody TimesheetStatusDto timesheetStatusDto,
 										@ApiParam(value = "Id of the timesheet status to be modified. Cannot be null.", required = true) @RequestParam int id) {
 		log.debug("Entering edit with id parameter of " + id);
@@ -98,7 +103,8 @@ public class TimesheetStatusController implements Serializable {
 	}
 	
 	@DeleteMapping(Paths.TimesheetStatusBasicPath)
-	@ApiOperation(value = "Delets a timesheet status in the system by their identifier.", notes = "404 of the status's identifier cannot be found. 400 if timesheets still use the status.")
+	@ApiOperation(value = "Delets a timesheet status in the system by their identifier.", notes = "404 of the status's identifier cannot be found. 400 if timesheets still use the status.", 
+					response = TimesheetStatus.class)
 	public ResponseEntity<String> delete(@ApiParam(value = "Id of the timesheet status to be deleted. Cannot be null.", required = true) @RequestParam int id) {
 		log.debug("Entering delete with id parameter of " + id);
 		

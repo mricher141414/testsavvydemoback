@@ -48,14 +48,16 @@ public class DepartmentController implements Serializable {
 	EmployeeService personService = new EmployeeService();
 	
 	@GetMapping(Paths.DepartmentBasicPath)
-	@ApiOperation("Returns a list of all departments in the system.")
+	@ApiOperation(value = "Returns a list of all departments in the system.",
+					response = Department.class, responseContainer = "List")
 	public List<Department> getAll(){
 		log.debug("Entering getAll");
 		return departmentService.getAll();
 	}
 	
 	@GetMapping(Paths.DepartmentGetOne)
-	@ApiOperation(value = "Returns the department with the specified identifier.", notes = "404 if the department's identifier cannot be found.")
+	@ApiOperation(value = "Returns the department with the specified identifier.", notes = "404 if the department's identifier cannot be found.",
+					response = Department.class)
 	public ResponseEntity<?> getOne(@ApiParam(value = "Id of the department to be found.", required = true) @RequestParam(value="id") int id) {
 		log.debug("Entering getOne with id parameter of " + id);
 		
@@ -69,7 +71,8 @@ public class DepartmentController implements Serializable {
 	}
 	
 	@PostMapping(Paths.DepartmentBasicPath)
-	@ApiOperation("Create a new department in the system.")
+	@ApiOperation(value = "Create a new department in the system.",
+					response = Department.class)
 	public ResponseEntity<String> create(@ApiParam(value = "Department information for the new department to be created.", required = true)@RequestBody DepartmentDto departementDto) {
 		log.debug("Entering create");
 		
@@ -81,7 +84,8 @@ public class DepartmentController implements Serializable {
 	}
 	
 	@PutMapping(Paths.DepartmentBasicPath)
-	@ApiOperation(value = "Updates a department in the system by their identifier.", notes = "404 if the department's identifier is not found")
+	@ApiOperation(value = "Updates a department in the system by their identifier.", notes = "404 if the department's identifier is not found", 
+					response = Department.class)
 	public ResponseEntity<?> edit(@ApiParam("department information to be modified")@RequestBody DepartmentDto departementDTO,
 										@ApiParam(value = "Id of the department to be modified. Cannot be null", required = true)@RequestParam(value="id") int id){
 		log.debug("Entering edit with id parameter of " + id);
@@ -99,7 +103,8 @@ public class DepartmentController implements Serializable {
 	}
 	
 	@DeleteMapping(Paths.DepartmentBasicPath)
-	@ApiOperation(value = "Deletes a department from the system.", notes = "404 if the department's identifier cannot be found")
+	@ApiOperation(value = "Deletes a department from the system.", notes = "404 if the department's identifier cannot be found",
+					response = Department.class)
 	public ResponseEntity<?> delete(@ApiParam(value = "Id of the department to be deleted. Cannot be null.", required = true)@RequestParam(value="id") int id){
 		log.debug("Entering delete with id parameter of " + id);
 		
