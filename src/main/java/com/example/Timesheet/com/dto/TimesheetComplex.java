@@ -1,18 +1,20 @@
 package com.example.Timesheet.com.dto;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
 
-import com.example.Timesheet.com.model.Employee;
-import com.example.Timesheet.com.model.TimesheetRow;
 import com.example.Timesheet.com.model.TimesheetStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(description = "<p>Class used by PersonComplex. Is a more detailed version of the Timesheet model.</p>")
-public class TimesheetComplex {
+public class TimesheetComplex implements Serializable {
 	
+	private static final long serialVersionUID = 3160899944356843605L;
+
 	@ApiModelProperty(notes = "<p>Unique identifier of the timesheet. No two timesheets can have the same id.</p>", example = "1", position = 0)
 	private int id;
 	
@@ -22,19 +24,23 @@ public class TimesheetComplex {
 	@ApiModelProperty(notes = "<p>Notes of the timesheet.</p>", example = "Première timesheet", position = 2)
 	private String notes;
 	
-	@ApiModelProperty(notes = "<p>Date (year-month-date) at which the timesheet started.</p>", example = "2019-06-29", position = 3)
+	@ApiModelProperty(notes = "<p>Date (year-month-date) at which the timesheet started.</p>", example = "2019-06-30", position = 3)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date startDate;
 	
-	@ApiModelProperty(notes = "<p>Date (year-month-date) at which the timesheet ended.</p>", example = "2019-07-05", position = 4)
+	@ApiModelProperty(notes = "<p>Date (year-month-date) at which the timesheet ended.</p>", example = "2019-07-06", position = 4)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date endDate;
 	
 	@ApiModelProperty(notes = "<p>List of all timesheetRows that reference this timesheet.</p>", position = 5)
-	private List<TimesheetRow> timesheetRows;
+	private List<TimesheetRowWithProject> timesheetRows;
 	
 	@ApiModelProperty(notes = "<p>Object of the timesheetStatus used by the timesheet.</p>", position = 6)
 	private TimesheetStatus timesheetStatus;
 	
-	public int getId() {
+	//getters and setters
+	
+	public Integer getId() {
 		return id;
 	}
 	public void setId(int id) {
@@ -64,10 +70,10 @@ public class TimesheetComplex {
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
-	public List<TimesheetRow> getTimesheetRows() {
+	public List<TimesheetRowWithProject> getTimesheetRows() {
 		return timesheetRows;
 	}
-	public void setTimesheetRows(List<TimesheetRow> timesheetRows) {
+	public void setTimesheetRows(List<TimesheetRowWithProject> timesheetRows) {
 		this.timesheetRows = timesheetRows;
 	}
 	public TimesheetStatus getTimesheetStatus() {

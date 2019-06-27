@@ -8,7 +8,9 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(description = "<p>Class received by the user by the endpoint timesheet/employee. Is a child of the EmployeeComplex class, but with a manager added.")
 public class EmployeeComplexWithManager extends EmployeeComplex {
 	
-	@ApiModelProperty(notes = "Full object of the employee who manages the current employee", position = 10)
+	private static final long serialVersionUID = 4849180786574092066L;
+	
+	@ApiModelProperty(notes = "Full object of the employee who manages the current employee", position = 11)
 	private Employee manager;
 
 	//getters and setters

@@ -1,28 +1,32 @@
 package com.example.Timesheet.com.mapper;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.TimeZone;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.dto.EmployeeComplex;
 import com.example.Timesheet.com.dto.EmployeeComplexWithManager;
 import com.example.Timesheet.com.dto.EmployeeDto;
 import com.example.Timesheet.com.dto.TimesheetComplex;
 import com.example.Timesheet.com.model.Employee;
 import com.example.Timesheet.com.model.Timesheet;
-import com.example.Timesheet.com.service.DepartementService;
+import com.example.Timesheet.com.service.DepartmentService;
 import com.example.Timesheet.com.service.EmployeeService;
 import com.example.Timesheet.com.service.RoleService;
 import com.example.Timesheet.com.service.TimesheetService;
 
 @Component
-public class EmployeeMapper implements IEmployeeMapper {
+public class EmployeeMapper implements IEmployeeMapper, Serializable {
 	
+	private static final long serialVersionUID = -1499901430978397355L;
+	private static final Logger log = LogManager.getLogger(EmployeeMapper.class);
+
 	@Autowired
 	private EmployeeService employeeService;
 	
@@ -30,7 +34,7 @@ public class EmployeeMapper implements IEmployeeMapper {
 	private RoleService roleService;
 	
 	@Autowired
-	private DepartementService departementService;
+	private DepartmentService departementService;
 	
 	@Autowired
 	private TimesheetMapper timesheetMapper;
@@ -40,64 +44,61 @@ public class EmployeeMapper implements IEmployeeMapper {
 	
 	@Override
     public Employee dtoToEmployee(EmployeeDto source, int id) {
-        if ( source == null ) {
+		log.debug("Entering dtoToEmployee with id parameter of " + id);
+		
+		if ( source == null ) {
             return null;
         }
 
         Employee employee = new Employee();
-
-        employee.setId( id );
-        employee.setDateOfBirth( source.getDateOfBirth() );
-        employee.setEmail( source.getEmail() );
-        employee.setLastName( source.getLastName() );
-        employee.setFirstName( source.getFirstName() );
-        employee.setPassword( source.getPassword() );
-        employee.setRoleId( source.getRoleId() );
-        employee.setDepartementId( source.getDepartementId() );
-        employee.setManagerId( source.getManagerId() );
-        employee.setAddress( source.getAddress() );
         
         Optional<Employee> optionalEmployee = this.employeeService.getById(id);
         
         if(optionalEmployee.isPresent()) {
-        	Employee dbEmployee = optionalEmployee.get();
-        	
-        	if(employee.getDateOfBirth() == null) {
-        		employee.setDateOfBirth(dbEmployee.getDateOfBirth());
-        	}
-        	
-        	if(employee.getEmail() == null) {
-        		employee.setEmail(dbEmployee.getEmail());
-        	}
-        	
-        	if(employee.getLastName() == null) {
-        		employee.setLastName(dbEmployee.getLastName());
-        	}
-        	
-        	if(employee.getFirstName() == null) {
-        		employee.setFirstName(dbEmployee.getFirstName());
-        	}
-        	
-        	if(employee.getPassword() == null) {
-        		employee.setPassword(dbEmployee.getPassword());
-        	}
-        	
-        	if(employee.getRoleId() == null) {
-        		employee.setRoleId(dbEmployee.getRoleId());
-        	}
-        	
-        	if(employee.getDepartementId() == null) {
-        		employee.setDepartementId(dbEmployee.getDepartementId());
-        	}
-        	
-        	if(employee.getManagerId() == null) {
-        		employee.setManagerId(dbEmployee.getManagerId());
-        	}
-        	
-        	if(employee.getAddress() == null) {
-        		employee.setAddress(dbEmployee.getAddress());
-        	}
+        	employee = optionalEmployee.get();
         }
+        
+        employee.setId(id);
+    	
+    	if(source.getDateOfBirth() != null) {
+    		employee.setDateOfBirth(source.getDateOfBirth());
+    	}
+    	
+    	if(source.getEmail() != null) {
+    		employee.setEmail(source.getEmail());
+    	}
+    	
+    	if(source.getLastName() != null) {
+    		employee.setLastName(source.getLastName());
+    	}
+    	
+    	if(source.getFirstName() != null) {
+    		employee.setFirstName(source.getFirstName());
+    	}
+    	
+    	if(source.getPassword() != null) {
+    		employee.setPassword(source.getPassword());
+    	}
+    	
+    	if(source.getRoleId() != null) {
+    		employee.setRoleId(source.getRoleId());
+    	}
+    	
+    	if(source.getDepartmentId() != null) {
+    		employee.setDepartmentId(source.getDepartmentId());
+    	}
+    	
+    	if(source.getManagerId() != null) {
+    		employee.setManagerId(source.getManagerId());
+    	}
+    	
+    	if(source.getAddress() != null) {
+    		employee.setAddress(source.getAddress());
+    	}
+    	
+    	if(source.getSalary() != null) {
+    		employee.setSalary(source.getSalary());
+    	}
         
         employee.compensateTimezoneOnDates();
 
@@ -106,7 +107,9 @@ public class EmployeeMapper implements IEmployeeMapper {
 
     @Override
     public EmployeeDto employeeToDto(Employee destination) {
-        if ( destination == null ) {
+    	log.debug("Entering employeeToDto");
+    	
+    	if ( destination == null ) {
             return null;
         }
 
@@ -119,9 +122,10 @@ public class EmployeeMapper implements IEmployeeMapper {
         employeeDto.setFirstName( destination.getFirstName() );
         employeeDto.setPassword( destination.getPassword() );
         employeeDto.setRoleId( destination.getRoleId() );
-        employeeDto.setDepartementId( destination.getDepartementId() );
+        employeeDto.setDepartmentId( destination.getDepartmentId() );
         employeeDto.setManagerId( destination.getManagerId() );
         employeeDto.setAddress( destination.getAddress() );
+        employeeDto.setSalary(destination.getSalary());
 
         return employeeDto;
     }
@@ -134,22 +138,24 @@ public class EmployeeMapper implements IEmployeeMapper {
 		employeeComplex.setEmailAddress(employee.getEmail());
 		employeeComplex.setPassword(employee.getPassword());
 		employeeComplex.setDateOfBirth(employee.getDateOfBirth());
+		employeeComplex.setSalary(employee.getSalary());
 
 		if(employee.getRoleId()!= null) {
 			employeeComplex.setRole(this.roleService.getById(employee.getRoleId()).get());
 		}
 
-		if(employee.getDepartementId() != null) {
-			employeeComplex.setDepartement(this.departementService.getById(employee.getDepartementId()).get());
+		if(employee.getDepartmentId() != null) {
+			employeeComplex.setDepartment(this.departementService.getById(employee.getDepartmentId()).get());
 		}
 
 	}
 	
 	public void addTimesheetsToEmployeeComplexByStartDate(EmployeeComplex employee, Date startDate) {
-		List<Timesheet> timesheetsEmployee = timesheetService.getTimesheetByEmployeeIdAndStartDate(employee.getId(), startDate);
+		List<Timesheet> timesheetsEmployee = timesheetService.getByEmployeeIdAndStartDate(employee.getId(), startDate);
 		
 		for (Timesheet timesheet : timesheetsEmployee) {
-			TimesheetComplex timesheetComplex = timesheetMapper.fromTimesheetToComplex(timesheet);
+			TimesheetComplex timesheetComplex = new TimesheetComplex();
+			timesheetMapper.fromTimesheetToComplex(timesheet, timesheetComplex);
 			employee.addToTimesheets(timesheetComplex);
 		}
 	}
@@ -157,6 +163,5 @@ public class EmployeeMapper implements IEmployeeMapper {
 	public EmployeeComplexWithManager addManagerToEmployeeComplexWithManager(EmployeeComplexWithManager employeeComplex, Employee employee) {
 		employeeComplex.setManager(this.employeeService.getById(employee.getManagerId()).get());
 		return employeeComplex;
-
 	}
 }

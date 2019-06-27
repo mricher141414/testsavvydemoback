@@ -1,5 +1,6 @@
 package com.example.Timesheet.com.model;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.TimeZone;
 
@@ -8,16 +9,24 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Version;
 
-import com.example.Timesheet.com.GlobalMessages;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.example.Timesheet.com.GlobalVars;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
 @ApiModel(description = "<p>Class representing a timesheet tracked by the application.</p>")
-public class Timesheet {
+public class Timesheet implements Serializable {
 	
+	private static final long serialVersionUID = 14545409125003604L;
+	private static final Logger log = LogManager.getLogger(Timesheet.class);
+
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	@ApiModelProperty(notes = "<p>Unique identifier of the timesheet. No two timesheets can have the same id</p>", example = "1", position = 0)
 	private int id;
@@ -28,12 +37,14 @@ public class Timesheet {
 	@ApiModelProperty(notes = "<p>Notes of the timesheet.</p>", example = "Première timesheet", position = 2)
 	private String notes;
 	
-	@ApiModelProperty(notes = "<p>Date (year-month-date) at which the timesheet started.</p>", example = "2019-06-29", position = 3)
+	@ApiModelProperty(notes = "<p>Date (year-month-date) at which the timesheet started.</p>", example = "2019-06-30", position = 3)
 	@Column(name = "start_date")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date startDate;
 	
 	@Column(name = "end_date")
-	@ApiModelProperty(notes = "<p>Date (year-month-date) at which the timesheet ended.</p>", example = "2019-07-05", position = 4)
+	@ApiModelProperty(notes = "<p>Date (year-month-date) at which the timesheet ended.</p>", example = "2019-07-06", position = 4)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date endDate;
 	
 	@Column(name = "employee_id")
@@ -44,7 +55,12 @@ public class Timesheet {
 	@ApiModelProperty(notes = "<p>Unique identifier of the timesheet status. No two timesheet statuses can have the same id.</p>", example = "1", position = 6)
 	private Integer timesheetStatusId;
 	
+	@Version
+	private Integer version;
+	
 	public void compensateTimezoneOnDates() {
+		log.debug("Entering compensateTimezonesOnDates");
+		
 		Date startDate = this.getStartDate();
 		Date endDate = this.getEndDate();
 		
@@ -52,7 +68,7 @@ public class Timesheet {
 			return;
 		}
         
-        TimeZone timeZone = TimeZone.getTimeZone(GlobalMessages.Timezone);
+        TimeZone timeZone = TimeZone.getTimeZone(GlobalVars.Timezone);
         int offset = timeZone.getOffset(startDate.getTime());
         startDate.setTime(startDate.getTime() - offset);
         
@@ -107,6 +123,15 @@ public class Timesheet {
 	}
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+	
+	//getVersion, but with a different name so swagger won't pick it up
+	public Integer fetchVersion() {
+		return this.version;
+	}
+	
+	public void setVersion(int version) {
+		this.version = version;
 	}
 
 

@@ -1,5 +1,6 @@
 package com.example.Timesheet.com.model;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.TimeZone;
 
@@ -8,42 +9,49 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Version;
 
-import com.example.Timesheet.com.GlobalMessages;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.example.Timesheet.com.GlobalVars;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
 @ApiModel(description = "<p>Class representing a row of a timesheet tracked by the application.</p>")
-public class TimesheetRow {
+public class TimesheetRow implements Serializable {
 	
+	private static final long serialVersionUID = -3696726093325275568L;
+	private static final Logger log = LogManager.getLogger(TimesheetRow.class);
+
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	@ApiModelProperty(notes = "<p>Unique identifier of the row. No two rows can have the same id.</p>", example = "1", position = 0)
 	private int id;
 	
 	@ApiModelProperty(notes = "<p>Date (year-month-date) of the row.</p>", example = "2019-07-01", position = 1)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date date;
 	
-	@ApiModelProperty(notes = "<p>Amount of hours logged in for the row. Use a dot (.) for decimals.</p>", example = "8.5", position = 2)
-	private float value;
-	
 	@Column(name = "timesheet_id")
-	@ApiModelProperty(notes = "<p>Unique identifier of the timesheet that the row is currently in. No two timesheets can have the same id.</p>", example = "1", position = 3)
+	@ApiModelProperty(notes = "<p>Unique identifier of the timesheet that the row is currently in. No two timesheets can have the same id.</p>", example = "1", position = 2)
 	private Integer timesheetId;
 	
-	@Column(name = "project_id")
-	@ApiModelProperty(notes = "<p>Unique identifier of the project the person has worked on for that row. No two projects can have the same id.</p>", example = "4", position = 4)
-	private Integer projectId;
+	@Version
+	private Integer version;
 	
 	public void compensateTimezoneOnDates() {
+		log.debug("Entering compensateTimezoneOnDates");
+		
 		Date date = this.getDate();
 		
 		if(date == null) {
 			return;
 		}
         
-        TimeZone timeZone = TimeZone.getTimeZone(GlobalMessages.Timezone);
+        TimeZone timeZone = TimeZone.getTimeZone(GlobalVars.Timezone);
         int offset = timeZone.getOffset(date.getTime());
         
         offset = timeZone.getOffset(date.getTime());
@@ -53,14 +61,6 @@ public class TimesheetRow {
 	}
 	
 	//getters and setters
-	
-	public float getValue() {
-		return this.value;
-	}
-	
-	public void setValue(Float value) {
-		this.value = value;
-	}
 	
 	public int getId() {
 		return id;
@@ -79,11 +79,14 @@ public class TimesheetRow {
 	}
 	public void setTimesheetId(Integer timesheetId) {
 		this.timesheetId = timesheetId;
+	}	
+	
+	//getVersion, but with a different name so swagger won't pick it up
+	public Integer fetchVersion() {
+		return this.version;
 	}
-	public Integer getProjectId() {
-		return projectId;
-	}
-	public void setProjectId(Integer projectId) {
-		this.projectId = projectId;
+	
+	public void setVersion(int version) {
+		this.version = version;
 	}
 }

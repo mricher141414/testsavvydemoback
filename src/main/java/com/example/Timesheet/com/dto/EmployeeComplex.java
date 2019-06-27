@@ -1,19 +1,23 @@
 package com.example.Timesheet.com.dto;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.Timesheet.com.model.Departement;
+import com.example.Timesheet.com.model.Department;
 import com.example.Timesheet.com.model.Role;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(description = "<p>Class received by the user by the endpoint timesheet/manager. Is a more detailed version of the Employee model.</p>"
 			)
-public class EmployeeComplex {
+public class EmployeeComplex implements Serializable {
 	
+	private static final long serialVersionUID = -519983020682074327L;
+
 	@ApiModelProperty(notes = "<p>Unique identifier of the employee. No two employees can have the same id.</p>", example = "1", position = 0)
 	protected int id;
 	
@@ -35,17 +39,21 @@ public class EmployeeComplex {
 	
 	@ApiModelProperty(notes = "<p>Full object of the department the employee is in. <br>"
 			+ "Check the department model for more information.</p>", position = 6)
-	protected Departement departement;
+	protected Department department;
 	
 	@ApiModelProperty(notes = "<p>Physical address of the employee's working place.</p>", example = "101 rue des Abénaquis", position = 8)
 	protected String address;
 	
 	@ApiModelProperty(notes = "<p>Date of birth (year-month-day) of the employee.</p>", example = "1955-01-13", position = 7)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	protected Date dateOfBirth;
 	
 	@ApiModelProperty(notes = "<p>List of TimesheetComplex objects to represent all the timesheets that the employee has that matches the condition.</p>", position = 9)
 	protected List<TimesheetComplex> timesheets = new ArrayList<TimesheetComplex>();
 
+	@ApiModelProperty(notes = "<p>Amount of money the employee makes</p>.", example = "16.50", position = 10)
+	protected Float salary;
+	
 	//getters and setters
 	
 	public int getId() {
@@ -84,11 +92,11 @@ public class EmployeeComplex {
 	public void setRole(Role role) {
 		this.role = role;
 	}
-	public Departement getDepartement() {
-		return departement;
+	public Department getDepartment() {
+		return department;
 	}
-	public void setDepartement(Departement departement) {
-		this.departement = departement;
+	public void setDepartment(Department departement) {
+		this.department = departement;
 	}
 	public String getAddress() {
 		return address;
@@ -111,9 +119,15 @@ public class EmployeeComplex {
 	}
 	
 	public void addToTimesheets(TimesheetComplex timesheetComplex) {		
-		timesheets.add(timesheetComplex);
-		
+		timesheets.add(timesheetComplex);	
+	}
+	public Float getSalary() {
+		return salary;
+	}
+	public void setSalary(Float salary) {
+		this.salary = salary;
 	}
 
+	
 	
 }

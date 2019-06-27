@@ -28,10 +28,14 @@ public class SpringFoxConfig {
 				.build()
 				.apiInfo(getApiInfo())
 				.tags(new Tag("ClientController", "Set of endpoints for listing, creating, updating and deleting clients."),
-						new Tag("DepartementController", "Set of endpoints for listing, creating, updating and deleting departments."),
+						new Tag("DepartmentController", "Set of endpoints for listing, creating, updating and deleting departments."),
 						new Tag("EmployeeController", "Set of endpoints for listing, creating, updating and deleting employee."),
 						new Tag("ProjectController", "Set of endpoints for listing, creating, updating and deleting projects."),
+						new Tag("ProjectEmployeeController", "Set of endpoints for listing, creating and deleting assignations of employees to projects."),
+						new Tag("QueueController", "Set of endpoints for listing and creating items in the queue table."),
 						new Tag("RoleController", "Set of endpoints for listing, creating, updating and deleting roles."),
+						new Tag("SalaryReportController", "Set of endpoints for listing, creating, and deleting salary reports."),
+						new Tag("TimesheetRowProjectController", "Set of endpoints for listing, creating, updating and deleting timesheetRowProjects."),
 						new Tag("TimesheetStatusController", "Set of endpoints for listing, creating, updating and deleting timesheet statuses."),
 						new Tag("TimesheetRowController", "Set of endpoints for listing, creating, updating and deleting timesheet rows."),
 						new Tag("TimesheetController", "Set of endpoints for listing, creating, updating and deleting timesheets."));

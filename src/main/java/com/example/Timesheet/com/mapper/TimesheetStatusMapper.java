@@ -1,35 +1,64 @@
 package com.example.Timesheet.com.mapper;
 
-import com.example.Timesheet.com.dto.TimesheetStatusDTO;
+import java.io.Serializable;
+import java.util.Optional;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.example.Timesheet.com.dto.TimesheetStatusDto;
 import com.example.Timesheet.com.model.TimesheetStatus;
+import com.example.Timesheet.com.service.TimesheetStatusService;
 
-public class TimesheetStatusMapper implements ITimesheetStatusMapper {
+@Component
+public class TimesheetStatusMapper implements ITimesheetStatusMapper, Serializable {
+
+	private static final long serialVersionUID = 7560521620023703172L;
+	private static final Logger log = LogManager.getLogger(TimesheetStatusMapper.class);
 	
-	 @Override
-	    public TimesheetStatus DTOtoTimesheetStatus(TimesheetStatusDTO source, int id) {
-	        if ( source == null ) {
-	            return null;
-	        }
+	@Autowired
+	private TimesheetStatusService timesheetStatusService;
+	
+	@Override
+    public TimesheetStatus dtoToTimesheetStatus(TimesheetStatusDto source, int id) {
+		log.debug("Entering dtoToTimesheetStatus with id parameter of " + id);
+		
+		if ( source == null ) {
+            return null;
+        }
 
-	        TimesheetStatus timesheetStatus = new TimesheetStatus();
+        TimesheetStatus timesheetStatus = new TimesheetStatus();
+        
+        Optional<TimesheetStatus> optionalTimesheetStatus = timesheetStatusService.getById(id); 
 
-	        timesheetStatus.setId( id );
-	        timesheetStatus.setName( source.getName() );
+        if(optionalTimesheetStatus.isPresent()) {
+        	timesheetStatus = optionalTimesheetStatus.get();
+        }
+        
+        timesheetStatus.setId( id );
+        
+        if(source.getName() != null) {
+        	timesheetStatus.setName( source.getName() );
+        }
+        
+        return timesheetStatus;
+    }
 
-	        return timesheetStatus;
-	    }
+    @Override
+    public TimesheetStatusDto timesheetStatusToDto(TimesheetStatus destination) {
+    	log.debug("Entering timesheetStatusToDto");
+    	
+    	if ( destination == null ) {
+            return null;
+        }
 
-	    @Override
-	    public TimesheetStatusDTO TimesheetStatusToDTO(TimesheetStatus destination) {
-	        if ( destination == null ) {
-	            return null;
-	        }
+        TimesheetStatusDto timesheetStatusDTO = new TimesheetStatusDto();
 
-	        TimesheetStatusDTO timesheetStatusDTO = new TimesheetStatusDTO();
+        timesheetStatusDTO.setId( destination.getId() );
+        timesheetStatusDTO.setName( destination.getName() );
 
-	        timesheetStatusDTO.setId( destination.getId() );
-	        timesheetStatusDTO.setName( destination.getName() );
-
-	        return timesheetStatusDTO;
-	    }
+        return timesheetStatusDTO;
+    }
 }

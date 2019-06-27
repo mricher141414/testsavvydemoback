@@ -7,11 +7,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.Api;
 import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
@@ -20,7 +19,7 @@ import springfox.documentation.annotations.ApiIgnore;
 public class LoginController {
 	String url = "jdbc:sqlserver://localhost:1433;databaseName=timesheetdb;user=admin;password=Cgi12345*"; //local
 	//TODO refaire les couches pour le login
-	@GetMapping("/login")
+	@PostMapping("/login")
 	
 	public boolean login(@RequestParam(value="username") String username, @RequestParam(value="password") String password) throws SQLException {
 				boolean boolReturn = false;

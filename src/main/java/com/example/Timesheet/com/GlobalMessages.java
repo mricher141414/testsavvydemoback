@@ -2,10 +2,8 @@ package com.example.Timesheet.com;
 
 public class GlobalMessages {
 	
-	public static final String Timezone = "Canada/Eastern";
-	
 	//Department messages
-	public static final String DepartementIdNotFound = "No department was found with the specified id";
+	public static final String DepartmentIdNotFound = "No department was found with the specified id";
 	public static final String EmployeeUsesDepartementCannotDelete = "The department with the specified id could not be deleted, as some employees are referencing it";
 	public static final String DepartementDeleteSuccessful = "The department with the specified id was deleted";
 	public static final String DepartementPutSuccessful = "The department with the specified id was modified successfully";
@@ -27,11 +25,14 @@ public class GlobalMessages {
 	public static final String EmployeeIdIsNull = "The employeeId in body is null. Please add an employeeId";
 	public static final String ManagerIdIsNull = "The managerId in body is null. Please add a managerId";
 	public static final String EmployeeUsesManagerCannotDelete = "The employee with the specified id cannot be deleted, as some employees are referencing it as their manager.";
+	public static final String EmployeeAssignedCannotDelete = "The employee with the specified id cannot be deleted, as it is still assigned to at least one project.";
 	public static final String TimesheetUsesEmployeeCannotDelete = "The employee with the specified id cannot be deleted, as some timesheets are referencing it.";
 	public static final String ProjectUsesEmployeeCannotDelete = "The employee with the specified id cannot be deleted, as some projects are referencing it as their project manager.";
 	
 	//timesheetRow messages
 	public static final String TimesheetRowIdNotFound = "No timesheetRow was found with the specified id";
+	public static final String TimesheetRowIdParameterNotFound = "No timesheetRow was found with the specified timesheetRowId";
+	public static final String TimeProjectUsesTimesheetRowCannotDelete = "The timesheet row with the specified id cannot be deleted, as some timeProjects are referencing it.";
 	public static final String TimesheetRowDeleteSuccessful = "The timesheetRow with the specified id was deleted";
 	public static final String TimesheetRowPutSuccessful = "The timesheetRow with the specified id was modified sucessfully.";
 	
@@ -54,8 +55,13 @@ public class GlobalMessages {
 	public static final String ProjectIdNotFound = "No project was found with the specified id";
 	public static final String ProjectIdIsNull = "The projectId in body is null. Please add a projectId";
 	public static final String ProjectPutSuccessful = "The project with the specified id was modified successfully";
+	public static final String ProjectAssignedCannotDelete = "The project with the specified id cannot be deleted, as it is still assigned to at least one employee.";
+	public static final String TimeProjectUsesProjectCannotDelete = "The project with the specified id cannot be deleted, as some timeProjects are referencing it.";
 	public static final String TimesheetRowUsesProjectCannotDelete = "The project with the specified id cannot be deleted, as some timesheet rows are referencing it.";
 	public static final String ProjectDeleteSuccessful = "The project with the specified id was deleted.";
+	public static final String ProjectAveragInvalidWeekNumber = "Please enter an amount of weeks that is at least 1.";
+	public static final String AverageDateParameterTooLate = "The project ends before the date you have specified.";
+	public static final String AverageDateParameterTooEarly = "The project wasn't started on the first week.";
 	
 	//client messages
 	public static final String ClientIdParameterNotFound = "No client was found with the specified clientId";
@@ -63,6 +69,13 @@ public class GlobalMessages {
 	public static final String ClientPutSuccessful = "The client with the specified id was modified successfully.";
 	public static final String ProjectUsesClientCannotDelete = "The client with the specified id cannot be deleted, as some projects are referencing it.";
 	public static final String ClientDeleteSuccessful = "The project with the specified id was deleted.";
+	
+	//timesheetRowProject messages
+	public static final String TimesheetRowProjectIdNotFound = "No timesheetRowProject was found with the specified id";
+	public static final String TimesheetRowProjectIdCannotBeNull = "A timesheetRowProject was provided with no id parameter. Please use \"id\": 0 if you want to add the timesheetRowProject to the row.";
+	
+	//projectEmployee messages
+	public static final String ProjectEmployeeIdNotFound = "No ProjectEmployee was found with the specified id.";
 	
 	//global messages
 	public static final String NameIsEmpty = "Name is empty";
