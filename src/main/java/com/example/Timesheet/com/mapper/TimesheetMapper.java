@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.OptimisticLockException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,7 @@ public class TimesheetMapper implements ITimesheetMapper, Serializable {
 	
 	private static final long serialVersionUID = 4403383706852682929L;
 	private static final Logger log = LogManager.getLogger(TimesheetMapper.class);
+	
 	@Autowired
 	private TimesheetService timesheetService;
 	
@@ -83,6 +86,12 @@ public class TimesheetMapper implements ITimesheetMapper, Serializable {
     	if(source.getEndDate() != null) {
     		timesheet.setEndDate(source.getEndDate());
     	}
+    	
+    	if(source.getVersion() != null && timesheet.getVersion() != null) {
+    		if(source.getVersion() != timesheet.getVersion()) {
+				throw new OptimisticLockException("Wrong version");
+			}
+		}
         
         timesheet.compensateTimezoneOnDates();
         
@@ -108,6 +117,7 @@ public class TimesheetMapper implements ITimesheetMapper, Serializable {
         if ( destination.getTimesheetStatusId() != null ) {
             timesheetDto.setTimesheetStatusId( destination.getTimesheetStatusId() );
         }
+        timesheetDto.setVersion(destination.getVersion());
 
         return timesheetDto;
     }
@@ -122,6 +132,7 @@ public class TimesheetMapper implements ITimesheetMapper, Serializable {
 		timesheetComplex.setEndDate(timesheet.getEndDate());
 		timesheetComplex.setNotes(timesheet.getNotes());
 		timesheetComplex.setStartDate(timesheet.getStartDate());
+		timesheetComplex.setVersion(timesheet.getVersion());
 		
 		List<TimesheetRow> rows = timesheetRowService.getByTimesheetId(timesheet.getId());
 		
@@ -153,13 +164,27 @@ public class TimesheetMapper implements ITimesheetMapper, Serializable {
     	
     	Timesheet timesheet = new Timesheet();
     	
+    	timesheet.setId( timesheetComplex.getId() );
+        
+        Optional<Timesheet> optionalTimesheet = this.timesheetService.getById(timesheet.getId());
+        
+        if(optionalTimesheet.isPresent()) {
+        	timesheet = optionalTimesheet.get();
+        }
+    	
     	timesheet.setId(timesheetComplex.getId());
     	timesheet.setTotal(timesheetComplex.getTotal());
     	timesheet.setEndDate(timesheetComplex.getEndDate());
     	timesheet.setNotes(timesheetComplex.getNotes());
     	timesheet.setStartDate(timesheetComplex.getStartDate());
     	timesheet.setTimesheetStatusId(timesheetComplex.getTimesheetStatus().getId());
-    	timesheet.setEmployeeId(employeeId);
+    	
+    	if(timesheet.getVersion() != null) {
+    		if(timesheet.getVersion() != timesheet.getVersion()) {
+				throw new OptimisticLockException("Wrong version");
+			}
+		}
+    	
     	
     	return timesheet;
     }

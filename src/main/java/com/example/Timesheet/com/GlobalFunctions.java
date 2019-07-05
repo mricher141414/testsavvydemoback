@@ -38,8 +38,18 @@ public class GlobalFunctions {
 				+ "\"message:\": \""+ message + "\","
 				+ "\"path\": \""+ path + "\""
 				+ "}";
-		
 		return new ResponseEntity<String>(json,HttpStatus.BAD_REQUEST);
+	}
+	
+	public static ResponseEntity<String> createConflictResponse(String message, String path) {
+		String json = "{"
+				+ "\"timestamp\": \""+ createTimestamp() + "\","
+				+ "\"status:\": 409,"
+				+ "\"error: \": \"Conflict\","
+				+ "\"message:\": \""+ message + "\","
+				+ "\"path\": \""+ path + "\""
+				+ "}";
+		return new ResponseEntity<String>(json,HttpStatus.CONFLICT);
 	}
 	
 	public static <T> ResponseEntity<String> createOkResponseFromObject(T object) {

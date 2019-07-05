@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.OptimisticLockException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,7 @@ import com.example.Timesheet.com.service.EmployeeService;
 import com.example.Timesheet.com.service.ProjectEmployeeService;
 import com.example.Timesheet.com.service.ProjectService;
 import com.example.Timesheet.com.service.TimesheetRowProjectService;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -106,7 +109,7 @@ public class ProjectController implements Serializable {
 		log.debug("Entering edit with id parameter of " + id);
 		
 		if(projectService.getById(id).isPresent() == false) {
-			  return GlobalFunctions.createNotFoundResponse(GlobalMessages.ProjectIdNotFound, Paths.ProjectBasicPath);
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ProjectIdNotFound, Paths.ProjectBasicPath);
 		}
 		
 		if (projectDto.getProjectManagerId() != null) {
@@ -121,12 +124,18 @@ public class ProjectController implements Serializable {
 			}
   	 	}
 	 
-		Project project = projectMapper.dtoToProject(projectDto, id);
-		 
-		project = projectService.save(project);
-		 
-		return GlobalFunctions.createOkResponseFromObject(project);
-}
+		try {
+			Project project = projectMapper.dtoToProject(projectDto, id);
+			 
+			project = projectService.save(project);
+			 
+			return GlobalFunctions.createOkResponseFromObject(project);
+		}
+		catch (OptimisticLockException e) {
+			return GlobalFunctions.createConflictResponse(GlobalMessages.ProjectNotUpToDate, Paths.ProjectBasicPath);
+		}
+		
+	}
 	
 	@DeleteMapping(Paths.ProjectBasicPath)
 	@ApiOperation(value = "Deletes a project in the system by their identifier.", notes = "404 if the project's identifier cannot be found.<br> 400 if the project is still assigned to some employees or is still referenced by a timesheetRowProject.",

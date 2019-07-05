@@ -56,6 +56,7 @@ public class Project implements Serializable {
 	private Integer projectManagerId;
 	
 	@Version
+	@ApiModelProperty(notes = "<p>Property to make sure the person modifying the client has the current version", position = 100)
 	private Integer version;
 	
 	public void compensateTimezoneOnDates() {
@@ -123,6 +124,11 @@ public class Project implements Serializable {
 	public void setProjectManagerId(Integer projectManagerId) {
 		this.projectManagerId = projectManagerId;
 	}
+	
+	public Integer getVersion() {
+		return version;
+	}
+
 	public void setVersion(int version) {
 		this.version = version;
 	}	

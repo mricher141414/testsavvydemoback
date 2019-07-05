@@ -3,6 +3,8 @@ package com.example.Timesheet.com.mapper;
 import java.io.Serializable;
 import java.util.Optional;
 
+import javax.persistence.OptimisticLockException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +45,12 @@ public class TimesheetStatusMapper implements ITimesheetStatusMapper, Serializab
         	timesheetStatus.setName( source.getName() );
         }
         
+        if(source.getVersion() != null && timesheetStatus.getVersion() != null) {
+        	if(source.getVersion() != timesheetStatus.getVersion()) {
+				throw new OptimisticLockException("Wrong version");
+			}
+		}
+        
         return timesheetStatus;
     }
 
@@ -54,11 +62,12 @@ public class TimesheetStatusMapper implements ITimesheetStatusMapper, Serializab
             return null;
         }
 
-        TimesheetStatusDto timesheetStatusDTO = new TimesheetStatusDto();
+        TimesheetStatusDto timesheetStatusDto = new TimesheetStatusDto();
 
-        timesheetStatusDTO.setId( destination.getId() );
-        timesheetStatusDTO.setName( destination.getName() );
+        timesheetStatusDto.setId( destination.getId() );
+        timesheetStatusDto.setName( destination.getName() );
+        timesheetStatusDto.setVersion(destination.getVersion());
 
-        return timesheetStatusDTO;
+        return timesheetStatusDto;
     }
 }

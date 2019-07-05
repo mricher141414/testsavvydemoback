@@ -16,27 +16,30 @@ public class TimesheetComplex implements Serializable {
 	private static final long serialVersionUID = 3160899944356843605L;
 
 	@ApiModelProperty(notes = "<p>Unique identifier of the timesheet. No two timesheets can have the same id.</p>", example = "1", position = 0)
-	private int id;
+	protected int id;
 	
 	@ApiModelProperty(notes = "<p>Total amount of hours of the timesheet. Uses a dot (.) for decimals.</p>", example = "40.5", position = 1)
-	private float total;
+	protected float total;
 	
 	@ApiModelProperty(notes = "<p>Notes of the timesheet.</p>", example = "Première timesheet", position = 2)
-	private String notes;
+	protected String notes;
 	
 	@ApiModelProperty(notes = "<p>Date (year-month-date) at which the timesheet started.</p>", example = "2019-06-30", position = 3)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	private Date startDate;
+	protected Date startDate;
 	
 	@ApiModelProperty(notes = "<p>Date (year-month-date) at which the timesheet ended.</p>", example = "2019-07-06", position = 4)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	private Date endDate;
+	protected Date endDate;
 	
 	@ApiModelProperty(notes = "<p>List of all timesheetRows that reference this timesheet.</p>", position = 5)
-	private List<TimesheetRowWithProject> timesheetRows;
+	protected List<TimesheetRowWithProject> timesheetRows;
 	
 	@ApiModelProperty(notes = "<p>Object of the timesheetStatus used by the timesheet.</p>", position = 6)
-	private TimesheetStatus timesheetStatus;
+	protected TimesheetStatus timesheetStatus;
+	
+	@ApiModelProperty(notes = "<p>Property to make sure the person modifying the timesheet has the current version", position = 100)
+	protected Integer version;
 	
 	//getters and setters
 	
@@ -82,5 +85,10 @@ public class TimesheetComplex implements Serializable {
 	public void setTimesheetStatus(TimesheetStatus timesheetStatus) {
 		this.timesheetStatus = timesheetStatus;
 	}
-
+	public Integer getVersion() {
+		return version;
+	}
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
 }

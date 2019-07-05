@@ -68,6 +68,7 @@ public class Employee implements Serializable {
 	private Float salary;
 	
 	@Version
+	@ApiModelProperty(notes = "<p>Property to make sure the person modifying the employee has the current version", position = 100)
 	private Integer version;
 	
 	public void compensateTimezoneOnDates() {		
@@ -174,6 +175,10 @@ public class Employee implements Serializable {
 
 	public void setSalary(Float salary) {
 		this.salary = salary;
+	}
+
+	public Integer getVersion() {
+		return version;
 	}
 
 	public void setVersion(Integer version) {

@@ -6,6 +6,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.OptimisticLockException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Timesheet.com.GlobalFunctions;
 import com.example.Timesheet.com.GlobalMessages;
+import com.example.Timesheet.com.Paths;
 import com.example.Timesheet.com.dto.RoleDto;
 import com.example.Timesheet.com.mapper.RoleMapper;
 import com.example.Timesheet.com.model.Employee;
-import com.example.Timesheet.com.model.ProjectEmployee;
 import com.example.Timesheet.com.model.Role;
 import com.example.Timesheet.com.service.EmployeeService;
 import com.example.Timesheet.com.service.RoleService;
@@ -93,17 +95,19 @@ public class RoleController implements Serializable {
 											@ApiParam(value = "Id of the role to be modified. Cannot be null.", required = true) @RequestParam int id){
 		log.debug("Entering edit with id parameter of " + id);
 		
-		if(this.roleService.getById(id).isPresent()) {
+		if(this.roleService.getById(id).isPresent() == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.RoleIdNotFound, "/role");
+		}
 		
+		try {
 			Role role = roleMapper.dtoToRole(roleDto, id);
 			role = roleService.save(role);
 			
 			return GlobalFunctions.createOkResponseFromObject(role);
-		
 		}
-		else {
-			return GlobalFunctions.createNotFoundResponse(GlobalMessages.RoleIdNotFound, "/role");
-		}
+		catch (OptimisticLockException e) {
+			return GlobalFunctions.createConflictResponse(GlobalMessages.RoleNotUpToDate, Paths.RoleBasicPath);
+		}				
 	}
 
 	@DeleteMapping("/role")
@@ -114,20 +118,20 @@ public class RoleController implements Serializable {
 		
 		Optional<Role> optionalRole = this.roleService.getById(id);
 		
-		if(optionalRole.isPresent()) {
-			Role role = optionalRole.get();
-			
-			if(this.employeeService.getByRoleId(id).size() > 0) {
-				return GlobalFunctions.createBadRequest(GlobalMessages.EmployeeUsesRoleCannotDelete, "/role");
-			}
-			
-			this.roleService.delete(role);
-	
-			return GlobalFunctions.createOkResponseFromObject(role);
-		}
-		else {
+		if(optionalRole.isPresent() == false) {
 			return GlobalFunctions.createNotFoundResponse(GlobalMessages.RoleIdNotFound, "/role");
 		}
+		
+		Role role = optionalRole.get();
+		
+		if(this.employeeService.getByRoleId(id).size() > 0) {
+			return GlobalFunctions.createBadRequest(GlobalMessages.EmployeeUsesRoleCannotDelete, "/role");
+		}
+		
+		this.roleService.delete(role);
+
+		return GlobalFunctions.createOkResponseFromObject(role);
+		
 	}
 
 	@GetMapping("/role/employee")

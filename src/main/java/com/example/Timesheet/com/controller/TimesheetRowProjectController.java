@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.OptimisticLockException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +24,6 @@ import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.Paths;
 import com.example.Timesheet.com.dto.TimesheetRowProjectDto;
 import com.example.Timesheet.com.mapper.TimesheetRowProjectMapper;
-import com.example.Timesheet.com.model.TimesheetRow;
 import com.example.Timesheet.com.model.TimesheetRowProject;
 import com.example.Timesheet.com.service.ProjectService;
 import com.example.Timesheet.com.service.TimesheetRowProjectService;
@@ -107,9 +108,14 @@ public class TimesheetRowProjectController implements Serializable {
 			}
 		}
 		
-		TimesheetRowProject timesheetRowProject = timesheetRowProjectMapper.dtoToTimesheetRowProject(timesheetRowProjectDto, id);
-		timesheetRowProject = timesheetRowProjectService.save(timesheetRowProject);
-		return GlobalFunctions.createOkResponseFromObject(timesheetRowProject);
+		try {
+			TimesheetRowProject timesheetRowProject = timesheetRowProjectMapper.dtoToTimesheetRowProject(timesheetRowProjectDto, id);
+			timesheetRowProject = timesheetRowProjectService.save(timesheetRowProject);
+			return GlobalFunctions.createOkResponseFromObject(timesheetRowProject);
+		}
+		catch (OptimisticLockException e) {
+			return GlobalFunctions.createConflictResponse(GlobalMessages.TimesheetRowProjectNotUpToDate, Paths.TimesheetRowBasicPath);
+		}
 	}
 	
 	@DeleteMapping(Paths.TimesheetRowProjectBasicPath)

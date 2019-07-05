@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.OptimisticLockException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +31,6 @@ import com.example.Timesheet.com.model.Department;
 import com.example.Timesheet.com.model.Employee;
 import com.example.Timesheet.com.model.Project;
 import com.example.Timesheet.com.model.ProjectEmployee;
-import com.example.Timesheet.com.model.Timesheet;
 import com.example.Timesheet.com.service.ClientService;
 import com.example.Timesheet.com.service.EmployeeService;
 import com.example.Timesheet.com.service.ProjectEmployeeService;
@@ -72,7 +73,7 @@ public class ClientController implements Serializable {
 	
 	@GetMapping(Paths.ClientGetOne)
 	@ApiOperation(value = "Returns the client with the specified identifier.", notes = "404 if the client's identifier cannot be found.",
-					response = Client.class, responseContainer = "List")
+					response = Client.class)
 	public ResponseEntity<?> getOne(@ApiParam(value = "Id of the client to be found.", required = true) @RequestParam(value="id") int id) {
 		log.debug("Entering getOne with id parameter of " + id);
 		
@@ -109,11 +110,16 @@ public class ClientController implements Serializable {
 			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ClientIdNotFound, Paths.ClientBasicPath);
 		}
 		
-		Client client = clientMapper.dtoToClient(clientDto, id);
-		
-		clientService.save(client);
-		
-		return GlobalFunctions.createOkResponseFromObject(client);
+		try {
+			Client client = clientMapper.dtoToClient(clientDto, id);
+			
+			clientService.save(client);
+			
+			return GlobalFunctions.createOkResponseFromObject(client);
+		}
+		catch (OptimisticLockException e) {
+			return GlobalFunctions.createConflictResponse(GlobalMessages.ClientNotUpToDate, Paths.ClientBasicPath);
+		}
 }
 	
 	@DeleteMapping(Paths.ClientBasicPath)
@@ -141,7 +147,7 @@ public class ClientController implements Serializable {
 	@GetMapping(Paths.ClientGetStatsEmployee)
 	@ApiOperation(value = "Gets the amount of employees working on projects of the client and their average salary of those employees.", notes = "404 if the client's identifier cannot be found.", 
 					response = ClientStatsEmployee.class)
-	public ResponseEntity<String> getClientEmployeeStats(@ApiParam(value = "Id of the project")@RequestParam(value = "id") int id) {
+	public ResponseEntity<String> getClientEmployeeStats(@ApiParam(value = "Id of the client")@RequestParam(value = "id") int id) {
 		
 		log.debug("Entering getClientEmployeeStats with id parameter of " + id);
 		
@@ -177,5 +183,18 @@ public class ClientController implements Serializable {
 		clientStats.setAverageSalary(employeeService.calculateAverageSalary(employees));
 		
 		return GlobalFunctions.createOkResponseFromObject(clientStats);
+	}
+	
+	@GetMapping(Paths.ClientProjects)
+	@ApiOperation(value = "Gets the list of all projects that are asked by the client", notes = "404 if the client's identifier cannot be found.", 
+					response = Project.class, responseContainer = "List")
+	public ResponseEntity<String> getClientProjects(@ApiParam(value = "Id of the client")@RequestParam(value = "id") int id) {
+		log.debug("Entering getClientProjects with id parameter of " + id);
+		
+		if(clientService.clientExists(id) == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ClientIdNotFound, Paths.ClientProjects);
+		}
+		
+		return GlobalFunctions.createOkResponseFromObject(projectService.getByClientId(id));
 	}
 }

@@ -35,6 +35,9 @@ public class ProjectDto implements Serializable {
 	@ApiModelProperty(notes = "<p>Unique identifier of the employee that manages the project. <br>"
 			+ "Will cause an error if the project manager id specified does not belong to an existing employee.</p>", example = "1", position = 6)
 	private Integer projectManagerId;
+	
+	@ApiModelProperty(notes = "<p>Property to make sure the person modifying the project has the current version", position = 100)
+	private Integer version;
 
 	//getters and setters
 	
@@ -92,5 +95,13 @@ public class ProjectDto implements Serializable {
 
 	public void setProjectManagerId(Integer projectManagerId) {
 		this.projectManagerId = projectManagerId;
+	}
+
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
 	}
 }

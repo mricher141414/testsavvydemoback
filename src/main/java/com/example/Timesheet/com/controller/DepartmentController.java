@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.OptimisticLockException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,14 +92,17 @@ public class DepartmentController implements Serializable {
 										@ApiParam(value = "Id of the department to be modified. Cannot be null", required = true)@RequestParam(value="id") int id){
 		log.debug("Entering edit with id parameter of " + id);
 		
-		if(this.departmentService.getById(id).isPresent()) {
-		
-				Department department = departementMapper.dtoToDepartment(departementDTO, id);
-				departmentService.save(department);
-				return GlobalFunctions.createOkResponseFromObject(department);
-		}
-		else {
+		if(departmentService.getById(id).isPresent() == false) {
 			return GlobalFunctions.createNotFoundResponse(GlobalMessages.DepartmentIdNotFound, Paths.DepartmentBasicPath);
+		}
+		
+		try {
+			Department department = departementMapper.dtoToDepartment(departementDTO, id);
+			departmentService.save(department);
+			return GlobalFunctions.createOkResponseFromObject(department);
+		}
+		catch (OptimisticLockException e) {
+			return GlobalFunctions.createConflictResponse(GlobalMessages.DepartmentNotUpToDate, Paths.DepartmentBasicPath);
 		}
 		
 	}

@@ -3,6 +3,8 @@ package com.example.Timesheet.com.mapper;
 import java.io.Serializable;
 import java.util.Optional;
 
+import javax.persistence.OptimisticLockException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,24 +48,31 @@ public class RoleMapper implements IRoleMapper, Serializable {
     	if(source.getDescription() != null) {
     		role.setDescription(source.getDescription());
     	}
+    	
+    	if(source.getVersion() != null && role.getVersion() != null) {
+    		if(source.getVersion() != role.getVersion()) {
+				throw new OptimisticLockException("Wrong version");
+			}
+		}
 
         return role;
     }
 
     @Override
-    public RoleDto roleToDto(Role role) {
+    public RoleDto roleToDto(Role destination) {
     	log.debug("Entering roleToDto");
     	
-    	if ( role == null ) {
+    	if ( destination == null ) {
             return null;
         }
 
-        RoleDto roleDTO = new RoleDto();
+        RoleDto roleDto = new RoleDto();
 
-        roleDTO.setId( role.getId() );
-        roleDTO.setName( role.getName() );
-        roleDTO.setDescription(role.getDescription());
+        roleDto.setId( destination.getId() );
+        roleDto.setName( destination.getName() );
+        roleDto.setDescription(destination.getDescription());
+        roleDto.setVersion(destination.getVersion());
 
-        return roleDTO;
+        return roleDto;
     }
 }

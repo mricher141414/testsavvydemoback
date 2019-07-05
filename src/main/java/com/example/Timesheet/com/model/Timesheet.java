@@ -56,6 +56,7 @@ public class Timesheet implements Serializable {
 	private Integer timesheetStatusId;
 	
 	@Version
+	@ApiModelProperty(notes = "<p>Property to make sure the person modifying the timesheet has the current version", position = 100)
 	private Integer version;
 	
 	public void compensateTimezoneOnDates() {
@@ -124,12 +125,9 @@ public class Timesheet implements Serializable {
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
-	
-	//getVersion, but with a different name so swagger won't pick it up
-	public Integer fetchVersion() {
+	public Integer getVersion() {
 		return this.version;
 	}
-	
 	public void setVersion(int version) {
 		this.version = version;
 	}

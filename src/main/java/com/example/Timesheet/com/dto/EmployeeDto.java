@@ -49,6 +49,9 @@ public class EmployeeDto implements Serializable {
 	@ApiModelProperty(notes = "<p>Amount of money the employee makes</p>.", example = "16.50", position = 10)
 	private Float salary;
 	
+	@ApiModelProperty(notes = "<p>Property to make sure the person modifying the employee has the current version", position = 100)
+	private Integer version;
+	
 	//getters and setters
 	
 	public Date getDateOfBirth() {
@@ -116,6 +119,11 @@ public class EmployeeDto implements Serializable {
 	}
 	public void setSalary(Float salary) {
 		this.salary = salary;
+	}
+	public Integer getVersion() {
+		return version;
+	}
+	public void setVersion(Integer version) {
+		this.version = version;
 	}	
-
 }

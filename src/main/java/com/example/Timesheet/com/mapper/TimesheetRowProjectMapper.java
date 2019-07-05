@@ -3,6 +3,8 @@ package com.example.Timesheet.com.mapper;
 import java.io.Serializable;
 import java.util.Optional;
 
+import javax.persistence.OptimisticLockException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +53,11 @@ public class TimesheetRowProjectMapper implements ITimesheetRowProjectMapper, Se
 			timesheetRowProject.setTimesheetRowId(source.getTimesheetRowId());
 		}
 		
+		if(source.getVersion() != null && timesheetRowProject.getVersion() != null) {
+			if(source.getVersion() != timesheetRowProject.getVersion()) {
+				throw new OptimisticLockException("Wrong version");
+			}
+		}
 		
 		return timesheetRowProject;
 	}
@@ -69,6 +76,7 @@ public class TimesheetRowProjectMapper implements ITimesheetRowProjectMapper, Se
 		timesheetRowProjectDto.setProjectId(destination.getProjectId());
 		timesheetRowProjectDto.setValue(destination.getValue());
 		timesheetRowProjectDto.setTimesheetRowId(destination.getTimesheetRowId());
+		timesheetRowProjectDto.setVersion(destination.getVersion());
 		
 		return timesheetRowProjectDto;
 	}

@@ -45,10 +45,19 @@ public class ProjectEmployeeService implements Serializable {
 	}
 	
 	public void delete(ProjectEmployee projectEmployee) {
-		Assert.notNull(projectEmployee, "Parameter client must not be null");
+		Assert.notNull(projectEmployee, "Parameter projectEmployee must not be null");
 		log.debug("Entering delete");
 		
 		projectEmployeeDao.delete(projectEmployee);
+	}
+	
+	public void deleteByEmployeeAndProjectIds(int employeeId, int projectId) {
+		log.debug("Entering deleteByEmployeeAndProject");
+		Optional<ProjectEmployee> optionalAssignation = projectEmployeeDao.findByEmployeeIdAndProjectId(employeeId, projectId);
+		
+		if(optionalAssignation.isPresent()) {
+			projectEmployeeDao.delete(optionalAssignation.get());
+		}
 	}
 	
 	public List<ProjectEmployee> getByProjectId(int id) {

@@ -68,8 +68,7 @@ public class TimesheetRowProject implements Serializable {
 		this.timesheetRowId = timesheetRowId;
 	}
 	
-	//getVersion, but with a different name so swagger won't pick it up
-	public Integer fetchVersion() {
+	public Integer getVersion() {
 		return this.version;
 	}
 	

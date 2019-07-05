@@ -19,7 +19,7 @@ public class TimesheetRowWithProject implements Serializable {
 
 	@ApiModelProperty(notes = "<p>Unique identifier of the timesheet row. No two timesheet rows can have the same id. <br>"
 			+ "The id is not required, but it is part of the object to facilitate a copy and paste from an existing object</p>", example = "1", position = 0)
-	private int id;
+	private Integer id;
 	
 	@ApiModelProperty(notes = "<p>Date (year-month-date) of the row.</p>", example = "2019-07-01", position = 1)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -31,14 +31,17 @@ public class TimesheetRowWithProject implements Serializable {
 	
 	@ApiModelProperty(notes = "<p>List of all timesheetRowProjects that reference this timesheetRow.</p>", position = 3)
 	private List<TimesheetRowProject> timesheetRowProjects;
+	
+	@ApiModelProperty(notes = "<p>Property to make sure the person modifying the timesheet row has the current version", position = 100)
+	private Integer version;
 
 	//getters and setters
 	
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -65,6 +68,12 @@ public class TimesheetRowWithProject implements Serializable {
 	public void setTimesheetRowProjects(List<TimesheetRowProject> timesheetRowProjects) {
 		this.timesheetRowProjects = timesheetRowProjects;
 	}
-	
-	
+
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
 }

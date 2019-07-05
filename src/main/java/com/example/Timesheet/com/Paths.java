@@ -8,6 +8,7 @@ public class Paths {
 	//frontend only
 	public static final String ClientGetOne = "/client/one";
 	public static final String ClientGetStatsEmployee = "/client/stats/employee";
+	public static final String ClientProjects = "/client/project";
 	
 	//department paths
 	public static final String DepartmentBasicPath = "/department";
@@ -33,6 +34,7 @@ public class Paths {
 	
 	//projectEmployee paths
 	public static final String ProjectEmployeeBasicPath = "/assignation";
+	public static final String ProjectEmployeeDeleteWithIds = "/assignation/withids";
 	
 	//queue paths
 	public static final String ApiCallToBatFile = "/bat";

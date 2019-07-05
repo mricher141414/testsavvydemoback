@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.OptimisticLockException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,7 +127,6 @@ public class TimesheetController implements Serializable {
 		timesheet = timesheetService.save(timesheet);
 
 		return GlobalFunctions.createOkResponseFromObject(timesheet);
-
 	}
 
 	@PutMapping(Paths.TimesheetBasicPath)
@@ -135,29 +136,32 @@ public class TimesheetController implements Serializable {
 										@ApiParam(value = "Id of the timesheet to be modified.", required = true) @RequestParam(value="id") int id) {
 		log.debug("Entering edit with id parameter of " + id);
 		
-		if(this.timesheetService.timesheetExists(id)) {
-			
-			if(timesheetDto.getEmployeeId() != null) {
-				if (employeeService.getById(timesheetDto.getEmployeeId()).isPresent() == false) {
-					return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdParameterNotFound, Paths.TimesheetBasicPath);
-				}
-			}
-			
-			if(timesheetDto.getTimesheetStatusId() != null) {
-				if (timesheetStatusService.getById(timesheetDto.getTimesheetStatusId()).isPresent() == false) {
-					return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetStatusIdNotFound, Paths.TimesheetBasicPath);
-				}
-			}
-			
-			Timesheet timesheet = this.timesheetMapper.dtoToTimesheet(timesheetDto, id);
-	
-			timesheet = timesheetService.save(timesheet);
-	
-			return GlobalFunctions.createOkResponseFromObject(timesheet);
-		}
-		else {
+		if(this.timesheetService.timesheetExists(id) == false) {
 			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetIdNotFound, Paths.TimesheetBasicPath);
 		}
+			
+		if(timesheetDto.getEmployeeId() != null) {
+			if (employeeService.getById(timesheetDto.getEmployeeId()).isPresent() == false) {
+				return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdParameterNotFound, Paths.TimesheetBasicPath);
+			}
+		}
+		
+		if(timesheetDto.getTimesheetStatusId() != null) {
+			if (timesheetStatusService.getById(timesheetDto.getTimesheetStatusId()).isPresent() == false) {
+				return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetStatusIdNotFound, Paths.TimesheetBasicPath);
+			}
+		}
+		
+		try {
+			Timesheet timesheet = this.timesheetMapper.dtoToTimesheet(timesheetDto, id);
+
+			timesheet = timesheetService.save(timesheet);
+
+			return GlobalFunctions.createOkResponseFromObject(timesheet);
+		}
+		catch (OptimisticLockException e) {
+			return GlobalFunctions.createConflictResponse(GlobalMessages.TimesheetNotUpToDate, Paths.TimesheetBasicPath);
+		}		
 	}
 	
 	@DeleteMapping(Paths.TimesheetBasicPath)
@@ -226,7 +230,6 @@ public class TimesheetController implements Serializable {
 				personMapper.addTimesheetsToEmployeeComplexByStartDate(personWithTimesheets, startDate);
 	
 				listOfPeople.add(personWithTimesheets);
-	
 			}
 			return GlobalFunctions.createOkResponseFromObject(listOfPeople);
 		}
@@ -325,7 +328,7 @@ public class TimesheetController implements Serializable {
 	
 	@PostMapping(Paths.TimesheetCreateWithRows)
 	@ApiOperation(value = "Creates a new timesheet in the system with 7 timesheet rows (one for each day).", notes = "404 if the id of the employee passed in the body cannot be found.",
-					response = Employee.class)
+					response = Timesheet.class)
 	public ResponseEntity<?> createTimesheetWithRows (@ApiParam(value = "Employee to who the timesheet belongs", required = true) @RequestBody Employee employee, 
 														@ApiParam(value = "Date that the timesheet is using. Can be any day of the week", required = true) @RequestParam(value = "date") Date date) {
 		Assert.notNull(date, "parameter date must not be null");
@@ -344,7 +347,7 @@ public class TimesheetController implements Serializable {
 		
 		timesheetRowService.createWeekFromTimesheet(timesheet);
 		
-		return GlobalFunctions.createOkResponseFromObject(employee);
+		return GlobalFunctions.createOkResponseFromObject(timesheet);
 	}
 	
 	@PutMapping(Paths.TimesheetEditWithTimesheetComplex)
@@ -372,18 +375,19 @@ public class TimesheetController implements Serializable {
 		
 		for(TimesheetRowWithProject rowTimeProject : rowsTimeProject) {
 			
-			TimesheetRow row = timesheetRowMapper.timesheetRowWithProjectToTimesheetRow(rowTimeProject);
-			row.setTimesheetId(id);
+			TimesheetRow row = new TimesheetRow();
 			
-			row.compensateTimezoneOnDates();
-			
-			Optional<TimesheetRow> optionalRow = timesheetRowService.getById(row.getId());
-			
-			if(optionalRow.isPresent()) {
-				row.setVersion(optionalRow.get().fetchVersion());
+			try {
+				row = timesheetRowMapper.timesheetRowWithProjectToTimesheetRow(rowTimeProject);
+				row.setTimesheetId(id);
+				
+				row.compensateTimezoneOnDates();
+				
+				row = timesheetRowService.save(row);
 			}
-			
-			row = timesheetRowService.save(row);
+			catch (OptimisticLockException e) {
+				return GlobalFunctions.createConflictResponse(GlobalMessages.TimesheetRowNotUpToDateInTimesheet, Paths.TimesheetEditWithTimesheetComplex);
+			}
 			
 			List<TimesheetRowProject> timesheetRowProjects = rowTimeProject.getTimesheetRowProjects();
 			
@@ -400,12 +404,19 @@ public class TimesheetController implements Serializable {
 						return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetRowProjectIdNotFound, Paths.TimesheetEditWithTimesheetComplex);
 					}
 					
-					timesheetRowProject.setVersion(optionalTimesheetRowProject.get().fetchVersion());
+					timesheetRowProject.setVersion(optionalTimesheetRowProject.get().getVersion());
 				}
 				
 				if(timesheetRowProject.getValue() != null && timesheetRowProject.getValue() > 0) {
 					timesheetRowProject.setTimesheetRowId(row.getId());
-					timesheetRowProjectService.saveIncomplete(timesheetRowProject);
+					
+					try {
+						timesheetRowProjectService.saveIncomplete(timesheetRowProject);
+					}
+					catch (OptimisticLockException e) {
+						return GlobalFunctions.createConflictResponse(GlobalMessages.TimesheetRowProjectNotUpToDateInTimesheet, Paths.TimesheetEditWithTimesheetComplex);
+					}
+					
 					
 					totalHours = totalHours + timesheetRowProject.getValue();
 				}
@@ -419,13 +430,18 @@ public class TimesheetController implements Serializable {
 		
 		timesheetComplex.setTotal(totalHours);
 		
-		Timesheet timesheet = timesheetMapper.fromComplexToTimesheet(timesheetComplex, dbTimesheet.getEmployeeId());
+		Timesheet timesheet = new Timesheet();
 		
-		timesheet.compensateTimezoneOnDates();
-		timesheet.setVersion(dbTimesheet.fetchVersion());
-		
-		timesheetService.save(timesheet);
-		
+		try {
+			timesheet = timesheetMapper.fromComplexToTimesheet(timesheetComplex, dbTimesheet.getEmployeeId());
+			timesheet.compensateTimezoneOnDates();
+			
+			timesheetService.save(timesheet);
+		}
+		catch (OptimisticLockException e) {
+			return GlobalFunctions.createConflictResponse(GlobalMessages.TimesheetNotUpToDate, Paths.TimesheetEditWithTimesheetComplex);
+		}
+				
 		timesheetComplex = (TimesheetComplexWithEmployee) timesheetMapper.fromTimesheetToComplex(timesheet, timesheetComplex);
 		timesheetComplex = timesheetMapper.addEmployeeToTimesheetComplex(timesheetComplex, timesheet);
 		

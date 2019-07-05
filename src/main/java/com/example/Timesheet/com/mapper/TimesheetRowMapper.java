@@ -3,6 +3,8 @@ package com.example.Timesheet.com.mapper;
 import java.io.Serializable;
 import java.util.Optional;
 
+import javax.persistence.OptimisticLockException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +53,12 @@ public class TimesheetRowMapper implements ITimesheetRowMapper, Serializable {
     	if(source.getTimesheetId() != null) {
     		timesheetRow.setTimesheetId(source.getTimesheetId());
     	}
+    	
+    	if(source.getVersion() != null) {
+    		if(source.getVersion() != timesheetRow.getVersion()) {
+				throw new OptimisticLockException("Wrong version");
+			}
+		}
 
         return timesheetRow;
     }
@@ -63,13 +71,14 @@ public class TimesheetRowMapper implements ITimesheetRowMapper, Serializable {
             return null;
         }
 
-        TimesheetRowDto timesheetRowDTO = new TimesheetRowDto();
+        TimesheetRowDto timesheetRowDto = new TimesheetRowDto();
 
-        timesheetRowDTO.setId( destination.getId() );
-        timesheetRowDTO.setDate( destination.getDate() );
-        timesheetRowDTO.setTimesheetId( destination.getTimesheetId() );
+        timesheetRowDto.setId( destination.getId() );
+        timesheetRowDto.setDate( destination.getDate() );
+        timesheetRowDto.setTimesheetId( destination.getTimesheetId() );
+        timesheetRowDto.setVersion(destination.getVersion());
 
-        return timesheetRowDTO;
+        return timesheetRowDto;
     }
 
     public TimesheetRowWithProject rowDtoToRowWithProject(TimesheetRowDto rowDto) {
@@ -80,6 +89,7 @@ public class TimesheetRowMapper implements ITimesheetRowMapper, Serializable {
     	rowTimeProject.setId(rowDto.getId());
     	rowTimeProject.setDate(rowDto.getDate());
     	rowTimeProject.setTimesheetId(rowDto.getTimesheetId());
+    	rowTimeProject.setVersion(rowDto.getVersion());
     	
     	rowTimeProject.setTimesheetRowProjects(timeProjectService.getByTimesheetRowId(rowDto.getId()));
     	
@@ -91,10 +101,29 @@ public class TimesheetRowMapper implements ITimesheetRowMapper, Serializable {
     	
     	TimesheetRow row = new TimesheetRow();
     	
-    	row.setId(rowTimeProject.getId());
-    	row.setDate(rowTimeProject.getDate());
-    	row.setTimesheetId(rowTimeProject.getTimesheetId());
+    	Optional<TimesheetRow> optionalTimesheetRow = timesheetRowService.getById(rowTimeProject.getId());
+        
+        if(optionalTimesheetRow.isPresent()) {
+        	row = optionalTimesheetRow.get();
+        }
     	
+        if(rowTimeProject.getId() != null) {
+        	row.setId(rowTimeProject.getId());
+        }
+    	
+        if(rowTimeProject.getDate() != null) {
+        	row.setDate(rowTimeProject.getDate());	
+        }
+    	
+        if(rowTimeProject.getTimesheetId() != null) {
+        	row.setTimesheetId(rowTimeProject.getTimesheetId());
+        }
+            	
+    	if(rowTimeProject.getVersion() != null && row.getVersion() != null) {
+    		if(rowTimeProject.getVersion() != row.getVersion()) {
+    			throw new OptimisticLockException("wrong version");
+    		}
+    	}
     	return row;
     }
 }

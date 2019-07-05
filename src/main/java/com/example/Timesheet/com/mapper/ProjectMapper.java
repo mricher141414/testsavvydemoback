@@ -3,6 +3,8 @@ package com.example.Timesheet.com.mapper;
 import java.io.Serializable;
 import java.util.Optional;
 
+import javax.persistence.OptimisticLockException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +64,13 @@ public class ProjectMapper implements IProjectMapper, Serializable {
     	if(source.getProjectManagerId() != null) {
     		project.setProjectManagerId(source.getProjectManagerId());
     	}
+    	
+    	if(source.getVersion() != null && project.getVersion() != null) {
+    		if(source.getVersion() != project.getVersion()) {
+				throw new OptimisticLockException("Wrong version");
+			}
+		}
+    	
         return project;
 	}
 
@@ -82,6 +91,7 @@ public class ProjectMapper implements IProjectMapper, Serializable {
         projectDto.setEndDate( destination.getEndDate() );
         projectDto.setClientId( destination.getClientId() );
         projectDto.setProjectManagerId( destination.getProjectManagerId() );
+        projectDto.setVersion(destination.getVersion());
 
         return projectDto;
 	}

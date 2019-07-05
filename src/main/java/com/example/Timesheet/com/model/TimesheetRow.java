@@ -40,6 +40,7 @@ public class TimesheetRow implements Serializable {
 	private Integer timesheetId;
 	
 	@Version
+	@ApiModelProperty(notes = "<p>Property to make sure the person modifying the timesheet row has the current version", position = 100)
 	private Integer version;
 	
 	public void compensateTimezoneOnDates() {
@@ -80,12 +81,9 @@ public class TimesheetRow implements Serializable {
 	public void setTimesheetId(Integer timesheetId) {
 		this.timesheetId = timesheetId;
 	}	
-	
-	//getVersion, but with a different name so swagger won't pick it up
-	public Integer fetchVersion() {
+	public Integer getVersion() {
 		return this.version;
 	}
-	
 	public void setVersion(int version) {
 		this.version = version;
 	}

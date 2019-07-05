@@ -3,6 +3,8 @@ package com.example.Timesheet.com.mapper;
 import java.io.Serializable;
 import java.util.Optional;
 
+import javax.persistence.OptimisticLockException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +53,12 @@ public class ClientMapper implements IClientMapper, Serializable {
 			client.setDescription(source.getDescription());
 		}
 		
+		if(source.getVersion() != null && client.getVersion() != null) {
+			if(source.getVersion() != client.getVersion()) {
+				throw new OptimisticLockException("Wrong version");
+			}
+		}
+		
 		return client;
 	}
 
@@ -68,6 +76,7 @@ public class ClientMapper implements IClientMapper, Serializable {
 		clientDto.setName(destination.getName());
 		clientDto.setAddress(destination.getAddress());
 		clientDto.setDescription(destination.getDescription());
+		clientDto.setVersion(destination.getVersion());
 		
 		return clientDto;
 	}

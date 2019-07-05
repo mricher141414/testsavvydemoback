@@ -41,6 +41,9 @@ public class TimesheetDto implements Serializable {
 	@ApiModelProperty(notes = "<p>Unique identifier of the timesheet status. <br>"
 			+ "Will cause an error if the timesheet status id specified does not belong to an existing timesheet status.</p>", example = "1", position = 6)
 	private Integer timesheetStatusId;
+	
+	@ApiModelProperty(notes = "<p>Property to make sure the person modifying the timesheet has the current version", position = 100)
+	private Integer version;
 	 
 	//getters and setters
 	
@@ -89,5 +92,11 @@ public class TimesheetDto implements Serializable {
 	public void setTimesheetStatusId(int timesheetStatusId) {
 		this.timesheetStatusId = timesheetStatusId;
 	}
-
+	public Integer getVersion() {
+		return version;
+	}
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+	
 }

@@ -18,6 +18,11 @@ public class TimesheetStatusDto implements Serializable {
 	@ApiModelProperty(notes = "<p>Name of the status. <br>"
 			+ "The name is required as it is the only property that can be modified.</p>", example = "Brouillon", position = 1)
 	private String name;
+	
+	@ApiModelProperty(notes = "<p>Property to make sure the person modifying the client has the current version", position = 100)
+	private Integer version;
+	
+	//getters and setters
 
 	public int getId() {
 		return id;
@@ -34,6 +39,13 @@ public class TimesheetStatusDto implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
 	
 }

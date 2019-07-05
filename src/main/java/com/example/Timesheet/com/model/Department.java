@@ -28,6 +28,7 @@ public class Department implements Serializable {
 	private String description;
 	
 	@Version
+	@ApiModelProperty(notes = "<p>Property to make sure the person modifying the department has the current version", position = 100)
 	private Integer version;
 	
 	//getters and setters
@@ -54,6 +55,10 @@ public class Department implements Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Integer getVersion() {
+		return version;
 	}
 
 	public void setVersion(Integer version) {

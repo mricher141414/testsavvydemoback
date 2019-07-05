@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,8 @@ public class ProjectService implements Serializable {
 	@Autowired
 	private IProjectDao projectDAO;
 	
+	EntityManager entityManager;
+	
 	public List<Project> getAll() {
 		log.debug("Entering getAll");
 		return (List<Project>) projectDAO.findAll();
@@ -36,11 +41,14 @@ public class ProjectService implements Serializable {
 		Assert.notNull(project, "Parameter project must not be null");
 		log.debug("Entering save");
 		
+		//entityManager.lock(project, LockModeType.OPTIMISTIC);
+		
 		if(projectDAO.existsById(project.getId()) == false) {
 			project.setVersion(0);
 		}
 		
 		project.compensateTimezoneOnDates();
+		
 		return projectDAO.save(project);
 	}
 	

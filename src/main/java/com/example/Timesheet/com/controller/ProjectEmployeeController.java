@@ -77,7 +77,7 @@ public class ProjectEmployeeController implements Serializable {
 		return GlobalFunctions.createOkResponseFromObject(projectEmployee);
 	}
 	
-	@DeleteMapping("/assignation")
+	@DeleteMapping(Paths.ProjectEmployeeBasicPath)
 	@ApiOperation(value = "Deletes an employee-project assignation from the system.", notes = "404 if the projectEmployee's id cannot be found",
 					response = ProjectEmployee.class)
 	public ResponseEntity<String> delete(@ApiParam(value = "Id of the employee-project assignation to be deleted", required = true)@RequestParam(value="id")int id) {
@@ -93,5 +93,25 @@ public class ProjectEmployeeController implements Serializable {
 		
 		projectEmployeeService.delete(projectEmployee);
 		return GlobalFunctions.createOkResponseFromObject(projectEmployee);
+	}
+	
+	@DeleteMapping(Paths.ProjectEmployeeDeleteWithIds)
+	@ApiOperation(value = "Deletes an employee-project assignation from the system, using the employee id and the project id.", notes = "404 if either id cannot be found",
+					response = ProjectEmployee.class)
+	public ResponseEntity<String> deleteByEmployeeAndProjectIds(@ApiParam(value = "Id of the employee to find the assignation to be deleted", required = true)@RequestParam(value="employeeId")int employeeId,
+																@ApiParam(value = "Id of the project to find the assignation to be deleted", required = true)@RequestParam(value="projectId")int projectId) {
+		
+		log.debug("Entering delete with employeeId parameter of " + employeeId + " and projectId parameter of " + projectId);
+		
+		if(employeeService.employeeExists(employeeId) == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdNotFound, Paths.ProjectEmployeeDeleteWithIds);
+		}
+		
+		if(projectService.projectExists(projectId) == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.ProjectIdNotFound, Paths.ProjectEmployeeDeleteWithIds);
+		}
+		
+		projectEmployeeService.deleteByEmployeeAndProjectIds(employeeId, projectId);
+		return GlobalFunctions.createOkResponseFromObject("");
 	}
 }

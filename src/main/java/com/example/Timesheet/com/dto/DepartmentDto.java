@@ -22,28 +22,41 @@ public class DepartmentDto implements Serializable {
 	@ApiModelProperty(notes = "<p>Description about the department</p>", example = "Département qui s'occupe de faire des tests", position = 2)
 	private String description;
 	
+	@ApiModelProperty(notes = "<p>Property to make sure the person modifying the department has the current version", position = 100)
+	private Integer version;
+	
 	//getters and setters
 	
 	public int getId() {
 		return id;
 	}
+	
 	public void setId(int id) {
 		this.id = id;
 	}
+	
 	public String getName() {
 		return name;
 	}
+	
 	public void setName(String name) {
 		this.name = name;
 	}
+	
 	public String getDescription() {
 		return description;
 	}
+	
 	public void setDescription(String description) {
 		this.description = description;
 	}
 	
+	public Integer getVersion() {
+		return version;
+	}
 	
-	
-	
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+		
 }

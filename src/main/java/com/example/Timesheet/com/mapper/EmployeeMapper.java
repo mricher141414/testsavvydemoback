@@ -5,6 +5,8 @@ import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.OptimisticLockException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,6 +101,12 @@ public class EmployeeMapper implements IEmployeeMapper, Serializable {
     	if(source.getSalary() != null) {
     		employee.setSalary(source.getSalary());
     	}
+    	
+    	if(source.getVersion() != null && employee.getVersion() != null) {
+    		if(source.getVersion() != employee.getVersion()) {
+				throw new OptimisticLockException("Wrong version");
+			}
+		}
         
         employee.compensateTimezoneOnDates();
 
@@ -126,6 +134,7 @@ public class EmployeeMapper implements IEmployeeMapper, Serializable {
         employeeDto.setManagerId( destination.getManagerId() );
         employeeDto.setAddress( destination.getAddress() );
         employeeDto.setSalary(destination.getSalary());
+        employeeDto.setVersion(destination.getVersion());
 
         return employeeDto;
     }
@@ -139,6 +148,7 @@ public class EmployeeMapper implements IEmployeeMapper, Serializable {
 		employeeComplex.setPassword(employee.getPassword());
 		employeeComplex.setDateOfBirth(employee.getDateOfBirth());
 		employeeComplex.setSalary(employee.getSalary());
+		employeeComplex.setVersion(employee.getVersion());
 
 		if(employee.getRoleId()!= null) {
 			employeeComplex.setRole(this.roleService.getById(employee.getRoleId()).get());

@@ -23,6 +23,9 @@ public class TimesheetRowDto implements Serializable {
 			+ "Will cause an error if the timesheet id specified does not belong to an existing timesheet.</p>", example = "1", position = 3)
 	private Integer timesheetId;
 	
+	@ApiModelProperty(notes = "<p>Property to make sure the person modifying the timesheet row has the current version", position = 100)
+	private Integer version;
+	
 	//getters and setters
 	
 	public int getId() {
@@ -43,6 +46,11 @@ public class TimesheetRowDto implements Serializable {
 	public void setTimesheetId(Integer timesheetId) {
 		this.timesheetId = timesheetId;
 	}
-	
+	public Integer getVersion() {
+		return version;
+	}
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
 	
 }

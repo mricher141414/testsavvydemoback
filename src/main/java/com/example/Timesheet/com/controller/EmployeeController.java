@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.OptimisticLockException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,6 @@ import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.Paths;
 import com.example.Timesheet.com.dto.EmployeeDto;
 import com.example.Timesheet.com.mapper.EmployeeMapper;
-import com.example.Timesheet.com.model.Department;
 import com.example.Timesheet.com.model.Employee;
 import com.example.Timesheet.com.model.Project;
 import com.example.Timesheet.com.model.ProjectEmployee;
@@ -48,148 +49,154 @@ public class EmployeeController implements Serializable {
 	private static final Logger log = LogManager.getLogger(EmployeeController.class);
 
 	@Autowired
-	 private EmployeeService employeeService = new EmployeeService();
+	private EmployeeService employeeService = new EmployeeService();
 	 
-	 @Autowired
-	 private DepartmentService departementService = new DepartmentService();
+	@Autowired
+	private DepartmentService departementService = new DepartmentService();
 	 
-	 @Autowired
-	 private RoleService roleService = new RoleService();
+	@Autowired
+	private RoleService roleService = new RoleService();
 	 
-	 @Autowired
-	 private EmployeeMapper employeeMapper = new EmployeeMapper();
+	@Autowired
+	private EmployeeMapper employeeMapper = new EmployeeMapper();
 	 
-	 @Autowired
-	 private TimesheetService timesheetService = new TimesheetService();
+	@Autowired
+	private TimesheetService timesheetService = new TimesheetService();
 	 
-	 @Autowired
-	 private ProjectService projectService = new ProjectService();
+	@Autowired
+	private ProjectService projectService = new ProjectService();
 	 
-	 @Autowired
-	 private ProjectEmployeeService projectEmployeeService = new ProjectEmployeeService();
+	@Autowired
+	private ProjectEmployeeService projectEmployeeService = new ProjectEmployeeService();
 	 
-	 @GetMapping(Paths.EmployeeBasicPath)
-	 @ApiOperation(value = "Returns a list of all employees in the system.",
+	@GetMapping(Paths.EmployeeBasicPath)
+	@ApiOperation(value = "Returns a list of all employees in the system.",
 			 		response = Employee.class, responseContainer = "List")
-	 public List<Employee> getAll() {
-		 log.debug("Entering getAll");
-		 return employeeService.getAll();
-	 }
+	public List<Employee> getAll() {
+		log.debug("Entering getAll");
+		return employeeService.getAll();
+	}
 	 
-	 @GetMapping(Paths.EmployeeGetOne)
-	 @ApiOperation(value = "Returns a single employee by their identifier.", notes = "404 if the employee's identifier cannot be found.",
+	@GetMapping(Paths.EmployeeGetOne)
+	@ApiOperation(value = "Returns a single employee by their identifier.", notes = "404 if the employee's identifier cannot be found.",
 					response = Employee.class)
-	 public ResponseEntity<String> getOne(@ApiParam(value = "Id of the employee to retrieve", required = true)@RequestParam(value = "id") int id) {
-		 log.debug("Entering getOne with id parameter of " + id);
+	public ResponseEntity<String> getOne(@ApiParam(value = "Id of the employee to retrieve", required = true)@RequestParam(value = "id") int id) {
+		log.debug("Entering getOne with id parameter of " + id);
 		 
-		 Optional<Employee> optionalEmployee = employeeService.getById(id);
+		Optional<Employee> optionalEmployee = employeeService.getById(id);
 		 
-		 if(optionalEmployee.isPresent() == false) {
-			 return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdNotFound, Paths.EmployeeGetOne);
-		 }
+		if(optionalEmployee.isPresent() == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdNotFound, Paths.EmployeeGetOne);
+		}
 		 
-		 return GlobalFunctions.createOkResponseFromObject(optionalEmployee.get());
-	 }
+		return GlobalFunctions.createOkResponseFromObject(optionalEmployee.get());
+	}
 	 
-	 @PostMapping(Paths.EmployeeBasicPath)
-	 @ApiOperation(value = "Creates a new employee in the system.",
+	@PostMapping(Paths.EmployeeBasicPath)
+	@ApiOperation(value = "Creates a new employee in the system.",
 					response = Employee.class)
-	 public ResponseEntity<String> create(@ApiParam(value = "Employee information for the new employee to be created.", required = true) @RequestBody EmployeeDto employeeDto) {
-		 log.debug("Entering create");
+	public ResponseEntity<String> create(@ApiParam(value = "Employee information for the new employee to be created.", required = true) @RequestBody EmployeeDto employeeDto) {
+		log.debug("Entering create");
 		 
-		 if (employeeDto.getDepartmentId() != null) {
-			  if(departementService.getById(employeeDto.getDepartmentId()).isPresent() == false) {
-				  return GlobalFunctions.createNotFoundResponse(GlobalMessages.DepartmentIdNotFound, Paths.EmployeeBasicPath);
-			  }
-		  }
+		if (employeeDto.getDepartmentId() != null) {
+			if(departementService.getById(employeeDto.getDepartmentId()).isPresent() == false) {
+				return GlobalFunctions.createNotFoundResponse(GlobalMessages.DepartmentIdNotFound, Paths.EmployeeBasicPath);
+			}
+		}
 		  
-		  if (employeeDto.getManagerId() != null) {
-			  if(employeeService.getById(employeeDto.getManagerId()).isPresent() == false) {
-				  return GlobalFunctions.createNotFoundResponse(GlobalMessages.ManagerIdNotFound, Paths.EmployeeBasicPath);
-			  }
-		  }
+		if (employeeDto.getManagerId() != null) {
+			if(employeeService.getById(employeeDto.getManagerId()).isPresent() == false) {
+				return GlobalFunctions.createNotFoundResponse(GlobalMessages.ManagerIdNotFound, Paths.EmployeeBasicPath);
+			}
+		}
 		  
-		  if (employeeDto.getRoleId() != null) {
-			  if(roleService.getById(employeeDto.getRoleId()).isPresent() == false) {
-				  return GlobalFunctions.createNotFoundResponse(GlobalMessages.RoleIdNotFound, Paths.EmployeeBasicPath);
-				  }
-			  }
+		if (employeeDto.getRoleId() != null) {
+			if(roleService.getById(employeeDto.getRoleId()).isPresent() == false) {
+				return GlobalFunctions.createNotFoundResponse(GlobalMessages.RoleIdNotFound, Paths.EmployeeBasicPath);
+			}
+		}
 		 
-		 Employee employee = employeeMapper.dtoToEmployee(employeeDto, 0);
+		Employee employee = employeeMapper.dtoToEmployee(employeeDto, 0);
 		 
-		 employee = employeeService.saveEmployee(employee);
+		employee = employeeService.saveEmployee(employee);
 		 
-		 return GlobalFunctions.createOkResponseFromObject(employee);
-	 }
+		return GlobalFunctions.createOkResponseFromObject(employee);
+	}
 	 
-	 @PutMapping(Paths.EmployeeBasicPath)
-	 @ApiOperation(value = "Updates an employee in the system by their identifier.", notes = "404 if any of the employee's identifier specified in the address, department id, role id or manager id specified in the body is not found",
+	@PutMapping(Paths.EmployeeBasicPath)
+	@ApiOperation(value = "Updates an employee in the system by their identifier.", notes = "404 if any of the employee's identifier specified in the address, department id, role id or manager id specified in the body is not found",
 					response = Employee.class)
-	 public ResponseEntity<String> edit(@ApiParam("Employee information to be modified. There is no need to keep values that will not be modified.")@RequestBody EmployeeDto employeeDto,
+	public ResponseEntity<String> edit(@ApiParam("Employee information to be modified. There is no need to keep values that will not be modified.")@RequestBody EmployeeDto employeeDto,
 	  											@ApiParam(value = "Id of the employee to be modified. Cannot be null.", required = true)@RequestParam(value="id") int id) throws SQLException {
-		 log.debug("Entering edit with id parameter of " + id);
+		log.debug("Entering edit with id parameter of " + id);
 		 
-		 if (employeeService.getById(id).isPresent() == false) {
-			 return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdNotFound, Paths.EmployeeBasicPath);
-		 }
+		if (employeeService.getById(id).isPresent() == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdNotFound, Paths.EmployeeBasicPath);
+		}
 		  
-		 if (employeeDto.getDepartmentId() != null) {
-			 if(departementService.getById(employeeDto.getDepartmentId()).isPresent() == false) {
-				 return GlobalFunctions.createNotFoundResponse(GlobalMessages.DepartmentIdNotFound, Paths.EmployeeBasicPath);
-			 }
-		 }
+		if (employeeDto.getDepartmentId() != null) {
+			if(departementService.getById(employeeDto.getDepartmentId()).isPresent() == false) {
+				return GlobalFunctions.createNotFoundResponse(GlobalMessages.DepartmentIdNotFound, Paths.EmployeeBasicPath);
+			}
+		}
 		  
-		 if (employeeDto.getManagerId() != null) {
-			 if(employeeService.getById(employeeDto.getManagerId()).isPresent() == false) {
-				 return GlobalFunctions.createNotFoundResponse(GlobalMessages.ManagerIdNotFound, Paths.EmployeeBasicPath);
-			 }
-		 }
+		if (employeeDto.getManagerId() != null) {
+			if(employeeService.getById(employeeDto.getManagerId()).isPresent() == false) {
+				return GlobalFunctions.createNotFoundResponse(GlobalMessages.ManagerIdNotFound, Paths.EmployeeBasicPath);
+			}
+		}
 		  
-		 if (employeeDto.getRoleId() != null) {
-			 if(roleService.getById(employeeDto.getRoleId()).isPresent() == false) {
-				 return GlobalFunctions.createNotFoundResponse(GlobalMessages.RoleIdNotFound, Paths.EmployeeBasicPath);
-			 }
-		 }
+		if (employeeDto.getRoleId() != null) {
+			if(roleService.getById(employeeDto.getRoleId()).isPresent() == false) {
+				return GlobalFunctions.createNotFoundResponse(GlobalMessages.RoleIdNotFound, Paths.EmployeeBasicPath);
+			}
+		}
 			  
-		 Employee employee = employeeMapper.dtoToEmployee(employeeDto, id);
-		 employeeService.saveEmployee(employee);
-		
-		 return GlobalFunctions.createOkResponseFromObject(employee);
-	 }
+		try {
+			Employee employee = employeeMapper.dtoToEmployee(employeeDto, id);
+				 
+			employee = employeeService.saveEmployee(employee);
+				 
+			return GlobalFunctions.createOkResponseFromObject(employee);
+		}
+		catch (OptimisticLockException e) {
+			return GlobalFunctions.createConflictResponse(GlobalMessages.EmployeeNotUpToDate, Paths.EmployeeBasicPath);
+		}
+	}
 	 
-	 @DeleteMapping(Paths.EmployeeBasicPath)
-	 @ApiOperation(value = "Deletes an employee in the system by their identifier.", notes = "404 if the employee's identifier cannot be found.<br> 400 if the employee is still referenced by a timesheet, project, another employee or is still assigned to a project.",
+	@DeleteMapping(Paths.EmployeeBasicPath)
+	@ApiOperation(value = "Deletes an employee in the system by their identifier.", notes = "404 if the employee's identifier cannot be found.<br> 400 if the employee is still referenced by a timesheet, project, another employee or is still assigned to a project.",
 					response = Employee.class)
-	 public ResponseEntity<String> delete(@ApiParam(value = "Id of the employee to be deleted. Cannot be null", required = true) @RequestParam int id) {
-		 log.debug("Entering delete with id parameter of " + id);
+	public ResponseEntity<String> delete(@ApiParam(value = "Id of the employee to be deleted. Cannot be null", required = true) @RequestParam int id) {
+		log.debug("Entering delete with id parameter of " + id);
 		 
-		 Optional<Employee> optionalEmployee = this.employeeService.getById(id);
+		Optional<Employee> optionalEmployee = this.employeeService.getById(id);
 		 
-		 if(optionalEmployee.isPresent() == false) {
-			 return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdNotFound, Paths.EmployeeBasicPath);
-		 }
+		if(optionalEmployee.isPresent() == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdNotFound, Paths.EmployeeBasicPath);
+		}
 		 
-		 Employee employee = optionalEmployee.get();
+		Employee employee = optionalEmployee.get();
 		 
-		 if(projectEmployeeService.getByEmployeeId(id).size() > 0) {
-			 return GlobalFunctions.createBadRequest(GlobalMessages.EmployeeAssignedCannotDelete, Paths.EmployeeBasicPath);
-		 }
+		if(projectEmployeeService.getByEmployeeId(id).size() > 0) {
+			return GlobalFunctions.createBadRequest(GlobalMessages.EmployeeAssignedCannotDelete, Paths.EmployeeBasicPath);
+		}
 		 
-		 if(this.employeeService.getByManagerId(id).size() > 0) {
-			 return GlobalFunctions.createBadRequest(GlobalMessages.EmployeeUsesManagerCannotDelete, Paths.EmployeeBasicPath);
-		 }
+		if(this.employeeService.getByManagerId(id).size() > 0) {
+			return GlobalFunctions.createBadRequest(GlobalMessages.EmployeeUsesManagerCannotDelete, Paths.EmployeeBasicPath);
+		}
 		 
-		 if(this.timesheetService.getByEmployeeId(id).size() > 0) {
-			 return GlobalFunctions.createBadRequest(GlobalMessages.TimesheetUsesEmployeeCannotDelete, Paths.EmployeeBasicPath);
-		 }
+		if(this.timesheetService.getByEmployeeId(id).size() > 0) {
+			return GlobalFunctions.createBadRequest(GlobalMessages.TimesheetUsesEmployeeCannotDelete, Paths.EmployeeBasicPath);
+		}
 		 
-		 if(projectService.getByProjectManagerId(id).size() > 0) {
-			 return GlobalFunctions.createBadRequest(GlobalMessages.ProjectUsesEmployeeCannotDelete, Paths.EmployeeBasicPath);
-		 }
+		if(projectService.getByProjectManagerId(id).size() > 0) {
+			return GlobalFunctions.createBadRequest(GlobalMessages.ProjectUsesEmployeeCannotDelete, Paths.EmployeeBasicPath);
+		}
 		 
-		 this.employeeService.delete(employee);
-		 return GlobalFunctions.createOkResponseFromObject(employee);
-	 }
+		this.employeeService.delete(employee);
+		return GlobalFunctions.createOkResponseFromObject(employee);
+	}
 
 	@GetMapping(Paths.EmployeeAssignations)
 	@ApiOperation(value = "Returns all projects who are currently assigned to the employee", notes = "404 if the employee's identifier cannot be found.",
@@ -213,7 +220,7 @@ public class EmployeeController implements Serializable {
 	
 	@PostMapping(Paths.EmployeeAssignations)
 	@ApiOperation(value = "Create assignations to all the projects the employee is not already a part of, in those sent in the body.", notes = "404 if the employee's identifier or if any of the projects' identifier cannot be found.",
-					response = Project.class)
+					response = Project.class, responseContainer = "List")
 	public ResponseEntity<String> addEmployeeAssignations(@ApiParam(value = "List of Projects")@RequestBody List<Project> projects,
 															@ApiParam(value = "Id of the employee")@RequestParam int id) {
 		log.debug("Entering addEmployeeAssignations with id parameter of " + id);
@@ -245,18 +252,18 @@ public class EmployeeController implements Serializable {
 		return GlobalFunctions.createOkResponseFromObject(projects);
 	}
 	
-	 @GetMapping(Paths.EmployeeGetManaged)
-	 @ApiOperation(value = "Returns a list of all employees managed by this employee.", notes = "404 if the employee's identifier cannot be found.",
+	@GetMapping(Paths.EmployeeGetManaged)
+	@ApiOperation(value = "Returns a list of all employees managed by this employee.", notes = "404 if the employee's identifier cannot be found.",
 					response = Employee.class, responseContainer = "List")
-	 public ResponseEntity<String> getManagedEmployees(@ApiParam(value = "Id of the employee that manages the others", required = true)@RequestParam(value = "id") int id) {
-		 log.debug("Entering getManagedEmployees with id parameter of " + id);
+	public ResponseEntity<String> getManagedEmployees(@ApiParam(value = "Id of the employee that manages the others", required = true)@RequestParam(value = "id") int id) {
+		log.debug("Entering getManagedEmployees with id parameter of " + id);
 		 
-		 if(employeeService.employeeExists(id) == false) {
-			 return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdNotFound, Paths.EmployeeGetManaged);
-		 }
+		if(employeeService.employeeExists(id) == false) {
+			return GlobalFunctions.createNotFoundResponse(GlobalMessages.EmployeeIdNotFound, Paths.EmployeeGetManaged);
+		}
 		 
-		 List<Employee> employeesManaged = employeeService.getByManagerId(id);
+		List<Employee> employeesManaged = employeeService.getByManagerId(id);
 		 
-		 return GlobalFunctions.createOkResponseFromObject(employeesManaged);
-	 }
+		return GlobalFunctions.createOkResponseFromObject(employeesManaged);
+	}
 }

@@ -24,6 +24,9 @@ public class TimesheetRowProjectDto implements Serializable {
 	
 	@ApiModelProperty(notes = "<p>Unique identifier of the timesheet row that the timeProject is currently in. No two timesheets can have the same id.</p>", example = "4", position = 3)
 	private Integer timesheetRowId;
+	
+	@ApiModelProperty(notes = "<p>Property to make sure the person modifying the timesheet row project has the current version", position = 100)
+	private Integer version;
 
 	//getters and setters
 	
@@ -58,6 +61,12 @@ public class TimesheetRowProjectDto implements Serializable {
 	public void setTimesheetRowId(Integer timesheetRowId) {
 		this.timesheetRowId = timesheetRowId;
 	}
-	
-	
+
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
 }

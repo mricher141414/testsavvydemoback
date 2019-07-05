@@ -25,6 +25,9 @@ public class ClientDto implements Serializable {
 	@ApiModelProperty(notes = "<p>Description about who the client is, what he does, etc..</p>", example = "Entreprise qui offres des thérapies de famille", position = 3)
 	private String description;
 	
+	@ApiModelProperty(notes = "<p>Property to make sure the person modifying the client has the current version", position = 100)
+	private Integer version;
+	
 	//getters and setters
 	
 	public int getId() {
@@ -58,6 +61,12 @@ public class ClientDto implements Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-	
+
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
 }

@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.OptimisticLockException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +25,6 @@ import com.example.Timesheet.com.Paths;
 import com.example.Timesheet.com.dto.TimesheetRowDto;
 import com.example.Timesheet.com.dto.TimesheetRowWithProject;
 import com.example.Timesheet.com.mapper.TimesheetRowMapper;
-import com.example.Timesheet.com.model.Role;
 import com.example.Timesheet.com.model.TimesheetRow;
 import com.example.Timesheet.com.service.TimesheetRowProjectService;
 import com.example.Timesheet.com.service.TimesheetRowService;
@@ -95,8 +96,7 @@ public class TimesheetRowController implements Serializable {
 		
 		timesheetRow = timesheetRowService.save(timesheetRow);
 		
-		return GlobalFunctions.createOkResponseFromObject(timesheetRow);
-		
+		return GlobalFunctions.createOkResponseFromObject(timesheetRow);	
 	}
 	
 	@PutMapping(Paths.TimesheetRowBasicPath)
@@ -116,11 +116,16 @@ public class TimesheetRowController implements Serializable {
 			}
 		}
 		
-		TimesheetRow timesheetRow = timesheetRowMapper.dtoToTimesheetRow(timesheetRowDto, id);
-		
-		timesheetRow = timesheetRowService.save(timesheetRow);
-		
-		return GlobalFunctions.createOkResponseFromObject(timesheetRow);
+		try {
+			TimesheetRow timesheetRow = timesheetRowMapper.dtoToTimesheetRow(timesheetRowDto, id);
+			
+			timesheetRow = timesheetRowService.save(timesheetRow);
+			
+			return GlobalFunctions.createOkResponseFromObject(timesheetRow);
+		}
+		catch (OptimisticLockException e) {
+			return GlobalFunctions.createConflictResponse(GlobalMessages.TimesheetRowNotUpToDate, Paths.TimesheetRowBasicPath);
+		}
 	}
 	
 	@DeleteMapping(Paths.TimesheetRowBasicPath)

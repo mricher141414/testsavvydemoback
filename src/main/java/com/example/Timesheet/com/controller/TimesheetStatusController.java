@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.OptimisticLockException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +24,6 @@ import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.Paths;
 import com.example.Timesheet.com.dto.TimesheetStatusDto;
 import com.example.Timesheet.com.mapper.TimesheetStatusMapper;
-import com.example.Timesheet.com.model.TimesheetRow;
 import com.example.Timesheet.com.model.TimesheetStatus;
 import com.example.Timesheet.com.service.TimesheetService;
 import com.example.Timesheet.com.service.TimesheetStatusService;
@@ -95,6 +96,12 @@ public class TimesheetStatusController implements Serializable {
 			return GlobalFunctions.createNotFoundResponse(GlobalMessages.TimesheetStatusIdNotFound, Paths.TimesheetStatusBasicPath);
 		}
 		
+		try {
+			
+		}
+		catch (OptimisticLockException e) {
+			return GlobalFunctions.createConflictResponse(GlobalMessages.TimesheetStatusNotUpToDate, Paths.TimesheetStatusBasicPath);
+		}
 		TimesheetStatus timesheetStatus = timesheetStatusMapper.dtoToTimesheetStatus(timesheetStatusDto, id);
 		
 		timesheetStatus = timesheetStatusService.save(timesheetStatus);

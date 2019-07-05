@@ -20,6 +20,9 @@ public class RoleDto implements Serializable {
 	@ApiModelProperty(notes = "<p>Description about the role</p>", example = "Les gestionnaires qui s'occupe de gérer les équipes et les projets", position = 2)
 	private String description;
 	
+	@ApiModelProperty(notes = "<p>Property to make sure the person modifying the role has the current version", position = 100)
+	private Integer version;
+	
 	//getters and setters
 	
 	public int getId() {
@@ -40,6 +43,10 @@ public class RoleDto implements Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-
+	public Integer getVersion() {
+		return version;
+	}
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
 }

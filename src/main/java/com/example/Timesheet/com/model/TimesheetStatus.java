@@ -25,6 +25,7 @@ public class TimesheetStatus implements Serializable {
 	private String name;
 	
 	@Version
+	@ApiModelProperty(notes = "<p>Property to make sure the person modifying the timesheet status has the current version", position = 100)
 	private Integer version;
 
 	public int getId() {
@@ -43,6 +44,10 @@ public class TimesheetStatus implements Serializable {
 		this.name = name;
 	}
 	
+	public Integer getVersion() {
+		return version;
+	}
+
 	public void setVersion(int version) {
 		this.version = version;
 	}
