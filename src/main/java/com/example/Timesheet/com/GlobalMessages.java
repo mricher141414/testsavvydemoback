@@ -88,6 +88,9 @@ public class GlobalMessages {
 	//projectEmployee messages
 	public static final String ProjectEmployeeIdNotFound = "No ProjectEmployee was found with the specified id.";
 	
+	//login messages
+	public static final String EmailPasswordIncorrect = "Email or password is incorrect";
+	
 	//global messages
 	public static final String NameIsEmpty = "Name is empty";
 }

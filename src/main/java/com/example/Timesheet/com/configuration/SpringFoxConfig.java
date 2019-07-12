@@ -30,6 +30,7 @@ public class SpringFoxConfig {
 				.tags(new Tag("ClientController", "Set of endpoints for listing, creating, updating and deleting clients."),
 						new Tag("DepartmentController", "Set of endpoints for listing, creating, updating and deleting departments."),
 						new Tag("EmployeeController", "Set of endpoints for listing, creating, updating and deleting employee."),
+						new Tag("LoginController", "Set of endpoints for logging in from the frontend."),
 						new Tag("ProjectController", "Set of endpoints for listing, creating, updating and deleting projects."),
 						new Tag("ProjectEmployeeController", "Set of endpoints for listing, creating and deleting assignations of employees to projects."),
 						new Tag("QueueController", "Set of endpoints for listing and creating items in the queue table."),

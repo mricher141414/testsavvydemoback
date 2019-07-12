@@ -143,7 +143,7 @@ public class TimesheetRowController implements Serializable {
 		TimesheetRow timesheetRow = optionalRow.get();
 		
 		if(timeProjectService.getByTimesheetRowId(id).size() > 0) {
-			return GlobalFunctions.createBadRequest(GlobalMessages.TimeProjectUsesTimesheetRowCannotDelete, Paths.TimesheetRowBasicPath);
+			return GlobalFunctions.createConflictResponse(GlobalMessages.TimeProjectUsesTimesheetRowCannotDelete, Paths.TimesheetRowBasicPath);
 		}
 		
 		this.timesheetRowService.deleteTimesheetRow(timesheetRow);

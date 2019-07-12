@@ -125,7 +125,7 @@ public class RoleController implements Serializable {
 		Role role = optionalRole.get();
 		
 		if(this.employeeService.getByRoleId(id).size() > 0) {
-			return GlobalFunctions.createBadRequest(GlobalMessages.EmployeeUsesRoleCannotDelete, "/role");
+			return GlobalFunctions.createConflictResponse(GlobalMessages.EmployeeUsesRoleCannotDelete, "/role");
 		}
 		
 		this.roleService.delete(role);

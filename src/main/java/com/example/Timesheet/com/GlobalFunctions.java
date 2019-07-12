@@ -21,9 +21,9 @@ public class GlobalFunctions {
 	public static ResponseEntity<String> createNotFoundResponse(String message, String path) {
 		String json = "{"
 				+ "\"timestamp\": \""+ createTimestamp() + "\","
-				+ "\"status:\": 404,"
-				+ "\"error: \": \"Not Found\","
-				+ "\"message:\": \""+ message + "\","
+				+ "\"status\": 404,"
+				+ "\"error\": \"Not Found\","
+				+ "\"message\": \""+ message + "\","
 				+ "\"path\": \""+ path + "\""
 				+ "}";
 		
@@ -33,9 +33,9 @@ public class GlobalFunctions {
 	public static ResponseEntity<String> createBadRequest(String message, String path) {
 		String json = "{"
 				+ "\"timestamp\": \""+ createTimestamp() + "\","
-				+ "\"status:\": 400,"
-				+ "\"error: \": \"Bad Request\","
-				+ "\"message:\": \""+ message + "\","
+				+ "\"status\": 400,"
+				+ "\"error\": \"Bad Request\","
+				+ "\"message\": \""+ message + "\","
 				+ "\"path\": \""+ path + "\""
 				+ "}";
 		return new ResponseEntity<String>(json,HttpStatus.BAD_REQUEST);
@@ -44,11 +44,12 @@ public class GlobalFunctions {
 	public static ResponseEntity<String> createConflictResponse(String message, String path) {
 		String json = "{"
 				+ "\"timestamp\": \""+ createTimestamp() + "\","
-				+ "\"status:\": 409,"
-				+ "\"error: \": \"Conflict\","
-				+ "\"message:\": \""+ message + "\","
+				+ "\"status\": 409,"
+				+ "\"error\": \"Conflict\","
+				+ "\"message\": \""+ message + "\","
 				+ "\"path\": \""+ path + "\""
 				+ "}";
+		
 		return new ResponseEntity<String>(json,HttpStatus.CONFLICT);
 	}
 	

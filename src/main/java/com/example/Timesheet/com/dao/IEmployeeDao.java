@@ -1,6 +1,7 @@
 package com.example.Timesheet.com.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -17,4 +18,6 @@ public interface IEmployeeDao extends CrudRepository<Employee, Integer>{
 	
 	@Query(value="SELECT employee_id FROM Project_Employee WHERE project_id = ?1", nativeQuery = true)
 	List<Integer> findAllEmployeeIdByProjectId(int id);
+	
+	Optional<Employee> findByEmail(String email);
 }

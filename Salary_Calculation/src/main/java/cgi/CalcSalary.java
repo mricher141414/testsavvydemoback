@@ -1,115 +1,168 @@
 package cgi;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URISyntaxException;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
-public class CalcSalary {
+public class CalcSalary implements Serializable {
+	
+	private static final long serialVersionUID = 5290241843047963933L;
+	
 	String apiAddress = "http://localhost:8080";
-	Timesheet[] sheets = null;
-	float salary;
+	List<Timesheet> sheets = new ArrayList<Timesheet>();
 	
 	public CalcSalary() throws Exception {
+		
+		resetSalaryReportList();
+		
 		getSheets();
-		if (!(sheets != null)) {
+		
+		if (sheets.isEmpty()) {
 			throw new Exception("Queue is Empty");
 		}
 		else
 		{
 			for (Timesheet timesheet : sheets) {
-				getEmployeeSalary(timesheet.getEmployeeId());
-				//post JSON(employeeid: timesheet.getEmployeeId(), salary: (timesheet.getTotal*salary));
+				SalaryReport salaryReport = new SalaryReport();
+				
+				salaryReport.setPaycheck(getEmployeeSalary(timesheet.getEmployeeId()) * timesheet.getTotal());
+				salaryReport.setEmployeeId(timesheet.getEmployeeId());
+				postSalaryReport(salaryReport);
 			}
+			System.in.read();
 		}
 	}
 	
-	public Float getEmployeeSalary(int id) {
+	public Float getEmployeeSalary(int employeeId) {
 		
-		URI geturl;
+		String inline = getJsonResult(apiAddress + "/employee/one?id=" + employeeId);
+		Float salary = 0F;
+		
+		JSONParser parse = new JSONParser();
+		JSONObject jsonEmployee;
 		try {
-			geturl = new URI(apiAddress + "/employee/one?id=" + id);
-			CloseableHttpClient client = HttpClients.createDefault();
-		    HttpGet httpGet = new HttpGet(geturl);
-		    System.out.print(geturl.toString() + '\n');
-		    
-		    try {
-		    	CloseableHttpResponse response = client.execute(httpGet);
-			    ObjectMapper mapper = new ObjectMapper();
-		    	salary = mapper.readValue(response.getEntity().getContent()  ,  Employee.class).getSalary();
-		    } catch (IOException e) {
-		    }
-		} catch (URISyntaxException e) {
+			jsonEmployee = (JSONObject)parse.parse(inline);
+			
+			salary = Float.valueOf(String.valueOf(jsonEmployee.get("salary")));
+			
+			System.out.println("Salary of employee " + employeeId + ": $" + salary);
+			
+		} catch (ParseException e) {
+			e.printStackTrace();
 		}
-		
 		return salary;
 	}
 	
 	public void getSheets() {
+			
+		String inline = getJsonResult(apiAddress + "/timesheet");
 		
-		URI geturl;
+		JSONParser parse = new JSONParser();
+		JSONArray jsonArray;
 		try {
-			geturl = new URI(apiAddress + "/timesheet/all");
-			CloseableHttpClient client = HttpClients.createDefault();
-		    HttpGet httpGet = new HttpGet(geturl);
-		    System.out.print(geturl.toString() + '\n');
-		    
-		    try {
-		    	CloseableHttpResponse response = client.execute(httpGet);
-			    ObjectMapper mapper = new ObjectMapper();
-		    	sheets = mapper.readValue(response.getEntity().getContent()  ,  Timesheet[].class);
-		    			
-		    } catch (IOException e) {
-		    }
-		} catch (URISyntaxException e) {
+			jsonArray = (JSONArray)parse.parse(inline);
+			
+			for(int i = 0; i < jsonArray.size(); i++) {
+				JSONObject jsonObject = (JSONObject) (jsonArray.get(i));
+				
+				Timesheet timesheet = new Timesheet();
+				timesheet.setId(Integer.valueOf(String.valueOf(jsonObject.get("id"))));
+				timesheet.setTotal(Float.valueOf(String.valueOf(jsonObject.get("total"))));
+				timesheet.setNotes(String.valueOf(jsonObject.get("notes")));
+				timesheet.setStartDate(Date.valueOf(String.valueOf(jsonObject.get("startDate"))));
+				timesheet.setEndDate(Date.valueOf(String.valueOf(jsonObject.get("endDate"))));
+				timesheet.setEmployeeId(Integer.valueOf(String.valueOf(jsonObject.get("employeeId"))));
+				timesheet.setTimesheetStatusId(Integer.valueOf(String.valueOf(jsonObject.get("timesheetStatusId"))));
+				
+				sheets.add(timesheet);
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
 		}
 	}
 	
-	public String getString(InputStream inputStream){
+	public String getJsonResult(String url) {
+		String inline = "";
 		
-		StringBuilder stringBuilder = new StringBuilder();
-		String line = null;
-		
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+		try {
+			URL getUrl = new URL(url);
+			HttpURLConnection conn = (HttpURLConnection)getUrl.openConnection();
+			conn.setRequestMethod("GET");
+			
+			conn.connect();
+			
+			if(conn.getResponseCode() != 200) {
+				throw new RuntimeException("HttpResponseCode:" + conn.getResponseCode());
+			}
+			else {
+				Scanner sc = new Scanner(getUrl.openStream());
+				while (sc.hasNext()) {
+					inline += sc.nextLine();
+				}
+				sc.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return inline;
+	}
 	
-	    try {
-	        while ((line = bufferedReader.readLine()) != null) {
-	        	stringBuilder.append(line + "\n");
-	        }
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	    } finally {
-	        try {
-	        	inputStream.close();
-	        } catch (IOException e) {
-	        }
-	    }
-	return stringBuilder.toString();
-	}
-				    
-				    
-				    
-				    
-				    
-				    
-				 
-//				    String json = "{"id":1,"name":"John"}";
-//				    StringEntity entity = new StringEntity(json);
-//				    httpPost.setEntity(entity);
-//				    httpPost.setHeader("Accept", "application/json");
-//				    httpPost.setHeader("Content-type", "application/json");
-//				 
-//				    CloseableHttpResponse response = client.execute(httpPost);
-//				    assertThat(response.getStatusLine().getStatusCode(), equalTo(200));
-				    //client.close();
+	public void postSalaryReport(SalaryReport report) {
 		
+		String url = apiAddress + "/salaryreport";
+		try {
+			URL postUrl = new URL(url);
+			HttpURLConnection conn = (HttpURLConnection)postUrl.openConnection();
+			
+			String reportJson = "{"
+					+ "\"employeeId\": " + report.getEmployeeId() + ","
+					+ "\"paycheck\": " + report.getPaycheck()
+					+ "}";
+			
+			conn.setDoOutput(true);
+			conn.setRequestMethod("POST");
+			conn.addRequestProperty("Content-Type",  "application/" + "json");
+			
+			conn.setRequestProperty("Content-Length", Integer.toString(reportJson.length()));
+			conn.getOutputStream().write(reportJson.getBytes());
+			
+			conn.connect();
+			
+			if(conn.getResponseCode() == 200) {
+				System.out.println("The connection was successful");
+			}
+			else {
+				throw new RuntimeException("HttpResponseCode: " + conn.getResponseCode());
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
-
+	
+	public void resetSalaryReportList() {
+		
+		String url = apiAddress + "/salaryreport/all";
+		try {
+			URL deleteUrl = new URL(url);
+			HttpURLConnection conn = (HttpURLConnection)deleteUrl.openConnection();
+			
+			conn.setRequestMethod("DELETE");
+			conn.connect();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}

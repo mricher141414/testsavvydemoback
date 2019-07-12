@@ -179,19 +179,19 @@ public class EmployeeController implements Serializable {
 		Employee employee = optionalEmployee.get();
 		 
 		if(projectEmployeeService.getByEmployeeId(id).size() > 0) {
-			return GlobalFunctions.createBadRequest(GlobalMessages.EmployeeAssignedCannotDelete, Paths.EmployeeBasicPath);
+			return GlobalFunctions.createConflictResponse(GlobalMessages.EmployeeAssignedCannotDelete, Paths.EmployeeBasicPath);
 		}
 		 
 		if(this.employeeService.getByManagerId(id).size() > 0) {
-			return GlobalFunctions.createBadRequest(GlobalMessages.EmployeeUsesManagerCannotDelete, Paths.EmployeeBasicPath);
+			return GlobalFunctions.createConflictResponse(GlobalMessages.EmployeeUsesManagerCannotDelete, Paths.EmployeeBasicPath);
 		}
 		 
 		if(this.timesheetService.getByEmployeeId(id).size() > 0) {
-			return GlobalFunctions.createBadRequest(GlobalMessages.TimesheetUsesEmployeeCannotDelete, Paths.EmployeeBasicPath);
+			return GlobalFunctions.createConflictResponse(GlobalMessages.TimesheetUsesEmployeeCannotDelete, Paths.EmployeeBasicPath);
 		}
 		 
 		if(projectService.getByProjectManagerId(id).size() > 0) {
-			return GlobalFunctions.createBadRequest(GlobalMessages.ProjectUsesEmployeeCannotDelete, Paths.EmployeeBasicPath);
+			return GlobalFunctions.createConflictResponse(GlobalMessages.ProjectUsesEmployeeCannotDelete, Paths.EmployeeBasicPath);
 		}
 		 
 		this.employeeService.delete(employee);

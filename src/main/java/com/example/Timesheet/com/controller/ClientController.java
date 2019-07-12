@@ -103,7 +103,7 @@ public class ClientController implements Serializable {
 	@ApiOperation(value = "Updates a client in the system by their identifier.", notes = "404 if the client's identifier is not found",
 					response = Client.class)
 	public ResponseEntity<?> edit(@ApiParam("client information to be modified")@RequestBody ClientDto clientDto,
-										@ApiParam(value = "Id of the client to be modified. Cannot be null", required = true)@RequestParam(value="id") int id){
+									@ApiParam(value = "Id of the client to be modified. Cannot be null", required = true)@RequestParam(value="id") int id){
 		log.debug("Entering edit with id parameter of " + id);
 		
 		if(clientService.getById(id).isPresent() == false) {
@@ -123,7 +123,7 @@ public class ClientController implements Serializable {
 }
 	
 	@DeleteMapping(Paths.ClientBasicPath)
-	@ApiOperation(value = "Deletes a client from the system.", notes = "404 if the client's identifier cannot be found",
+	@ApiOperation(value = "Deletes a client from the system.", notes = "404 if the client's identifier cannot be found. 409 if the client is still referenced by a project",
 					response = Department.class)
 	public ResponseEntity<?> delete(@ApiParam(value = "Id of the client to be deleted. Cannot be null.", required = true)@RequestParam(value="id") int id){
 		log.debug("Entering delete with id parameter of " + id);
@@ -135,7 +135,7 @@ public class ClientController implements Serializable {
 		}
 		
 		if(projectService.getByClientId(id).size() > 0) {
-			return GlobalFunctions.createBadRequest(GlobalMessages.ProjectUsesClientCannotDelete, Paths.ClientBasicPath);
+			return GlobalFunctions.createConflictResponse(GlobalMessages.ProjectUsesClientCannotDelete, Paths.ClientBasicPath);
 		}
 		
 		Client client = optionalClient.get();

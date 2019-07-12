@@ -14,4 +14,5 @@ public interface ITimesheetDao extends CrudRepository<Timesheet, Integer>{
 	List<Timesheet> findByEmployeeIdAndStartDate(int id, Date startDate);
 	List<Timesheet> findByTimesheetStatusId(int timesheetStatusId);
 	List<Timesheet> findByEmployeeIdAndTimesheetStatusId(int employeeId, int timesheetStatusId);
+	List<Timesheet> findByEndDate(Date endDate);
 }

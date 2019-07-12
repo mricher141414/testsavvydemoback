@@ -120,7 +120,7 @@ public class DepartmentController implements Serializable {
 			Department department = optionalDepartment.get();
 			
 			if(this.personService.getByDepartementId(id).size() > 0) {
-				return GlobalFunctions.createBadRequest(GlobalMessages.EmployeeUsesDepartementCannotDelete, Paths.DepartmentBasicPath);
+				return GlobalFunctions.createConflictResponse(GlobalMessages.EmployeeUsesDepartementCannotDelete, Paths.DepartmentBasicPath);
 			}
 			
 			this.departmentService.delete(department);

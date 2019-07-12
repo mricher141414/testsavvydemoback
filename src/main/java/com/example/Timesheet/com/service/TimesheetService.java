@@ -127,6 +127,18 @@ public class TimesheetService implements Serializable {
 		return projects;
 	}
 	
+	public List<Timesheet> getLastWeekTimesheets (Date date) {
+		Assert.notNull(date, "parameter date must not be null");
+		log.debug("Entering getLastWeekTimesheets with parameter date of " + date);
+		
+		
+		Date latestSunday = GlobalFunctions.findLatestSunday(date);
+		
+		date.setTime(latestSunday.getTime() - GlobalVars.MillisecondsPerDay);
+		
+		return timesheetDao.findByEndDate(date);
+	}
+	
 	public Timesheet createFromDateAndEmployeeId(int employeeId, Date userDate) {
 		Assert.notNull(userDate, "Parameter userDate must not be null");
 		log.debug("Entering createFromDateAndEmployeeId");

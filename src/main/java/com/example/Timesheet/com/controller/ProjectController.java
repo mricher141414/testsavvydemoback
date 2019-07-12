@@ -81,22 +81,31 @@ public class ProjectController implements Serializable {
 					response = Project.class)
 	public ResponseEntity<String> create(@ApiParam(value = "Project information for the new project to be created.", required = true)@RequestBody ProjectDto projectDto) {
 		log.debug("Entering create");
-		
-		if (projectDto.getProjectManagerId() != null) {
-			if(employeeService.getById(projectDto.getProjectManagerId()).isPresent() == false) {
-				return GlobalFunctions.createNotFoundResponse(GlobalMessages.ManagerIdNotFound, Paths.ProjectBasicPath);
-			}
-		}
 		  
 		if (projectDto.getClientId() != null) {
 			if(clientService.getById(projectDto.getClientId()).isPresent() == false) {
 				return GlobalFunctions.createNotFoundResponse(GlobalMessages.ClientIdParameterNotFound, Paths.ProjectBasicPath);
 			}
 		}
+		
+		if (projectDto.getProjectManagerId() != null) {
+			if(employeeService.getById(projectDto.getProjectManagerId()).isPresent() == false) {
+				return GlobalFunctions.createNotFoundResponse(GlobalMessages.ManagerIdNotFound, Paths.ProjectBasicPath);
+			}
+		}
+		
 		 
 		Project project = projectMapper.dtoToProject(projectDto, 0);
 		 
 		project = projectService.save(project);
+		
+		if(project.getProjectManagerId() != null) {
+			ProjectEmployee assignation = new ProjectEmployee();
+			assignation.setEmployeeId(project.getProjectManagerId());
+			assignation.setProjectId(project.getId());
+			
+			projectEmployeeService.save(assignation);
+		}
 		 
 		return GlobalFunctions.createOkResponseFromObject(project);
 	}
@@ -116,6 +125,8 @@ public class ProjectController implements Serializable {
 			if(employeeService.getById(projectDto.getProjectManagerId()).isPresent() == false) {
 				return GlobalFunctions.createNotFoundResponse(GlobalMessages.ManagerIdNotFound, Paths.ProjectBasicPath);
 			}
+			
+			projectEmployeeService.save(new ProjectEmployee(id, projectDto.getProjectManagerId()));
 		}
 		  
 		if (projectDto.getClientId() != null) {
@@ -134,11 +145,10 @@ public class ProjectController implements Serializable {
 		catch (OptimisticLockException e) {
 			return GlobalFunctions.createConflictResponse(GlobalMessages.ProjectNotUpToDate, Paths.ProjectBasicPath);
 		}
-		
 	}
 	
 	@DeleteMapping(Paths.ProjectBasicPath)
-	@ApiOperation(value = "Deletes a project in the system by their identifier.", notes = "404 if the project's identifier cannot be found.<br> 400 if the project is still assigned to some employees or is still referenced by a timesheetRowProject.",
+	@ApiOperation(value = "Deletes a project in the system by their identifier.", notes = "404 if the project's identifier cannot be found.<br> 409 if the project is still assigned to some employees or is still referenced by a timesheetRowProject.",
 					response = Project.class)
 	public ResponseEntity<String> delete(@ApiParam(value = "Id of the project to be deleted. Cannot be null.", required = true)@RequestParam int id) {
 		log.debug("Entering delete with id parameter of " + id);
@@ -152,11 +162,11 @@ public class ProjectController implements Serializable {
 		Project project = optionalProject.get();
 		
 		if(projectEmployeeService.getByProjectId(id).size() > 0) {
-			return GlobalFunctions.createBadRequest(GlobalMessages.ProjectAssignedCannotDelete, Paths.ProjectBasicPath);
+			return GlobalFunctions.createConflictResponse(GlobalMessages.ProjectAssignedCannotDelete, Paths.ProjectBasicPath);
 		}
 		
 		if(timesheetRowProjectService.getByProjectId(id).size() > 0) {
-			return GlobalFunctions.createBadRequest(GlobalMessages.TimeProjectUsesProjectCannotDelete, Paths.ProjectBasicPath);
+			return GlobalFunctions.createConflictResponse(GlobalMessages.TimeProjectUsesProjectCannotDelete, Paths.ProjectBasicPath);
 		}
 		
 		projectService.delete(project);

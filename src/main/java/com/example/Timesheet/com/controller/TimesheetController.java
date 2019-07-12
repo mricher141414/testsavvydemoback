@@ -27,6 +27,7 @@ import com.example.Timesheet.com.GlobalMessages;
 import com.example.Timesheet.com.Paths;
 import com.example.Timesheet.com.dto.EmployeeComplex;
 import com.example.Timesheet.com.dto.EmployeeComplexWithManager;
+import com.example.Timesheet.com.dto.TimesheetComplex;
 import com.example.Timesheet.com.dto.TimesheetComplexWithEmployee;
 import com.example.Timesheet.com.dto.TimesheetDto;
 import com.example.Timesheet.com.dto.TimesheetRowWithProject;
@@ -179,7 +180,7 @@ public class TimesheetController implements Serializable {
 		Timesheet timesheet = optionalTimesheet.get();
 		
 		if(timesheetRowService.getByTimesheetId(id).size() > 0) {
-			return GlobalFunctions.createBadRequest(GlobalMessages.TimesheetRowUsesTimesheetCannotDelete, Paths.TimesheetBasicPath);
+			return GlobalFunctions.createConflictResponse(GlobalMessages.TimesheetRowUsesTimesheetCannotDelete, Paths.TimesheetBasicPath);
 		}
 		
 		timesheetService.delete(timesheet);
@@ -324,6 +325,29 @@ public class TimesheetController implements Serializable {
 		List<Project> projects = timesheetService.getProjectsOnTimesheet(id);
 		
 		return GlobalFunctions.createOkResponseFromObject(projects);
+	}
+	
+	@GetMapping(Paths.TimesheetGetLastWeekComplex)
+	@ApiOperation(value = "Returns all the timesheets in complex form that ended last Sunday",
+					response = TimesheetComplexWithEmployee.class, responseContainer = "List")
+	public ResponseEntity<String> getLastWeekTimesheet (@ApiParam(value = "Date for reference", required = true) @RequestParam(value = "date") Date date) {
+		log.debug("Entering getLastWeekTimesheet with date parameter of " + date.toString());
+		
+		List<TimesheetComplexWithEmployee> timesheets = new ArrayList<TimesheetComplexWithEmployee>();
+		
+		List<Timesheet> lastWeekTimesheets = timesheetService.getLastWeekTimesheets(date);
+		
+		for (Timesheet timesheet: lastWeekTimesheets) {
+			TimesheetComplexWithEmployee timesheetWithEmployee = new TimesheetComplexWithEmployee(); 
+			timesheetMapper.fromTimesheetToComplex(timesheet, timesheetWithEmployee);
+			
+			TimesheetComplexWithEmployee timesheetComplexWithEmployee = (TimesheetComplexWithEmployee) timesheetWithEmployee;
+			timesheetComplexWithEmployee = timesheetMapper.addEmployeeToTimesheetComplex(timesheetComplexWithEmployee, timesheet);
+			
+			timesheets.add(timesheetComplexWithEmployee);
+		}
+		
+		return GlobalFunctions.createOkResponseFromObject(timesheets);
 	}
 	
 	@PostMapping(Paths.TimesheetCreateWithRows)

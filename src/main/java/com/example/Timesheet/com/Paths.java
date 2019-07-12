@@ -24,6 +24,10 @@ public class Paths {
 	//frontend only
 	public static final String EmployeeGetManaged = "/employee/managed";
 	
+	//login paths
+	public static final String LoginPath = "/login";
+	public static final String LogoutPath = "/logout";
+	
 	//project paths
 	public static final String ProjectBasicPath = "/project";
 	public static final String ProjectAssignations = "/project/assignation";
@@ -65,6 +69,7 @@ public class Paths {
 	public static final String TimesheetGetAllComplexFromEmployee = "/timesheet/employee/all/detailed";
 	public static final String TimesheetGetAllToVerify = "/timesheet/toverify";
 	public static final String TimesheetGetAllProjects = "/timesheet/projects";
+	public static final String TimesheetGetLastWeekComplex = "/timesheet/lastweek/detailed";
 	
 	//timesheetRow paths
 	public static final String TimesheetRowBasicPath = "/timesheetrow";

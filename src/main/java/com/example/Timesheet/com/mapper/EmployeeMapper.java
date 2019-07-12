@@ -16,6 +16,7 @@ import com.example.Timesheet.com.dto.EmployeeComplex;
 import com.example.Timesheet.com.dto.EmployeeComplexWithManager;
 import com.example.Timesheet.com.dto.EmployeeDto;
 import com.example.Timesheet.com.dto.TimesheetComplex;
+import com.example.Timesheet.com.dto.UserDto;
 import com.example.Timesheet.com.model.Employee;
 import com.example.Timesheet.com.model.Timesheet;
 import com.example.Timesheet.com.service.DepartmentService;
@@ -173,5 +174,20 @@ public class EmployeeMapper implements IEmployeeMapper, Serializable {
 	public EmployeeComplexWithManager addManagerToEmployeeComplexWithManager(EmployeeComplexWithManager employeeComplex, Employee employee) {
 		employeeComplex.setManager(this.employeeService.getById(employee.getManagerId()).get());
 		return employeeComplex;
+	}
+	
+	public UserDto employeeToUserDto(Employee employee) {
+		
+		UserDto user = new UserDto();
+		
+		user.setFirstName(employee.getFirstName());
+		user.setLastName(employee.getLastName());
+		user.setId(employee.getId());
+		user.setPassword(employee.getPassword());
+		user.setUsername(employee.getEmail());
+		user.setRoleId(employee.getRoleId());
+		user.setToken("fake-jwt-token");
+		
+		return user;
 	}
 }

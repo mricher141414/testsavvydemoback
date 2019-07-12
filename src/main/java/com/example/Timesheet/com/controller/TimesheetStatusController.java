@@ -124,7 +124,7 @@ public class TimesheetStatusController implements Serializable {
 		TimesheetStatus timesheetStatus = optionalStatus.get();
 		
 		if(timesheetService.getByTimesheetStatusId(id).size() > 0) {
-			return GlobalFunctions.createBadRequest(GlobalMessages.TimesheetUsesTimesheetStatusCannotDelete, Paths.TimesheetStatusBasicPath);
+			return GlobalFunctions.createConflictResponse(GlobalMessages.TimesheetUsesTimesheetStatusCannotDelete, Paths.TimesheetStatusBasicPath);
 		}
 		
 		timesheetStatusService.delete(timesheetStatus);

@@ -7,7 +7,6 @@ import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(description = "<p>Class sent by the user to modify an existing client or create a new one.<br>" 
 				+ "No property is required when modifying a client.</p>")
-
 public class ClientDto implements Serializable {
 	
 	private static final long serialVersionUID = -5812419694371374286L;

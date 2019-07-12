@@ -25,6 +25,15 @@ public class ProjectEmployee implements Serializable {
 	
 	@ApiModelProperty(notes = "<p>Unique identifier of the project that is part of the assignation. No two projects can have the same id</p>", example = "2", position = 2)
 	private Integer projectId;
+	
+	public ProjectEmployee() {
+		
+	}
+	
+	public ProjectEmployee(int projectId, int employeeId) {
+		this.employeeId = employeeId;
+		this.projectId = projectId;
+	}
 
 	//getters and setters
 	
