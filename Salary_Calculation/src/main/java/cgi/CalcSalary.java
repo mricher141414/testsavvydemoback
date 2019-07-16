@@ -39,6 +39,9 @@ public class CalcSalary implements Serializable {
 				salaryReport.setEmployeeId(timesheet.getEmployeeId());
 				postSalaryReport(salaryReport);
 			}
+			System.out.println("Task completed");
+			System.out.println("Press enter to end the process");
+			
 			System.in.read();
 		}
 	}
