@@ -23,7 +23,7 @@ public class CalcSalary implements Serializable {
 	
 	public CalcSalary() throws Exception {
 		
-		resetSalaryReportList();
+		resetReportList();
 		
 		getSheets();
 		
@@ -151,15 +151,18 @@ public class CalcSalary implements Serializable {
 		}
 	}
 	
-	public void resetSalaryReportList() {
+	public void resetReportList() {
 		
 		String url = apiAddress + "/salaryreport/all";
 		try {
 			URL deleteUrl = new URL(url);
 			HttpURLConnection conn = (HttpURLConnection)deleteUrl.openConnection();
 			
+			conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
 			conn.setRequestMethod("DELETE");
 			conn.connect();
+			
+			conn.getInputStream();
 		}
 		catch (Exception e) {
 			e.printStackTrace();

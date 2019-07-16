@@ -1,5 +1,5 @@
 package cgi;
-
+ 
 public class Employee {
 
 	  private int id;

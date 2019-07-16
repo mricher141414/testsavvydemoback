@@ -12,7 +12,7 @@ public class Timesheet {
 	private Integer employeeId;
 	private Integer timesheetStatusId;
 	
-	//getters and setters
+	//getters and setters 
 	
 	public int getId() {
 		return id;

@@ -10,7 +10,7 @@ public class SalaryReport implements Serializable {
 	private int employeeId;
 	private float paycheck;
 	
-	//getters and setters
+	//getters and setters 
 	
 	public int getId() {
 		return id;
