@@ -58,8 +58,6 @@ public class CalcSalary implements Serializable {
 			
 			salary = Float.valueOf(String.valueOf(jsonEmployee.get("salary")));
 			
-			System.out.println("Salary of employee " + employeeId + ": $" + salary);
-			
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -67,16 +65,20 @@ public class CalcSalary implements Serializable {
 	}
 	
 	public void getSheets() {
-			
-		String inline = getJsonResult(apiAddress + "/timesheet");
+		
+		String queueInline = getJsonResult(apiAddress + "/queue");
 		
 		JSONParser parse = new JSONParser();
 		JSONArray jsonArray;
 		try {
-			jsonArray = (JSONArray)parse.parse(inline);
+			jsonArray = (JSONArray)parse.parse(queueInline);
 			
 			for(int i = 0; i < jsonArray.size(); i++) {
-				JSONObject jsonObject = (JSONObject) (jsonArray.get(i));
+				JSONObject jsonItem = (JSONObject) (jsonArray.get(i));
+		
+				String inline = getJsonResult(apiAddress + "/timesheet/one?id=" + jsonItem.get("timesheetId"));
+				
+				JSONObject jsonObject = (JSONObject)parse.parse(inline);
 				
 				Timesheet timesheet = new Timesheet();
 				timesheet.setId(Integer.valueOf(String.valueOf(jsonObject.get("id"))));

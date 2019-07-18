@@ -43,6 +43,8 @@ public class Paths {
 	//queue paths
 	public static final String ApiCallToBatFile = "/bat";
 	public static final String QueueBasicPath = "/queue";
+	public static final String QueueExistsByTimesheet = "/queue/exists/timesheet";
+	public static final String QueueByTimesheet = "/queue/timesheet";
 	
 	//role paths
 	public static final String RoleBasicPath = "/role";

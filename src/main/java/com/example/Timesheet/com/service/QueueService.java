@@ -31,7 +31,14 @@ public class QueueService implements Serializable {
 		Assert.notNull(queueItem, "Parameter queueItem must not be null");
 		log.debug("Entering save");
 		
-		return queueDao.save(queueItem);
+		List<QueueItem> itemList = queueDao.findByTimesheetId(queueItem.getTimesheetId());
+		
+		if(itemList.size() == 0) {
+			return queueDao.save(queueItem);
+		}
+		else {
+			return queueItem;
+		}
 	}
 	
 	public Optional<QueueItem> getById(int id) {
@@ -41,14 +48,27 @@ public class QueueService implements Serializable {
 	
 	public void delete(QueueItem queueItem) {
 		Assert.notNull(queueItem, "Parameter queueItem must not be null");
-		log.debug("Entering save");
+		log.debug("Entering delete");
 		
 		queueDao.delete(queueItem);
+	}
+	
+	public boolean existByTimesheet(int timesheetId) {
+		if(queueDao.findByTimesheetId(timesheetId).size() > 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	public List<QueueItem> findByTimesheetId(int timesheetId) {
+		log.debug("Entering deleteByTimesheetId with timesheetId parameter of " + timesheetId);
+		return queueDao.findByTimesheetId(timesheetId);
 	}
 	
 	public void deleteByTimesheetId(int timesheetId) {
 		log.debug("Entering deleteByTimesheetId with timesheetId parameter of " + timesheetId);
 		queueDao.deleteByTimesheetId(timesheetId);
 	}
-	
 }
